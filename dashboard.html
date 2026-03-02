@@ -117,19 +117,28 @@
       <!-- 1. Overview -->
       <section id="overview-section" class="glass p-6">
         <h3 class="text-2xl mb-6">Visão Geral do Servidor</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div id="user-profile" class="mb-8 text-center">
+          <img id="user-avatar" src="" alt="Avatar" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-red-800">
+          <p id="user-name" class="text-xl font-bold">Carregando usuário...</p>
+          <p id="user-id" class="text-sm text-red-300">ID: ...</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div class="bg-black/40 p-6 rounded-xl text-center">
-            <p class="text-4xl font-bold text-red-500">0</p>
+            <p id="active-members" class="text-4xl font-bold text-red-500">0</p>
             <p class="text-sm text-red-300">Membros Ativos</p>
           </div>
           <div class="bg-black/40 p-6 rounded-xl text-center">
-            <p class="text-4xl font-bold text-red-500">0</p>
+            <p id="circulating-fragments" class="text-4xl font-bold text-red-500">0</p>
             <p class="text-sm text-red-300">Fragmentos Circulando</p>
           </div>
           <div class="bg-black/40 p-6 rounded-xl text-center">
-            <p class="text-4xl font-bold text-red-500">Free</p>
+            <p id="current-plan" class="text-4xl font-bold text-red-500">Free</p>
             <p class="text-sm text-red-300">Plano Atual</p>
           </div>
+        </div>
+        <h4 class="text-xl mb-4">Seus Servidores</h4>
+        <div id="guild-list" class="space-y-4">
+          <!-- Guild cards will be added here by JS -->
         </div>
       </section>
 
@@ -369,9 +378,10 @@
         </div>
         <div class="space-y-4">
           <h4 class="text-xl">Cores Disponíveis</h4>
-          <div class="grid grid-cols-3 gap-4 bg-black/40 p-4 rounded-xl">
-            <input type="text" placeholder="Nome da Cor" class="p-3 rounded-xl bg-black/60 border border-red-800">
+          <div class="grid grid-cols-4 gap-4 bg-black/40 p-4 rounded-xl">
+            <input type="text" placeholder="Nome" class="p-3 rounded-xl bg-black/60 border border-red-800">
             <input type="number" placeholder="Preço" class="p-3 rounded-xl bg-black/60 border border-red-800">
+            <input type="text" placeholder="Descrição" class="p-3 rounded-xl bg-black/60 border border-red-800">
             <input type="color" class="p-3 rounded-xl bg-black/60 border border-red-800">
           </div>
           <button class="bg-red-800 hover:bg-red-700 px-4 py-2 rounded-xl">Adicionar Cor</button>
@@ -622,12 +632,62 @@
       }
     }
 
-    // Inicialização (carrega guilds, etc.)
+    // Inicialização (carrega guilds, user, etc.)
     window.onload = () => {
       document.getElementById('loading').classList.add('hidden');
       document.getElementById('content').classList.remove('hidden');
-      // Aqui você pode chamar loadUserAndGuilds(), renderSidebar(), setupPreviews() como no original
-      // Exemplo: fetch guilds from Discord API using token
+
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        logout();
+        return;
+      }
+
+      // Fetch user profile
+      fetch('https://discord.com/api/users/@me', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      }).then(res => res.json()).then(user => {
+        document.getElementById('user-avatar').src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128`;
+        document.getElementById('user-name').textContent = user.username;
+        document.getElementById('user-id').textContent = `ID: ${user.id}`;
+      });
+
+      // Fetch guilds
+      fetch('https://discord.com/api/users/@me/guilds', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      }).then(res => res.json()).then(guilds => {
+        const select = document.getElementById('guild-select');
+        select.innerHTML = '';
+        guilds.forEach(guild => {
+          const option = document.createElement('option');
+          option.value = guild.id;
+          option.textContent = guild.name;
+          select.appendChild(option);
+        });
+
+        const guildList = document.getElementById('guild-list');
+        guildList.innerHTML = '';
+        guilds.forEach(guild => {
+          const card = document.createElement('div');
+          card.className = 'bg-black/40 p-4 rounded-xl';
+          card.innerHTML = `
+            <div class="flex items-center mb-2">
+              <img src="https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png?size=64" alt="${guild.name}" class="w-12 h-12 rounded-full mr-3">
+              <h5 class="text-lg font-bold">${guild.name}</h5>
+            </div>
+            <p>Membros: ${guild.approximate_member_count}</p>
+            <p>Ativos: ${guild.approximate_presence_count}</p>
+            <p>Fragmentos Circulando: 0 (placeholder)</p>
+            <p>Plano: Free (placeholder)</p>
+          `;
+          guildList.appendChild(card);
+        });
+
+        // Update overview stats (placeholders for now, fetch from backend if needed)
+        document.getElementById('active-members').textContent = guilds.reduce((acc, g) => acc + g.approximate_presence_count, 0);
+        document.getElementById('circulating-fragments').textContent = 0; // Fetch from backend
+        document.getElementById('current-plan').textContent = 'Free'; // Fetch from backend
+      });
     };
 
     // Save Button (placeholder - adicione sua lógica de save)
