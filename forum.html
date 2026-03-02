@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Fórum • Véu Entre Mundos</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="icon" href="https://cdn.discordapp.com/attachments/1428432707284762654/1477310985504034999/ideogram-v3.0_circular_gothic_arcane_logo_badge_for_discord_bot_Veu_elegant_dark_red_wine_cri-0-Photoroom.png" />
+  <link rel="icon" href="https://cdn.discordapp.com/attachments/1428432707284762654/1477311030790197431/lucid-origin_dark_gothic_arcane_mission_icon_crimson_red_target_with_black_thorns_and_ancient-0-Photoroom.png?ex=69a6ef9c&is=69a59e1c&hm=c012eb893eee55ba4ef0b879f6c0488ce6be2293d7da2a9a4cfe1985e0ed4d10&" />
   <style>
     body { 
-      background: #000 url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80') no-repeat center center fixed; 
+      background: #000 url('https://cdn.discordapp.com/attachments/1428432707284762654/1478113852846768268/ChatGPT_Image_2_de_mar._de_2026_16_36_33.png?ex=69a7384c&is=69a5e6cc&hm=813c7ace4f7a14356b8a677791c00b5e1bf889bf8f9ce279301dd9ad9d7e11f4&') no-repeat center center fixed; 
       background-size: cover; 
       color: #f0d0d0; 
       font-family: system-ui, sans-serif; 
@@ -21,6 +21,18 @@
     .comment-card { transition: all 0.3s; }
     .comment-card:hover { transform: translateY(-4px); box-shadow: 0 0 20px rgba(139,0,0,0.5); }
     .reply { margin-left: 2rem; border-left: 2px solid rgba(139,0,0,0.5); padding-left: 1rem; }
+    .delete-btn { 
+      position: absolute; 
+      top: 12px; 
+      right: 12px; 
+      background: rgba(139,0,0,0.8); 
+      color: white; 
+      padding: 4px 10px; 
+      border-radius: 6px; 
+      font-size: 0.8rem; 
+      cursor: pointer; 
+    }
+    .delete-btn:hover { background: #8b0000; }
     @media (max-width: 640px) {
       .reply { margin-left: 1rem; }
     }
@@ -36,11 +48,11 @@
     <!-- Form de Nova Postagem -->
     <div class="glass p-4 sm:p-6 mb-8 sm:mb-12">
       <h2 class="text-xl sm:text-2xl neon mb-4">Criar Postagem</h2>
-      <input id="post-title" type="text" placeholder="Título..." class="w-full p-3 mb-3 bg-black/60 border border-red-800 rounded-lg focus:outline-none focus:border-red-600">
-      <textarea id="post-content" placeholder="Sua mensagem..." class="w-full p-3 h-28 sm:h-32 mb-3 bg-black/60 border border-red-800 rounded-lg focus:outline-none focus:border-red-600"></textarea>
+      <input id="post-title" type="text" placeholder="Título da postagem..." class="w-full p-3 mb-3 bg-black/60 border border-red-800 rounded-lg focus:outline-none focus:border-red-600">
+      <textarea id="post-content" placeholder="Escreva sua mensagem..." class="w-full p-3 h-28 sm:h-32 mb-3 bg-black/60 border border-red-800 rounded-lg focus:outline-none focus:border-red-600"></textarea>
       <label class="flex items-center mb-4 text-red-300 text-sm sm:text-base">
         <input type="checkbox" id="post-anonymous" class="mr-2">
-        Postar como anônimo
+        Postar como anônimo (sem nome nem avatar)
       </label>
       <button onclick="postComment()" class="bg-red-800 hover:bg-red-700 px-6 py-3 rounded-xl w-full neon text-base sm:text-lg font-bold">Publicar</button>
     </div>
@@ -50,7 +62,7 @@
   </div>
 
   <script>
-    // Particles
+    // Particles de fundo
     const canvas = document.getElementById('particles');
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
@@ -62,54 +74,64 @@
     window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight;init();});
     init(); animate();
 
-    // Função para gerar ID único
-    function generateId() {
-      return Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+    // ID de sessão único por navegador (simula "usuário logado")
+    let sessionId = localStorage.getItem('veu_session_id');
+    if (!sessionId) {
+      sessionId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem('veu_session_id', sessionId);
     }
 
-    // Carregar comentários do localStorage
+    // Carregar comentários e respostas do localStorage
     function loadComments() {
       const list = document.getElementById('comments-list');
       list.innerHTML = '';
-      const stored = localStorage.getItem('veu_forum_comments');
-      if (!stored) return;
 
-      const comments = JSON.parse(stored);
-      comments.forEach(comment => {
+      const storedComments = JSON.parse(localStorage.getItem('veu_forum_comments') || '[]');
+      const storedReplies = JSON.parse(localStorage.getItem('veu_forum_replies') || '[]');
+
+      storedComments.sort((a, b) => b.date - a.date).forEach(comment => {
         const div = document.createElement('div');
         div.className = 'glass p-5 sm:p-6 rounded-xl comment-card relative';
-        const author = comment.anonymous ? 'Anônimo' : 'Usuário';
+
+        let authorHtml = '<div class="w-12 h-12 bg-red-900 rounded-full mr-4 flex items-center justify-center text-xl font-bold">?</div>';
+        let authorName = 'Anônimo';
+
+        if (!comment.anonymous) {
+          // Aqui você pode pegar o avatar real do usuário logado (se tiver salvo no localStorage)
+          // Por enquanto usamos um placeholder baseado no sessionId
+          authorName = 'Usuário ' + sessionId.slice(-6);
+          authorHtml = `<div class="w-12 h-12 bg-gradient-to-br from-red-800 to-purple-900 rounded-full mr-4 flex items-center justify-center text-xl font-bold">${authorName[0]}</div>`;
+        }
+
         div.innerHTML = `
           <div class="flex items-start gap-4">
-            <div class="w-12 h-12 bg-red-900 rounded-full flex items-center justify-center text-xl font-bold">${author[0]}</div>
+            ${authorHtml}
             <div class="flex-1">
               <h3 class="text-xl neon mb-1">${comment.title}</h3>
-              <p class="text-sm text-red-300 mb-3">Por ${author} • ${new Date(comment.date).toLocaleString()}</p>
+              <p class="text-sm text-red-300 mb-3">Por ${authorName} • ${new Date(comment.date).toLocaleString('pt-BR')}</p>
               <p class="mb-4">${comment.content}</p>
               <div class="space-y-4" id="replies-${comment.id}"></div>
-              <textarea id="reply-${comment.id}" placeholder="Responder..." class="w-full p-3 mt-3 bg-black/60 border border-red-800 rounded-lg"></textarea>
+              <textarea id="reply-${comment.id}" placeholder="Responder..." class="w-full p-3 mt-3 bg-black/60 border border-red-800 rounded-lg focus:outline-none focus:border-red-600"></textarea>
               <button onclick="postReply('${comment.id}')" class="bg-red-800 hover:bg-red-700 px-6 py-2 rounded-xl mt-2 text-sm">Responder</button>
             </div>
           </div>
         `;
 
-        // Botão de apagar (só se for dono - aqui usamos um ID de sessão simples)
-        const sessionId = localStorage.getItem('veu_session_id') || generateId();
-        localStorage.setItem('veu_session_id', sessionId);
+        // Botão apagar só aparece se for o dono
         if (comment.sessionId === sessionId) {
-          const del = document.createElement('button');
-          del.className = 'absolute top-4 right-4 bg-red-950 hover:bg-red-900 px-3 py-1 rounded-lg text-xs';
-          del.textContent = 'Apagar';
-          del.onclick = () => deleteComment(comment.id);
-          div.appendChild(del);
+          const delBtn = document.createElement('button');
+          delBtn.className = 'delete-btn';
+          delBtn.textContent = 'Apagar';
+          delBtn.onclick = () => deleteComment(comment.id);
+          div.appendChild(delBtn);
         }
 
-        list.prepend(div);
-        loadReplies(comment.id);
+        list.appendChild(div);
+        loadReplies(comment.id, storedReplies);
       });
     }
 
-    // Postar comentário
+    // Postar comentário novo
     function postComment() {
       const title = document.getElementById('post-title').value.trim();
       const content = document.getElementById('post-content').value.trim();
@@ -120,11 +142,8 @@
         return;
       }
 
-      const sessionId = localStorage.getItem('veu_session_id') || generateId();
-      localStorage.setItem('veu_session_id', sessionId);
-
       const newComment = {
-        id: generateId(),
+        id: Date.now() + '-' + Math.random().toString(36).slice(2, 9),
         title,
         content,
         anonymous,
@@ -133,7 +152,7 @@
       };
 
       let stored = JSON.parse(localStorage.getItem('veu_forum_comments') || '[]');
-      stored.unshift(newComment);
+      stored.push(newComment);
       localStorage.setItem('veu_forum_comments', JSON.stringify(stored));
 
       document.getElementById('post-title').value = '';
@@ -152,61 +171,67 @@
         return;
       }
 
-      const sessionId = localStorage.getItem('veu_session_id') || generateId();
-      localStorage.setItem('veu_session_id', sessionId);
-
       const newReply = {
-        id: generateId(),
+        id: Date.now() + '-' + Math.random().toString(36).slice(2, 9),
         comment_id: commentId,
         content,
         sessionId,
         date: Date.now()
       };
 
-      let storedReplies = JSON.parse(localStorage.getItem('veu_forum_replies') || '[]');
-      storedReplies.push(newReply);
-      localStorage.setItem('veu_forum_replies', JSON.stringify(storedReplies));
+      let stored = JSON.parse(localStorage.getItem('veu_forum_replies') || '[]');
+      stored.push(newReply);
+      localStorage.setItem('veu_forum_replies', JSON.stringify(stored));
 
       textarea.value = '';
-      loadReplies(commentId);
+      loadComments(); // Recarrega tudo para atualizar as replies
     }
 
-    // Carregar respostas de um comentário
-    function loadReplies(commentId) {
+    // Carregar respostas de um comentário específico
+    function loadReplies(commentId, allReplies = null) {
       const container = document.getElementById(`replies-${commentId}`);
+      if (!container) return;
+
       container.innerHTML = '';
 
-      const stored = JSON.parse(localStorage.getItem('veu_forum_replies') || '[]');
+      const stored = allReplies || JSON.parse(localStorage.getItem('veu_forum_replies') || '[]');
       const commentReplies = stored.filter(r => r.comment_id === commentId);
 
-      commentReplies.forEach(reply => {
+      commentReplies.sort((a, b) => a.date - b.date).forEach(reply => {
         const div = document.createElement('div');
-        div.className = 'glass p-4 rounded-lg reply mt-3';
+        div.className = 'glass p-4 rounded-lg reply mt-3 relative';
+
         div.innerHTML = `
-          <p class="text-sm text-red-300 mb-1">Resposta • ${new Date(reply.date).toLocaleString()}</p>
+          <p class="text-sm text-red-300 mb-1">Resposta • ${new Date(reply.date).toLocaleString('pt-BR')}</p>
           <p>${reply.content}</p>
         `;
 
-        const sessionId = localStorage.getItem('veu_session_id');
         if (reply.sessionId === sessionId) {
-          const del = document.createElement('button');
-          del.className = 'text-xs bg-red-950 hover:bg-red-900 px-2 py-1 rounded mt-2';
-          del.textContent = 'Apagar';
-          del.onclick = () => deleteReply(reply.id, commentId);
-          div.appendChild(del);
+          const delBtn = document.createElement('button');
+          delBtn.className = 'delete-btn text-xs';
+          delBtn.textContent = 'Apagar';
+          delBtn.onclick = () => {
+            if (confirm('Apagar esta resposta?')) {
+              let stored = JSON.parse(localStorage.getItem('veu_forum_replies') || '[]');
+              stored = stored.filter(r => r.id !== reply.id);
+              localStorage.setItem('veu_forum_replies', JSON.stringify(stored));
+              loadComments();
+            }
+          };
+          div.appendChild(delBtn);
         }
 
         container.appendChild(div);
       });
     }
 
-    // Apagar comentário
+    // Apagar comentário (e suas respostas)
     function deleteComment(id) {
       if (!confirm('Apagar este comentário e todas as respostas?')) return;
 
-      let stored = JSON.parse(localStorage.getItem('veu_forum_comments') || '[]');
-      stored = stored.filter(c => c.id !== id);
-      localStorage.setItem('veu_forum_comments', JSON.stringify(stored));
+      let storedComments = JSON.parse(localStorage.getItem('veu_forum_comments') || '[]');
+      storedComments = storedComments.filter(c => c.id !== id);
+      localStorage.setItem('veu_forum_comments', JSON.stringify(storedComments));
 
       let storedReplies = JSON.parse(localStorage.getItem('veu_forum_replies') || '[]');
       storedReplies = storedReplies.filter(r => r.comment_id !== id);
@@ -215,18 +240,7 @@
       loadComments();
     }
 
-    // Apagar resposta
-    function deleteReply(id, commentId) {
-      if (!confirm('Apagar esta resposta?')) return;
-
-      let stored = JSON.parse(localStorage.getItem('veu_forum_replies') || '[]');
-      stored = stored.filter(r => r.id !== id);
-      localStorage.setItem('veu_forum_replies', JSON.stringify(stored));
-
-      loadReplies(commentId);
-    }
-
-    // Carregar ao abrir a página
+    // Inicializa ao carregar a página
     window.onload = loadComments;
   </script>
 </body>
