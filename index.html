@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bem-vindo ao Véu</title>
+  
+  <!-- Ícone (favicon) do Véu - já está funcionando -->
+  <link rel="icon" type="image/png" href="https://cdn.discordapp.com/attachments/1428432707284762654/1477310985504034999/ideogram-v3.0_circular_gothic_arcane_logo_badge_for_discord_bot_Veu_elegant_dark_red_wine_cri-0-Photoroom.png?ex=69a6ef92&is=69a59e12&hm=ee64bba757dc3d419605efd5957e269436a1f09191510bb6f05e31bb9f8b5b1c&" />
+  <!-- Versões extras para melhor compatibilidade (opcional, mas recomendado) -->
+  <link rel="apple-touch-icon" href="https://cdn.discordapp.com/attachments/1428432707284762654/1477310985504034999/ideogram-v3.0_circular_gothic_arcane_logo_badge_for_discord_bot_Veu_elegant_dark_red_wine_cri-0-Photoroom.png?ex=69a6ef92&is=69a59e12&hm=ee64bba757dc3d419605efd5957e269436a1f09191510bb6f05e31bb9f8b5b1c&" />
+  <link rel="shortcut icon" href="https://cdn.discordapp.com/attachments/1428432707284762654/1477310985504034999/ideogram-v3.0_circular_gothic_arcane_logo_badge_for_discord_bot_Veu_elegant_dark_red_wine_cri-0-Photoroom.png" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background: #000000; color: #f0d0d0; font-family: system-ui, sans-serif; margin: 0; overflow: hidden; }
+    .neon { text-shadow: 0 0 30px #8b0000, 0 0 60px #4a0000; }
+    canvas#particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.68; }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center relative">
+
+<canvas id="particles"></canvas>
+
+<div class="text-center relative z-10">
+  <div class="mb-10">
+    <img src="https://cdn.discordapp.com/attachments/1428432707284762654/1477496602493976636/ChatGPT_Image_27_de_fev._de_2026_17_18_30_2-Photoroom.png?ex=69a6f3b0&is=69a5a230&hm=2bdd38ea43325442c797ca53f33fdb48ba29b54687912b9170c25c829761a15e&" 
+         class="w-40 h-40 mx-auto rounded-full border-4 border-red-800 shadow-2xl" alt="Véu">
+  </div>
+
+  <h1 class="text-6xl font-bold neon mb-4">Bem-vindo ao</h1>
+  <h2 class="text-7xl font-bold text-red-600 mb-12">Véu</h2>
+  
+  <p class="text-xl text-red-300 mb-16 max-w-md mx-auto">
+    Faça login com Discord para acessar o dashboard e convidar o bot.
+  </p>
+  
+  <a href="https://discord.com/oauth2/authorize?client_id=1466550471920713933&redirect_uri=https%3A%2F%2Fveu-entre-mundos.netlify.app%2Fcallback.html&response_type=code&scope=identify%20guilds" 
+     class="block bg-red-700 hover:bg-red-800 w-96 mx-auto py-6 rounded-2xl text-2xl font-bold transition shadow-xl">
+     ENTRAR COM DISCORD
+  </a>
+</div>
+
+<script>
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+let particles = [];
+class Particle { constructor() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.size = Math.random() * 2.4 + 0.6; this.speedX = Math.random() * 0.6 - 0.3; this.speedY = Math.random() * 0.6 - 0.3; } update() { this.x += this.speedX; this.y += this.speedY; if (this.x < 0 || this.x > canvas.width) this.speedX *= -1; if (this.y < 0 || this.y > canvas.height) this.speedY *= -1; } draw() { ctx.fillStyle = 'rgba(200, 25, 25, 0.8)'; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); } }
+function init() { particles = []; for (let i = 0; i < 150; i++) particles.push(new Particle()); }
+function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animate); }
+window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; init(); });
+init(); animate();
+</script>
+</body>
+</html>

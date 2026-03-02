@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Loja • Bot Véu</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="https://cdn.discordapp.com/attachments/1428432707284762654/1477310985504034999/ideogram-v3.0_circular_gothic_arcane_logo_badge_for_discord_bot_Veu_elegant_dark_red_wine_cri-0-Photoroom.png?ex=69a6ef92&is=69a59e12&hm=ee64bba757dc3d419605efd5957e269436a1f09191510bb6f05e31bb9f8b5b1c&" />
+  <style>
+    body { background: #000000; color: #f0d0d0; font-family: system-ui, sans-serif; overflow-x: hidden; }
+    .neon { text-shadow: 0 0 30px #8b0000, 0 0 70px #4a0000; }
+    .glass { background: rgba(15,0,3,0.92); backdrop-filter: blur(18px); border: 3px solid rgba(139,0,0,0.75); border-radius: 1.75rem; position: relative; box-shadow: 0 0 40px rgba(139,0,0,0.4); }
+    .glass::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 20%, rgba(180,0,0,0.25) 0%, transparent 70%); animation: bloodglow 7s infinite alternate; }
+    @keyframes bloodglow { from { opacity: 0.35; } to { opacity: 0.85; } }
+    .blood-drip { position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); width: 68%; height: 18px; background: linear-gradient(to right, transparent, #8b0000, #8b0000, transparent); border-radius: 50% 50% 0 0; filter: blur(3px); animation: drip 4s infinite linear; pointer-events: none; }
+    @keyframes drip { 0% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(6px); } 100% { transform: translateX(-50%) translateY(0); } }
+    canvas#particles { 
+      position: fixed; 
+      top: 0; left: 0; 
+      width: 100%; height: 100%; 
+      z-index: -2 !important; 
+      opacity: 0.65; 
+      pointer-events: none !important; 
+    }
+    .btn-premium {
+      cursor: pointer !important;
+      pointer-events: auto !important;
+      position: relative;
+      z-index: 10;
+    }
+    .benefits { font-size: 0.95rem; line-height: 1.7; }
+  </style>
+</head>
+<body class="min-h-screen relative">
+
+<canvas id="particles"></canvas>
+
+<div class="max-w-7xl mx-auto px-6 py-10 relative z-10">
+  <a href="home.html" class="text-red-400 hover:text-red-300 mb-8 inline-block text-lg">← Voltar</a>
+  <h1 class="text-5xl font-bold neon mb-12 text-center">Loja Premium</h1>
+  
+  <div class="grid md:grid-cols-2 gap-12 relative z-10">
+
+    <!-- INICIANTE -->
+    <div class="glass p-10 rounded-3xl text-center relative z-10">
+      <div class="blood-drip"></div>
+      <h3 class="text-4xl font-bold text-red-300 mb-4">Iniciante</h3>
+      <p class="text-sm text-red-200 mb-6">Perfeito para começar sua jornada</p>
+
+      <div class="grid grid-cols-2 gap-6">
+        <div class="relative z-10">
+          <p class="text-2xl font-bold text-white">R$9,90</p>
+          <p class="text-xs text-red-300">por mês</p>
+          <button 
+            class="btn-premium mt-4 w-full bg-red-700 hover:bg-red-800 py-4 rounded-xl font-bold transition"
+            onclick="window.location.href='https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=8d568b8260114f1f8ce603653be085fa'">
+            Assinar Mensal
+          </button>
+        </div>
+        <div class="relative z-10">
+          <div class="absolute -top-3 right-2 bg-green-600 text-white text-[10px] font-bold px-3 py-0.5 rounded">20% OFF</div>
+          <p class="text-2xl font-bold text-white line-through opacity-50">R$118,80</p>
+          <p class="text-3xl font-black text-white">R$95,00</p>
+          <p class="text-xs text-red-300">por ano</p>
+          <button 
+            class="btn-premium mt-4 w-full bg-gradient-to-r from-purple-600 to-red-700 hover:from-purple-700 hover:to-red-800 py-4 rounded-xl font-bold transition"
+            onclick="window.location.href='https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=988f3cf017914118a159aacf555b21dd'">
+            Assinar Anual
+          </button>
+        </div>
+      </div>
+
+      <div class="benefits mt-10 text-left text-red-200">
+        <p class="font-bold text-red-400 mb-3">✓ O que você ganha:</p>
+        <ul class="space-y-2 text-sm">
+          <li>✅ Economia completa (fragmentos, daily, weekly)</li>
+          <li>✅ Sistema Social (amizades, reputação)</li>
+          <li>✅ Loja de Cores</li>
+          <li>✅ Presentes</li>
+          <li>✅ Ranking Global</li>
+          <li>✅ AutoRole básico</li>
+          <li>✅ Eventos & Drops</li>
+          <li>✅ Sistema Anônimo básico</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- LENDÁRIO (MAIS POPULAR) -->
+    <div class="relative scale-105 z-10">
+      <div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-gradient-to-r from-red-600 to-purple-600 px-10 py-2 rounded-full text-lg font-bold shadow-md z-20 pointer-events-none">MAIS POPULAR</div>
+      <div class="glass p-10 rounded-3xl text-center relative border-4 border-red-600 shadow-2xl premium z-10">
+        <div class="blood-drip"></div>
+        <h3 class="text-4xl font-bold text-red-400 mb-4">Lendário</h3>
+        <p class="text-sm text-red-200 mb-6">Poder total da Guardiã</p>
+
+        <div class="grid grid-cols-2 gap-6">
+          <div class="relative z-10">
+            <p class="text-2xl font-bold text-white">R$24,90</p>
+            <p class="text-xs text-red-300">por mês</p>
+            <button 
+              class="btn-premium mt-4 w-full bg-red-700 hover:bg-red-800 py-4 rounded-xl font-bold transition"
+              onclick="window.location.href='https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=e493c7b8ab984d92a4c0af685e3824c8'">
+              Assinar Mensal
+            </button>
+          </div>
+          <div class="relative z-10">
+            <div class="absolute -top-3 right-2 bg-green-600 text-white text-[10px] font-bold px-3 py-0.5 rounded pointer-events-none">20% OFF</div>
+            <p class="text-2xl font-bold text-white line-through opacity-50">R$298,80</p>
+            <p class="text-3xl font-black text-white">R$239,00</p>
+            <p class="text-xs text-red-300">por ano</p>
+            <button 
+              class="btn-premium mt-4 w-full bg-gradient-to-r from-red-700 to-purple-600 py-4 rounded-xl font-bold transition"
+              onclick="window.location.href='https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=6e70765f4580486ab68c561b181815e3'">
+              Assinar Anual
+            </button>
+          </div>
+        </div>
+
+        <div class="benefits mt-10 text-left text-red-200">
+          <p class="font-bold text-red-400 mb-3">✓ Tudo do Iniciante +</p>
+          <ul class="space-y-2 text-sm">
+            <li>✅ VIP completo com bônus (20-25%)</li>
+            <li>✅ Loja de Fundos e Molduras</li>
+            <li>✅ Loja de Cores completa</li>
+            <li>✅ AutoRole avançado</li>
+            <li>✅ Eventos & Drops ilimitados</li>
+            <li>✅ Sistema Anônimo com logs</li>
+            <li>✅ Missões avançadas + Níveis automáticos</li>
+            <li>✅ Anúncios automáticos</li>
+            <li>✅ Suporte prioritário</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+let particles = [];
+class Particle { constructor() { this.x = Math.random()*canvas.width; this.y = Math.random()*canvas.height; this.size = Math.random()*2.6+0.6; this.speedX = Math.random()*0.65-0.32; this.speedY = Math.random()*0.65-0.32; } update() { this.x += this.speedX; this.y += this.speedY; if(this.x<0||this.x>canvas.width)this.speedX*=-1; if(this.y<0||this.y>canvas.height)this.speedY*=-1; } draw() { ctx.fillStyle='rgba(210,25,25,0.82)'; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }}
+function init(){particles=[];for(let i=0;i<165;i++)particles.push(new Particle());}
+function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(p=>{p.update();p.draw();});requestAnimationFrame(animate);}
+window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight;init();});
+init(); animate();
+</script>
+</body>
+</html>

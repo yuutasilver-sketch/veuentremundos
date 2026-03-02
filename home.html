@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bot Véu • Entre Mundos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="https://cdn.discordapp.com/attachments/1428432707284762654/1477310985504034999/ideogram-v3.0_circular_gothic_arcane_logo_badge_for_discord_bot_Veu_elegant_dark_red_wine_cri-0-Photoroom.png?ex=69a6ef92&is=69a59e12&hm=ee64bba757dc3d419605efd5957e269436a1f09191510bb6f05e31bb9f8b5b1c&" />
+  <style>
+    body { background: #000000; color: #f0d0d0; font-family: system-ui, sans-serif; margin: 0; overflow-x: hidden; }
+    .neon { text-shadow: 0 0 30px #ff0000, 0 0 60px #8b0000, 0 0 90px #4a0000; animation: pulse 4s infinite alternate; }
+    @keyframes pulse { from { text-shadow: 0 0 20px #ff0000; } to { text-shadow: 0 0 70px #ff0000, 0 0 110px #8b0000; } }
+    .hero-bg { background-size: cover; background-position: center; background-attachment: fixed; min-height: 100vh; display: flex; align-items: center; position: relative; padding-top: 90px; }
+    .hero-overlay { background: linear-gradient(rgba(0,0,0,0.85), rgba(20,0,5,0.95)); position: absolute; inset: 0; }
+    canvas#particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.68; pointer-events: none; }
+    .glass { background: rgba(15,0,3,0.92); backdrop-filter: blur(18px); border: 2px solid rgba(139,0,0,0.6); border-radius: 1.5rem; }
+    .card-hover:hover { transform: translateY(-8px); transition: all 0.3s; }
+    section { scroll-margin-top: 80px; }
+  </style>
+</head>
+<body class="min-h-screen">
+
+<canvas id="particles"></canvas>
+
+<!-- NAVBAR -->
+<nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-xl border-b border-red-900/30">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <div class="flex items-center gap-3">
+      <img src="https://cdn.discordapp.com/attachments/1428432707284762654/1477496602493976636/ChatGPT_Image_27_de_fev._de_2026_17_18_30_2-Photoroom.png?ex=69a6f3b0&is=69a5a230&hm=2bdd38ea43325442c797ca53f33fdb48ba29b54687912b9170c25c829761a15e&" class="w-10 h-10 rounded-full border border-red-800" alt="Véu">
+      <span class="text-2xl font-bold neon">Véu</span>
+    </div>
+    <div class="hidden md:flex gap-8 text-sm font-medium">
+      <a href="#comandos" class="hover:text-red-300 transition">Comandos</a>
+      <a href="#tutorial" class="hover:text-red-300 transition">Tutorial</a>
+      <a href="#comunidade" class="hover:text-red-300 transition">Comunidade</a>
+      <a href="#sobre" class="hover:text-red-300 transition">Sobre</a>
+      <a href="#premium" class="hover:text-red-300 transition">Premium</a>
+      <a href="loja.html" class="bg-red-800 hover:bg-red-900 px-6 py-2 rounded-full font-bold transition">Loja</a>
+      <a href="forum.html" class="hover:text-red-300 transition">Fórum</a>
+      <a href="dashboard.html" class="bg-red-900 hover:bg-red-800 px-6 py-2 rounded-full font-bold transition">Dashboard</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero-bg relative" style="background-image: url('https://cdn.discordapp.com/attachments/1428432707284762654/1478113852846768268/ChatGPT_Image_2_de_mar._de_2026_16_36_33.png?ex=69a7384c&is=69a5e6cc&hm=813c7ace4f7a14356b8a677791c00b5e1bf889bf8f9ce279301dd9ad9d7e11f4&');">
+  <div class="hero-overlay"></div>
+  <div class="relative z-10 max-w-7xl mx-auto px-6 text-center pt-20">
+    <h1 class="text-7xl md:text-9xl font-black neon mb-4 tracking-tighter">BOT VÉU</h1>
+    <p class="text-4xl md:text-5xl text-red-300 mb-6 tracking-widest">A GUARDIÃ ENTRE MUNDOS</p>
+    <p class="max-w-3xl mx-auto text-xl text-red-200 mb-12 leading-relaxed">
+      Economia global • Laços eternos • Confissões nas sombras • Níveis que ecoam • Eventos que rasgam o véu<br>
+      Eu observo tudo. Eu registro tudo. Eu recompenso quem merece.
+    </p>
+
+    <div class="flex flex-wrap justify-center gap-6">
+      <a href="https://discord.com/oauth2/authorize?client_id=1466550471920713933&scope=bot&permissions=8" target="_blank"
+         class="bg-gradient-to-r from-red-700 to-black hover:from-red-800 hover:to-red-900 px-12 py-6 rounded-full text-2xl font-bold transition shadow-2xl">
+        Adicionar ao Servidor
+      </a>
+      <a href="#comunidade" class="border-2 border-red-600 hover:bg-red-900/40 px-12 py-6 rounded-full text-2xl font-bold transition">
+        Conhecer a Comunidade
+      </a>
+      <a href="dashboard.html" class="bg-red-900 hover:bg-red-800 px-12 py-6 rounded-full text-2xl font-bold transition shadow-2xl flex items-center gap-3">
+        Abrir Dashboard da Guardiã <span class="text-3xl">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- COMANDOS -->
+<section id="comandos" class="py-20 bg-black/80 relative z-10">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-5xl font-bold neon text-center mb-16">Comandos da Véu</h2>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="glass p-8 rounded-3xl card-hover">
+        <h3 class="text-red-400 text-2xl mb-4 font-bold">Gratuitos</h3>
+        <ul class="space-y-4 text-sm">
+          <li><strong>/perfil</strong> — Veja seu nível, fragmentos e itens</li>
+          <li><strong>/daily</strong> — Recompensa diária + streak</li>
+          <li><strong>/missões</strong> — Missões diárias e semanais</li>
+          <li><strong>/rank</strong> — Ranking global</li>
+          <li><strong>/presentes</strong> — Envie presentes para amigos</li>
+          <li><strong>/anon_confissao</strong> — Confissões anônimas</li>
+        </ul>
+      </div>
+      <div class="glass p-8 rounded-3xl card-hover border-2 border-red-600">
+        <h3 class="text-red-400 text-2xl mb-4 font-bold">Premium (Lendário)</h3>
+        <ul class="space-y-4 text-sm">
+          <li>Loja de Fundos & Molduras</li>
+          <li>Bônus VIP +20-25%</li>
+          <li>Anúncios automáticos</li>
+          <li>Eventos & Drops ilimitados</li>
+        </ul>
+      </div>
+      <div class="glass p-8 rounded-3xl card-hover">
+        <h3 class="text-red-400 text-2xl mb-4 font-bold">Todos</h3>
+        <ul class="space-y-4 text-sm">
+          <li>/economia</li>
+          <li>/level</li>
+          <li>/social</li>
+          <li>/ajuda</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMUNIDADE -->
+<section id="comunidade" class="py-20 bg-black/90 relative z-10 border-t border-red-900/30">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-5xl font-bold neon text-center mb-16">Comunidade Véu Entre Mundos</h2>
+
+    <div class="glass p-12 rounded-3xl text-lg leading-relaxed space-y-8 max-w-4xl mx-auto">
+      <p><strong>Véu Entre Mundos — Onde Histórias Ganham Vida</strong></p>
+      <p>Se você já sentiu que o mundo comum é pequeno demais para sua imaginação…<br>
+      Se já quis fazer parte de algo maior, mais sombrio, mais intenso…<br>
+      Então o Véu Entre Mundos pode ser exatamente o lugar que você estava procurando.</p>
+
+      <h3 class="text-2xl font-bold text-red-400 mt-10">O que você encontra aqui?</h3>
+      <ul class="list-disc list-inside space-y-3 text-red-200">
+        <li>Espaço para conversar livremente no Chat-Geral</li>
+        <li>Área dedicada a Artes</li>
+        <li>Canal para Memes e Mídias</li>
+        <li>Setor social com Livros, Poemas, Filosofias e Blogs</li>
+        <li>Música do Dia para compartilhar vibes</li>
+        <li>RPG Integrado dentro da comunidade</li>
+        <li>Loja da Véu com sistema próprio</li>
+        <li>Sorteios e Eventos especiais</li>
+        <li>Parcerias</li>
+        <li>Sistema organizado de Staff e Logs</li>
+      </ul>
+
+      <p class="font-medium text-red-300 text-xl mt-12">O Véu está em constante evolução.<br>Você não entra apenas em um servidor.<br>Você atravessa um portal.</p>
+    </div>
+
+    <div class="flex justify-center mt-16">
+      <a href="https://discord.gg/MHEqmwnvDN" target="_blank"
+         class="bg-red-700 hover:bg-red-800 px-16 py-6 rounded-2xl text-2xl font-bold transition shadow-xl flex items-center gap-3">
+        Entrar na Comunidade <span class="text-3xl">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- SOBRE -->
+<section id="sobre" class="py-20 bg-black/90 relative z-10 border-t border-red-900/30">
+  <div class="max-w-5xl mx-auto px-6 text-center">
+    <h2 class="text-5xl font-bold neon mb-8">Quem sou eu?</h2>
+    <p class="text-xl text-red-200 max-w-4xl mx-auto leading-relaxed mb-12">
+      Eu sou Véu, a guardiã que vigia os portais entre mundos. Organizo o caos, registro laços eternos, distribuo fragmentos aos dignos e observo cada sussurro nas sombras.
+    </p>
+  </div>
+</section>
+
+<!-- PREMIUM -->
+<section id="premium" class="py-20 bg-black/80 relative z-10 border-t border-red-900/30">
+  <div class="max-w-5xl mx-auto px-6 text-center">
+    <h2 class="text-5xl font-bold neon mb-8">Desbloqueie o Poder Total</h2>
+    <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+      <a href="loja.html" class="glass p-10 rounded-3xl hover:border-red-600 transition">Iniciante - R$9,90/mês</a>
+      <a href="loja.html" class="glass p-10 rounded-3xl border-2 border-red-600">Lendário - R$24,90/mês (Mais Popular)</a>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="py-16 bg-black/80 border-t border-red-900/30">
+  <div class="max-w-4xl mx-auto text-center px-6">
+    <p class="text-3xl font-light text-red-200 mb-8">Pronto para atravessar o Véu?</p>
+    <div class="flex flex-wrap justify-center gap-6">
+      <a href="https://discord.com/oauth2/authorize?client_id=1466550471920713933&scope=bot&permissions=8" target="_blank" 
+         class="bg-red-700 hover:bg-red-800 px-14 py-6 rounded-2xl text-2xl font-bold transition">
+        Adicionar Bot
+      </a>
+      <a href="https://discord.gg/MHEqmwnvDN" target="_blank" 
+         class="border-2 border-red-600 hover:bg-red-900/30 px-14 py-6 rounded-2xl text-2xl font-bold transition">
+        Entrar na Comunidade
+      </a>
+      <a href="dashboard.html" 
+         class="bg-red-900 hover:bg-red-800 px-14 py-6 rounded-2xl text-2xl font-bold transition">
+        Abrir Dashboard
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="text-center py-12 text-red-400 text-sm bg-black/60 border-t border-red-900/30">
+  © 2026 Bot Véu • A Guardiã que tudo vê 🩸
+</footer>
+
+<script>
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+let particles = [];
+class Particle { constructor() { this.x = Math.random()*canvas.width; this.y = Math.random()*canvas.height; this.size = Math.random()*2.6+0.6; this.speedX = Math.random()*0.7-0.35; this.speedY = Math.random()*0.7-0.35; } update() { this.x += this.speedX; this.y += this.speedY; if(this.x<0||this.x>canvas.width)this.speedX*=-1; if(this.y<0||this.y>canvas.height)this.speedY*=-1; } draw() { ctx.fillStyle='rgba(220,30,30,0.8)'; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }}
+function init(){particles=[];for(let i=0;i<170;i++)particles.push(new Particle());}
+function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(p=>{p.update();p.draw();});requestAnimationFrame(animate);}
+window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight;init();});
+init(); animate();
+</script>
+</body>
+</html>

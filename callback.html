@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login • Bot Véu</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white min-h-screen flex items-center justify-center">
+  <div class="text-center px-4">
+    <h1 class="text-5xl font-bold text-red-600 mb-8">Login em andamento...</h1>
+    <p class="text-xl mb-6">Você será redirecionado automaticamente.</p>
+    <div id="status" class="text-lg"></div>
+
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+
+      if (code) {
+        document.getElementById('status').innerHTML = 'Autenticando com o Véu...';
+
+        fetch('https://random-8jtr0timo8xt8.vertraweb.app/token?code=' + code)
+          .then(res => res.json())
+          .then(data => {
+            if (data.access_token) {
+              localStorage.setItem('access_token', data.access_token);
+              window.location.href = 'home.html';   // ← Agora vai para o Home primeiro
+            } else {
+              document.getElementById('status').innerHTML = 
+                '<div class="text-red-500 text-2xl mt-6">Erro no login: ' + 
+                (data.error_description || data.error || 'Resposta inválida') + '</div>';
+            }
+          })
+          .catch(err => {
+            document.getElementById('status').innerHTML = 
+              '<div class="text-red-500 text-2xl mt-6">Erro de conexão: ' + err.message + 
+              '<br><br>Verifique se o backend está online.</div>';
+          });
+      } else {
+        document.getElementById('status').innerHTML = 
+          '<div class="text-red-500 text-2xl mt-6">Código de autorização não encontrado.</div>';
+      }
+    </script>
+  </div>
+</body>
+</html>

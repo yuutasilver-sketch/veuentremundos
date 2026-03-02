@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fórum • Véu Entre Mundos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="https://cdn.discordapp.com/attachments/1428432707284762654/1477310985504034999/ideogram-v3.0_circular_gothic_arcane_logo_badge_for_discord_bot_Veu_elegant_dark_red_wine_cri-0-Photoroom.png?ex=69a6ef92&is=69a59e12&hm=ee64bba757dc3d419605efd5957e269436a1f09191510bb6f05e31bb9f8b5b1c&" />
+  <style>
+    body { background: #000000; color: #f0d0d0; font-family: system-ui, sans-serif; overflow-x: hidden; }
+    .neon { text-shadow: 0 0 30px #8b0000, 0 0 70px #4a0000; }
+    .glass { background: rgba(15,0,3,0.92); backdrop-filter: blur(18px); border: 3px solid rgba(139,0,0,0.75); border-radius: 1.75rem; }
+    canvas#particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; opacity: 0.65; pointer-events: none; }
+  </style>
+</head>
+<body class="min-h-screen relative">
+
+<canvas id="particles"></canvas>
+
+<div class="max-w-7xl mx-auto px-6 py-10 relative z-10">
+  <a href="home.html" class="text-red-400 hover:text-red-300 mb-8 inline-block text-lg">← Voltar</a>
+  
+  <h1 class="text-6xl font-black neon text-center mb-6">Fórum da Comunidade</h1>
+  <p class="text-red-300 text-center mb-12">Deixe sua sugestão, dúvida ou feedback</p>
+
+  <div class="glass p-8 rounded-3xl mb-12">
+    <h2 class="text-2xl font-bold mb-6">Criar Novo Tópico</h2>
+    <input id="post-title" type="text" placeholder="Título do tópico" class="w-full bg-black/50 border border-red-600 p-4 rounded-xl mb-4">
+    <textarea id="post-content" rows="5" placeholder="Escreva sua mensagem..." class="w-full bg-black/50 border border-red-600 p-4 rounded-xl mb-4"></textarea>
+    <button onclick="postComment()" class="bg-red-700 hover:bg-red-800 px-10 py-4 rounded-xl font-bold w-full md:w-auto">Publicar</button>
+  </div>
+
+  <h2 class="text-3xl font-bold mb-6">Discussões Recentes</h2>
+  <div id="comments-list" class="space-y-6"></div>
+</div>
+
+<script>
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+let particles = [];
+class Particle { constructor() { this.x = Math.random()*canvas.width; this.y = Math.random()*canvas.height; this.size = Math.random()*2.6+0.6; this.speedX = Math.random()*0.65-0.32; this.speedY = Math.random()*0.65-0.32; } update() { this.x += this.speedX; this.y += this.speedY; if(this.x<0||this.x>canvas.width)this.speedX*=-1; if(this.y<0||this.y>canvas.height)this.speedY*=-1; } draw() { ctx.fillStyle='rgba(210,25,25,0.82)'; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }}
+function init(){particles=[];for(let i=0;i<165;i++)particles.push(new Particle());}
+function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(p=>{p.update();p.draw();});requestAnimationFrame(animate);}
+window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight;init();});
+init(); animate();
+
+function loadComments() {
+  const list = document.getElementById('comments-list');
+  list.innerHTML = '';
+  const comments = JSON.parse(localStorage.getItem('forum_comments') || '[]');
+  comments.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'glass p-6 rounded-3xl';
+    div.innerHTML = `
+      <p class="font-bold text-red-400 text-xl">${c.title}</p>
+      <p class="text-red-200 mt-3">${c.content.replace(/\n/g, '<br>')}</p>
+      <p class="text-xs text-red-500 mt-4">Por Anônimo • ${new Date(c.date).toLocaleString('pt-BR')}</p>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function postComment() {
+  const title = document.getElementById('post-title').value.trim();
+  const content = document.getElementById('post-content').value.trim();
+  if (!title || !content) return alert("Preencha título e mensagem!");
+  
+  let comments = JSON.parse(localStorage.getItem('forum_comments') || '[]');
+  comments.unshift({ title, content, date: new Date().toISOString() });
+  localStorage.setItem('forum_comments', JSON.stringify(comments));
+  
+  document.getElementById('post-title').value = '';
+  document.getElementById('post-content').value = '';
+  loadComments();
+}
+
+window.onload = loadComments;
+</script>
+</body>
+</html>

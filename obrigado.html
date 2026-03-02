@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Obrigado! • Bot Véu</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background: #000000; color: #f0d0d0; font-family: system-ui, sans-serif; margin: 0; overflow: hidden; }
+    .neon { text-shadow: 0 0 30px #8b0000, 0 0 60px #4a0000; }
+    .glass { background: rgba(20,0,5,0.85); backdrop-filter: blur(16px); border: 2px solid rgba(139,0,0,0.6); border-radius: 1.5rem; }
+    .blood-border { position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 70%; height: 6px; background: linear-gradient(to right, transparent, #8b0000, #8b0000, transparent); border-radius: 50%; filter: blur(4px); animation: drip 4s infinite linear; }
+    @keyframes drip { 0% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(6px); } 100% { transform: translateX(-50%) translateY(0); } }
+    canvas#particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.65; pointer-events: none; }
+  </style>
+</head>
+<body class="min-h-screen relative flex items-center justify-center">
+
+<canvas id="particles"></canvas>
+
+<div class="text-center relative z-10 glass p-12 max-w-2xl mx-auto">
+  <div class="blood-border"></div>
+  
+  <img src="https://cdn.discordapp.com/attachments/1428432707284762654/1477310985504034999/ideogram-v3.0_circular_gothic_arcane_logo_badge_for_discord_bot_Veu_elegant_dark_red_wine_cri-0-Photoroom.png?ex=69a6ef92&is=69a59e12&hm=ee64bba757dc3d419605efd5957e269436a1f09191510bb6f05e31bb9f8b5b1c&" 
+       class="w-32 h-32 mx-auto rounded-full border-4 border-red-800 shadow-2xl mb-8" alt="Véu">
+
+  <h1 class="text-6xl font-bold neon mb-6">Obrigado!</h1>
+  <p class="text-2xl text-red-300 mb-8">Seu pagamento foi processado com sucesso.</p>
+  
+  <p class="text-xl text-red-200 mb-12">
+    Seu VIP já está sendo ativado no bot. Em poucos minutos você terá acesso total aos recursos premium.<br>
+    <span class="text-sm text-red-400">Se não aparecer em 5 minutos, verifique no /perfil ou entre em contato com o suporte.</span>
+  </p>
+
+  <div class="flex flex-col sm:flex-row gap-6 justify-center">
+    <a href="home.html" class="bg-red-700 hover:bg-red-800 px-12 py-5 rounded-2xl text-xl font-bold transition shadow-xl">
+      Voltar para Home
+    </a>
+    <a href="dashboard.html" class="border-2 border-red-600 hover:bg-red-900/40 px-12 py-5 rounded-2xl text-xl font-bold transition">
+      Ir para Dashboard
+    </a>
+  </div>
+
+  <p class="mt-12 text-sm text-red-400">
+    Véu Entre Mundos • Nada passa despercebido 🩸
+  </p>
+</div>
+
+<script>
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+let particles = [];
+class Particle { constructor() { this.x = Math.random()*canvas.width; this.y = Math.random()*canvas.height; this.size = Math.random()*2+0.5; this.speedX = Math.random()*0.5-0.25; this.speedY = Math.random()*0.5-0.25; } update() { this.x += this.speedX; this.y += this.speedY; if(this.x<0||this.x>canvas.width) this.speedX*=-1; if(this.y<0||this.y>canvas.height) this.speedY*=-1; } draw() { ctx.fillStyle = 'rgba(180,20,20,0.7)'; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }}
+function init(){particles=[];for(let i=0;i<130;i++)particles.push(new Particle());}
+function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(p=>{p.update();p.draw();});requestAnimationFrame(animate);}
+window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight;init();});
+init(); animate();
+</script>
+</body>
+</html>

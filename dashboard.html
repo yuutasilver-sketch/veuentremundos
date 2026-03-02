@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard • Bot Véu</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="https://cdn.discordapp.com/attachments/1428432707284762654/1477310985504034999/ideogram-v3.0_circular_gothic_arcane_logo_badge_for_discord_bot_Veu_elegant_dark_red_wine_cri-0-Photoroom.png?ex=69a6ef92&is=69a59e12&hm=ee64bba757dc3d419605efd5957e269436a1f09191510bb6f05e31bb9f8b5b1c&" />
+  <style>
+    body { background: #000000; color: #f0d0d0; font-family: system-ui, sans-serif; overflow-x: hidden; }
+    .neon { text-shadow: 0 0 25px #8b0000, 0 0 50px #4a0000; }
+    .glass { background: rgba(20,0,5,0.92); backdrop-filter: blur(18px); border: 2px solid rgba(139,0,0,0.7); border-radius: 1.5rem; }
+    canvas#particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.55; pointer-events: none; }
+    .premium { border-color: #facc15; box-shadow: 0 0 25px rgba(250,204,21,0.5); }
+    .sidebar-item.active { background: rgba(139,0,0,0.4); border-left: 4px solid #8b0000; }
+    input, textarea, select { background: rgba(0,0,0,0.6); border: 1px solid #8b0000; color: #f0d0d0; padding: 14px; border-radius: 12px; width: 100%; }
+    input:focus, textarea:focus, select:focus { outline: none; border-color: #c00; box-shadow: 0 0 12px #c00; }
+    .preview-img { max-width: 100%; border: 2px solid #8b0000; border-radius: 12px; margin-top: 8px; }
+    .section { display: none; }
+    .section.active { display: block; }
+  </style>
+</head>
+<body class="min-h-screen relative">
+
+<canvas id="particles"></canvas>
+
+<div class="max-w-7xl mx-auto px-6 py-8 relative z-10">
+
+  <!-- HEADER -->
+  <div class="flex flex-col md:flex-row items-center justify-between mb-10 bg-black/70 p-5 rounded-3xl border border-red-900 gap-4">
+    <div class="flex items-center gap-4">
+      <img id="user-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" class="w-14 h-14 rounded-full border-3 border-red-700 shadow-lg" alt="Avatar">
+      <div>
+        <p id="user-name" class="font-bold text-2xl neon">Carregando...</p>
+        <p class="text-red-400 text-sm">Logado com Discord</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-4 flex-wrap">
+      <div class="flex items-center gap-3">
+        <span class="text-sm text-red-300 whitespace-nowrap">Servidor:</span>
+        <select id="server-select" onchange="changeServer()" class="bg-black border border-red-700 text-white px-5 py-3 rounded-2xl focus:outline-none focus:border-red-500 min-w-[220px]"></select>
+      </div>
+      <button onclick="logout()" class="px-6 py-3 bg-red-900 hover:bg-red-800 rounded-2xl text-sm font-medium transition shadow-md">Sair</button>
+    </div>
+  </div>
+
+  <div class="flex justify-between items-center mb-10">
+    <div>
+      <h1 class="text-5xl md:text-6xl font-black neon mb-2">Dashboard da Guardiã</h1>
+      <p id="server-name" class="text-red-300 text-xl md:text-2xl">Selecione um servidor</p>
+    </div>
+  </div>
+
+  <div class="flex flex-col md:flex-row gap-8">
+    <!-- SIDEBAR -->
+    <div class="md:w-1/4 glass p-6 rounded-3xl">
+      <ul id="sidebar" class="space-y-3 text-lg"></ul>
+    </div>
+
+    <!-- CONTEÚDO PRINCIPAL - TODAS AS 17 SEÇÕES -->
+    <div class="md:w-3/4 space-y-8">
+
+      <!-- 1. GERAL -->
+      <div id="section-geral" class="section glass p-8 active">
+        <h2 class="text-3xl font-bold neon mb-6">Configurações Gerais</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div><label class="block text-red-300 mb-2">Prefixo do Bot</label><input id="geral-prefix" type="text" value="!" class="w-full p-4 rounded-xl"></div>
+          <div class="flex items-center gap-4 pt-6"><label class="text-red-300">Ativar Bot</label>
+            <label class="inline-flex cursor-pointer"><input id="geral-ativar" type="checkbox" checked class="sr-only peer"><div class="relative w-14 h-7 bg-gray-700 rounded-full peer peer-checked:bg-red-700 after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-7"></div></label>
+          </div>
+        </div>
+        <button onclick="saveSection('geral')" class="mt-8 w-full bg-red-800 hover:bg-red-700 py-4 rounded-2xl font-bold">SALVAR ALTERAÇÕES</button>
+      </div>
+
+      <!-- 2. BOAS-VINDAS -->
+      <div id="section-boasvindas" class="section glass p-8">
+        <h2 class="text-3xl font-bold neon mb-6">Boas-Vindas</h2>
+        <div class="space-y-6">
+          <div><label class="block text-red-300 mb-2">Canal</label><select id="boasvindas-canal" class="channel-select w-full p-4 rounded-xl"></select></div>
+          <div><label class="block text-red-300 mb-2">Mensagem</label><textarea id="boasvindas-mensagem" rows="4" class="w-full p-4 rounded-xl">Bem-vindo(a) {user} ao {server}! 🩸</textarea></div>
+          <div><label class="block text-red-300 mb-2">Imagem/Banner (URL)</label><input id="boasvindas-imagem" type="url" class="w-full p-4 rounded-xl"><div id="boasvindas-preview" class="mt-3"></div></div>
+        </div>
+        <button onclick="saveSection('boasvindas')" class="mt-8 w-full bg-red-800 hover:bg-red-700 py-4 rounded-2xl font-bold">SALVAR ALTERAÇÕES</button>
+      </div>
+
+      <!-- 3. TICKETS -->
+      <div id="section-tickets" class="section glass p-8">
+        <h2 class="text-3xl font-bold neon mb-6">Sistema de Tickets</h2>
+        <div class="space-y-6">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div><label class="block text-red-300 mb-2">Categoria</label><select id="tickets-categoria" class="category-select w-full p-4 rounded-xl"></select></div>
+            <div><label class="block text-red-300 mb-2">Canal de Logs</label><select id="tickets-logs" class="channel-select w-full p-4 rounded-xl"></select></div>
+          </div>
+          <div><label class="block text-red-300 mb-2">Cargos Staff (Ctrl + clique)</label><select id="tickets-staff" class="multi-role-select w-full p-4 rounded-xl" multiple></select></div>
+          <div class="flex items-center gap-4"><label class="text-red-300">Ativar Tickets</label>
+            <label class="inline-flex cursor-pointer"><input id="tickets-ativar" type="checkbox" checked class="sr-only peer"><div class="relative w-14 h-7 bg-gray-700 rounded-full peer peer-checked:bg-red-700 after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-7"></div></label>
+          </div>
+          <div><label class="block text-red-300 mb-2">Canal do Painel</label><select id="tickets-painel-canal" class="channel-select w-full p-4 rounded-xl"></select></div>
+          <div><label class="block text-red-300 mb-2">Imagem do Painel (URL)</label><input id="tickets-painel-imagem" type="url" class="w-full p-4 rounded-xl"><div id="tickets-preview" class="mt-3"></div></div>
+          <div><label class="block text-red-300 mb-3">Botões do Painel</label><div id="tickets-botoes-container" class="space-y-4"></div>
+            <button onclick="addTicketButton()" class="mt-4 bg-red-900 hover:bg-red-800 px-6 py-3 rounded-xl">+ Adicionar Botão</button>
+          </div>
+        </div>
+        <button onclick="saveSection('tickets')" class="mt-8 w-full bg-red-800 hover:bg-red-700 py-4 rounded-2xl font-bold">SALVAR ALTERAÇÕES</button>
+      </div>
+
+      <!-- 4. AUTOROLE -->
+      <div id="section-autorole" class="section glass p-8">
+        <h2 class="text-3xl font-bold neon mb-6">AutoRole</h2>
+        <div class="space-y-6">
+          <div><label class="block text-red-300 mb-2">Cargo ao entrar</label><select id="autorole-cargo" class="role-select w-full p-4 rounded-xl"></select></div>
+          <div class="flex items-center gap-4"><label class="text-red-300">Ativar AutoRole</label>
+            <label class="inline-flex cursor-pointer"><input id="autorole-ativar" type="checkbox" checked class="sr-only peer"><div class="relative w-14 h-7 bg-gray-700 rounded-full peer peer-checked:bg-red-700 after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-7"></div></label>
+          </div>
+        </div>
+        <button onclick="saveSection('autorole')" class="mt-8 w-full bg-red-800 hover:bg-red-700 py-4 rounded-2xl font-bold">SALVAR ALTERAÇÕES</button>
+      </div>
+
+      <!-- 5. ANÚNCIOS -->
+      <div id="section-anuncios" class="section glass p-8">
+        <h2 class="text-3xl font-bold neon mb-6">Anúncios Automáticos</h2>
+        <div class="space-y-6">
+          <div><label class="block text-red-300 mb-2">Canal de Anúncios</label><select id="anuncios-canal" class="channel-select w-full p-4 rounded-xl"></select></div>
+          <div><label class="block text-red-300 mb-2">Intervalo (minutos)</label><input id="anuncios-intervalo" type="number" value="60" class="w-full p-4 rounded-xl"></div>
+          <div><label class="block text-red-300 mb-2">Mensagem</label><textarea id="anuncios-mensagem" rows="4" class="w-full p-4 rounded-xl">🩸 Lembrete: Não esqueça de pegar seu daily!</textarea></div>
+        </div>
+        <button onclick="saveSection('anuncios')" class="mt-8 w-full bg-red-800 hover:bg-red-700 py-4 rounded-2xl font-bold">SALVAR ALTERAÇÕES</button>
+      </div>
+
+      <!-- 6. EVENTOS & DROPS -->
+      <div id="section-eventosdrops" class="section glass p-8">
+        <h2 class="text-3xl font-bold neon mb-6">Eventos & Drops</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div><label class="block text-red-300 mb-2">Canal de Drops</label><select id="drops-canal" class="channel-select w-full p-4 rounded-xl"></select></div>
+          <div><label class="block text-red-300 mb-2">Chance de Drop (%)</label><input id="drops-chance" type="number" value="15" class="w-full p-4 rounded-xl"></div>
+        </div>
+        <button onclick="saveSection('eventosdrops')" class="mt-8 w-full bg-red-800 hover:bg-red-700 py-4 rounded-2xl font-bold">SALVAR ALTERAÇÕES</button>
+      </div>
+
+      <!-- 7. NÍVEIS -->
+      <div id="section-niveis" class="section glass p-8">
+        <h2 class="text-3xl font-bold neon mb-6">Sistema de Níveis</h2>
+        <div class="space-y-6">
+          <div class="flex items-center gap-4"><label class="text-red-300">Ativar Níveis</label>
+            <label class="inline-flex cursor-pointer"><input id="niveis-ativar" type="checkbox" checked class="sr-only peer"><div class="relative w-14 h-7 bg-gray-700 rounded-full peer peer-checked:bg-red-700 after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-7"></div></label>
+          </div>
+          <div><label class="block text-red-300 mb-2">XP por mensagem</label><input id="niveis-xp" type="number" value="15" class="w-full p-4 rounded-xl"></div>
+        </div>
+        <button onclick="saveSection('niveis')" class="mt-8 w-full bg-red-800 hover:bg-red-700 py-4 rounded-2xl font-bold">SALVAR ALTERAÇÕES</button>
+      </div>
+
+      <!-- 8. ECONOMIA -->
+      <div id="section-economia" class="section glass p-8">
+        <h2 class="text-3xl font-bold neon mb-6">Economia</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div><label class="block text-red-300 mb-2">Nome da Moeda</label><input id="economia-moeda" type="text" value="Fragmentos" class="w-full p-4 rounded-xl"></div>
+          <div><label class="block text-red-300 mb-2">Saldo inicial</label><input id="economia-inicial" type="number" value="100" class="w-full p-4 rounded-xl"></div>
+        </div>
+        <button onclick="saveSection('economia')" class="mt-8 w-full bg-red-800 hover:bg-red-700 py-4 rounded-2xl font-bold">SALVAR ALTERAÇÕES</button>
+      </div>
+
+      <!-- 9. DAILY & WEEKLY -->
+      <div id="section-dailyweekly" class="section glass p-8">
+        <h2 class="text-3xl font-bold neon mb-6">Daily & Weekly</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div><label class="block text-red-300 mb-2">Recompensa Daily</label><input id="daily-recompensa" type="number" value="250" class="w-full p-4 rounded-xl"></div>
+          <div><label class="block text-red-300 mb-2">Recompensa Weekly</label><input id="weekly-recompensa" type="number" value="1500" class="w-full p-4 rounded-xl"></div>
+        </div>
+        <button onclick="saveSection('dailyweekly')" class="mt-8 w-full bg-red-800 hover:bg-red-700 py-4 rounded-2xl font-bold">SALVAR ALTERAÇÕES</button>
+      </div>
+
+      <!-- 10. MISSÕES -->
+      <div id="section-missoes" class="section glass p-8">
+        <h2 class="text-3xl font-bold neon mb-6">Missões</h2>
+        <div><label class="block text-red-300 mb-2">Missões Diárias Ativas</label><input id="missoes-diarias" type="number" value="5" class="w-full p-4 rounded-xl"></div>
+        <button onclick="saveSection('missoes')" class="mt-8 w-full bg-red-800 hover:bg-red-700 py-4 rounded-2xl font-bold">SALVAR ALTERAÇÕES</button>
+      </div>
+
+      <!-- 11. RANKING -->
+      <div id="section-ranking" class="section glass p-8">
+        <h2 class="text-3xl font-bold neon mb-6">Ranking Global</h2>
+        <div><label class="block text-red-300 mb-2">Atualizar ranking a cada (minutos)</label><input id="ranking-intervalo" type="number" value="30" class="w-full p-4 rounded-xl"></div>
+        <button onclick="saveSection('ranking')" class="mt-8 w-full bg-red-800 hover:bg-red-700 py-4 rounded-2xl font-bold">SALVAR ALTERAÇÕES</button>
+      </div>
+
+      <!-- 12. LOJA DE FUNDOS -->
+      <div id="section-lojafundos" class="section glass p-8">
+        <h2 class="text-3xl font-bold neon mb-6">Loja de Fundos</h2>
+        <p class="text-red-300">Ativado automaticamente para VIP Lendário</p>
+        <button onclick="saveSection('lojafundos')" class="mt-8 w-full bg-red-800 hover:bg-red-700 py-4 rounded-2xl font-bold">SALVAR</button>
+      </div>
+
+      <!-- 13. LOJA DE CORES -->
+      <div id="section-lojacores" class="section glass p-8">
+        <h2 class="text-3xl font-bold neon mb-6">Loja de Cores</h2>
+        <p class="text-red-300">Ativado automaticamente para VIP Lendário</p>
+        <button onclick="saveSection('lojacores')" class="mt-8 w-full bg-red-800 hover:bg-red-700 py-4 rounded-2xl font-bold">SALVAR</button>
+      </div>
+
+      <!-- 14. PRESENTES -->
+      <div id="section-presentes" class="section glass p-8">
+        <h2 class="text-3xl font-bold neon mb-6">Presentes</h2>
+        <div><label class="block text-red-300 mb-2">Taxa de presente (%)</label><input id="presentes-taxa" type="number" value="10" class="w-full p-4 rounded-xl"></div>
+        <button onclick="saveSection('presentes')" class="mt-8 w-full bg-red-800 hover:bg-red-700 py-4 rounded-2xl font-bold">SALVAR ALTERAÇÕES</button>
+      </div>
+
+      <!-- 15. SOCIAL -->
+      <div id="section-social" class="section glass p-8">
+        <h2 class="text-3xl font-bold neon mb-6">Sistema Social</h2>
+        <div class="flex items-center gap-4"><label class="text-red-300">Ativar Amizades & Reputação</label>
+          <label class="inline-flex cursor-pointer"><input id="social-ativar" type="checkbox" checked class="sr-only peer"><div class="relative w-14 h-7 bg-gray-700 rounded-full peer peer-checked:bg-red-700 after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-7"></div></label>
+        </div>
+        <button onclick="saveSection('social')" class="mt-8 w-full bg-red-800 hover:bg-red-700 py-4 rounded-2xl font-bold">SALVAR ALTERAÇÕES</button>
+      </div>
+
+      <!-- 16. ANÔNIMO -->
+      <div id="section-anonimo" class="section glass p-8">
+        <h2 class="text-3xl font-bold neon mb-6">Sistema Anônimo</h2>
+        <div class="flex items-center gap-4"><label class="text-red-300">Ativar Confissões Anônimas</label>
+          <label class="inline-flex cursor-pointer"><input id="anonimo-ativar" type="checkbox" checked class="sr-only peer"><div class="relative w-14 h-7 bg-gray-700 rounded-full peer peer-checked:bg-red-700 after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-7"></div></label>
+        </div>
+        <button onclick="saveSection('anonimo')" class="mt-8 w-full bg-red-800 hover:bg-red-700 py-4 rounded-2xl font-bold">SALVAR ALTERAÇÕES</button>
+      </div>
+
+      <!-- 17. VIP -->
+      <div id="section-vip" class="section glass p-8">
+        <h2 class="text-3xl font-bold neon mb-6">Status VIP</h2>
+        <div id="vip-status" class="text-2xl font-bold text-yellow-400 mb-4">Carregando status...</div>
+        <p class="text-lg">Servidor <strong>1462160787530580153</strong> tem <span class="text-green-400 font-bold">VIP GRÁTIS AUTOMÁTICO</span> ativado.</p>
+        <button onclick="saveSection('vip')" class="mt-8 w-full bg-red-800 hover:bg-red-700 py-4 rounded-2xl font-bold">ATUALIZAR STATUS VIP</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── Partículas ────────────────────────────────────────────────
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+let particles = [];
+class Particle { constructor() { this.x = Math.random()*canvas.width; this.y = Math.random()*canvas.height; this.size = Math.random()*2.8+0.6; this.speedX = Math.random()*0.7-0.35; this.speedY = Math.random()*0.7-0.35; } update() { this.x += this.speedX; this.y += this.speedY; if(this.x<0||this.x>canvas.width)this.speedX*=-1; if(this.y<0||this.y>canvas.height)this.speedY*=-1; } draw() { ctx.fillStyle='rgba(200,30,30,0.8)'; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }}
+function init(){particles=[];for(let i=0;i<160;i++)particles.push(new Particle());}
+function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(p=>{p.update();p.draw();});requestAnimationFrame(animate);}
+window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight;init();});
+init(); animate();
+
+// ─── Dashboard Logic ───────────────────────────────────────────
+let token = localStorage.getItem('access_token');
+if (!token) location.href = 'index.html';
+
+async function api(endpoint, options = {}) {
+  return fetch(`https://discord.com/api${endpoint}`, {
+    ...options,
+    headers: { Authorization: `Bearer ${token}`, ...options.headers }
+  }).then(r => r.ok ? r.json() : Promise.reject(r));
+}
+
+async function loadUserAndGuilds() {
+  try {
+    const user = await api('/users/@me');
+    document.getElementById('user-name').textContent = user.global_name || user.username;
+    document.getElementById('user-avatar').src = user.avatar 
+      ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128`
+      : `https://cdn.discordapp.com/embed/avatars/${user.discriminator % 5}.png`;
+
+    const guilds = await api('/users/@me/guilds');
+    const admin = guilds.filter(g => BigInt(g.permissions) & 0x8n);
+
+    const sel = document.getElementById('server-select');
+    sel.innerHTML = admin.map(g => `<option value="${g.id}">${g.name}</option>`).join('');
+    if (admin.length) {
+      sel.value = admin[0].id;
+      await changeServer();
+    }
+  } catch(e) {
+    alert("Erro ao carregar dados do Discord");
+  }
+}
+
+async function changeServer() {
+  const gid = document.getElementById('server-select').value;
+  if (!gid) return;
+
+  const name = document.querySelector(`#server-select option[value="${gid}"]`).textContent;
+  let el = document.getElementById('server-name');
+  el.textContent = name;
+
+  if (gid === '1462160787530580153') {
+    el.innerHTML += ' <span class="bg-green-700 text-white px-3 py-1 rounded-full text-sm ml-3 font-bold">VIP GRÁTIS ATIVADO</span>';
+  }
+
+  try {
+    const [channels, roles] = await Promise.all([
+      api(`/guilds/${gid}/channels`),
+      api(`/guilds/${gid}/roles`)
+    ]);
+
+    document.querySelectorAll('.channel-select').forEach(s => {
+      s.innerHTML = '<option value="">Nenhum</option>' + 
+        channels.filter(c=>c.type===0).map(c=>`<option value="${c.id}"># ${c.name}</option>`).join('');
+    });
+
+    document.querySelectorAll('.category-select').forEach(s => {
+      s.innerHTML = '<option value="">Nenhum</option>' + 
+        channels.filter(c=>c.type===4).map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+    });
+
+    document.querySelectorAll('.role-select, .multi-role-select').forEach(s => {
+      s.innerHTML = '<option value="">Nenhum</option>' + 
+        roles.filter(r=>!r.managed && r.id!==gid).map(r=>`<option value="${r.id}">@${r.name}</option>`).join('');
+    });
+  } catch(e) {}
+}
+
+// Preview de imagens
+function setupPreviews() {
+  ['boasvindas-imagem', 'tickets-painel-imagem'].forEach(id => {
+    const inp = document.getElementById(id);
+    if (!inp) return;
+    const cont = document.getElementById(id.replace('-imagem','') + '-preview');
+    if (!cont) return;
+    inp.addEventListener('input', () => {
+      const v = inp.value.trim();
+      cont.innerHTML = v ? `<img src="${v}" class="preview-img" onerror="this.src=''">` : '';
+    });
+  });
+}
+
+// Salvar configuração
+async function saveSection(sec) {
+  const btn = event.target;
+  btn.textContent = 'SALVANDO...';
+  btn.disabled = true;
+
+  const guild = document.getElementById('server-select').value;
+  const payload = { section: sec };
+
+  const form = document.getElementById(`section-${sec}`);
+  if (form) {
+    form.querySelectorAll('input, textarea, select').forEach(el => {
+      if (el.type === 'checkbox') payload[el.id] = el.checked;
+      else if (el.multiple) payload[el.id] = Array.from(el.selectedOptions).map(o=>o.value);
+      else payload[el.id] = el.value;
+    });
+  }
+
+  try {
+    const r = await fetch('https://random-8jtr0timo8xt8.vertraweb.app/api/config', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer f748258d8b39502a4c9fd6a1c018c48acad025ef1c1a849170b0e29fe1319bbc'
+      },
+      body: JSON.stringify({ guildId: guild, data: payload })
+    });
+
+    const json = await r.json();
+    btn.textContent = json.success ? '✅ SALVO!' : '❌ ERRO';
+  } catch(e) {
+    btn.textContent = '❌ Falha na conexão';
+  }
+
+  setTimeout(() => {
+    btn.textContent = 'SALVAR ALTERAÇÕES';
+    btn.disabled = false;
+  }, 2200);
+}
+
+// Sidebar
+function renderSidebar() {
+  const items = [
+    {id:'geral', name:'Geral'},
+    {id:'boasvindas', name:'Boas-Vindas'},
+    {id:'tickets', name:'Tickets'},
+    {id:'autorole', name:'AutoRole'},
+    {id:'anuncios', name:'Anúncios'},
+    {id:'eventosdrops', name:'Eventos & Drops'},
+    {id:'niveis', name:'Níveis'},
+    {id:'economia', name:'Economia'},
+    {id:'dailyweekly', name:'Daily & Weekly'},
+    {id:'missoes', name:'Missões'},
+    {id:'ranking', name:'Ranking'},
+    {id:'lojafundos', name:'Loja de Fundos', premium:true},
+    {id:'lojacores', name:'Loja de Cores', premium:true},
+    {id:'presentes', name:'Presentes'},
+    {id:'social', name:'Social'},
+    {id:'anonimo', name:'Anônimo'},
+    {id:'vip', name:'VIP', premium:true}
+  ];
+
+  document.getElementById('sidebar').innerHTML = items.map(i => `
+    <li onclick="showSection('${i.id}')" class="sidebar-item p-4 hover:bg-red-900/40 rounded-xl cursor-pointer flex justify-between items-center ${i.premium?'premium':''}">
+      ${i.name} ${i.premium?'<span class="text-yellow-400 text-xs font-bold">PREMIUM</span>':''}
+    </li>
+  `).join('');
+}
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+  document.getElementById(`section-${id}`).classList.add('active');
+
+  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// Botões dinâmicos de tickets
+function addTicketButton() {
+  const c = document.getElementById('tickets-botoes-container');
+  const d = document.createElement('div');
+  d.className = 'grid grid-cols-1 sm:grid-cols-4 gap-4 bg-black/40 p-5 rounded-xl';
+  d.innerHTML = `
+    <input type="text" placeholder="Label" class="p-3 rounded-xl">
+    <input type="text" placeholder="Emoji (ex: 🎫)" class="p-3 rounded-xl">
+    <input type="text" placeholder="Descrição curta" class="p-3 rounded-xl sm:col-span-2">
+    <button onclick="this.parentElement.remove()" class="bg-red-950 hover:bg-red-900 px-6 py-3 rounded-xl col-span-full sm:col-auto">Remover</button>
+  `;
+  c.appendChild(d);
+}
+
+function logout() {
+  if (confirm('Deseja sair?')) {
+    localStorage.removeItem('access_token');
+    location.href = 'index.html';
+  }
+}
+
+// Inicialização
+window.onload = () => {
+  renderSidebar();
+  loadUserAndGuilds();
+  setupPreviews();
+};
+</script>
+</body>
+</html>
