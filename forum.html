@@ -21,8 +21,6 @@
     .comment-card { transition: all 0.3s; }
     .comment-card:hover { transform: translateY(-4px); box-shadow: 0 0 20px rgba(139,0,0,0.5); }
     .reply { margin-left: 2rem; border-left: 2px solid rgba(139,0,0,0.5); padding-left: 1rem; }
-    .notification { position: fixed; top: 16px; right: 16px; z-index: 9999; animation: fadeInOut 5s forwards; }
-    @keyframes fadeInOut { 0% { opacity: 0; transform: translateY(-20px); } 10% { opacity: 1; transform: translateY(0); } 90% { opacity: 1; } 100% { opacity: 0; transform: translateY(-20px); } }
     @media (max-width: 640px) {
       .reply { margin-left: 1rem; }
     }
@@ -35,11 +33,11 @@
   <div class="container mx-auto p-4 sm:p-6 max-w-4xl">
     <h1 class="text-3xl sm:text-4xl font-bold neon text-center mb-8 sm:mb-12">Fórum Véu Entre Mundos</h1>
 
-    <!-- Form de Postagem -->
+    <!-- Form de Nova Postagem -->
     <div class="glass p-4 sm:p-6 mb-8 sm:mb-12">
-      <h2 class="text-xl sm:text-2xl neon mb-4 sm:mb-6">Criar Postagem</h2>
-      <input id="post-title" type="text" placeholder="Título..." class="w-full p-3 mb-3 bg-black/60 border border-red-800 rounded-lg">
-      <textarea id="post-content" placeholder="Sua mensagem..." class="w-full p-3 h-28 sm:h-32 mb-3 bg-black/60 border border-red-800 rounded-lg"></textarea>
+      <h2 class="text-xl sm:text-2xl neon mb-4">Criar Postagem</h2>
+      <input id="post-title" type="text" placeholder="Título..." class="w-full p-3 mb-3 bg-black/60 border border-red-800 rounded-lg focus:outline-none focus:border-red-600">
+      <textarea id="post-content" placeholder="Sua mensagem..." class="w-full p-3 h-28 sm:h-32 mb-3 bg-black/60 border border-red-800 rounded-lg focus:outline-none focus:border-red-600"></textarea>
       <label class="flex items-center mb-4 text-red-300 text-sm sm:text-base">
         <input type="checkbox" id="post-anonymous" class="mr-2">
         Postar como anônimo
@@ -51,16 +49,7 @@
     <div id="comments-list" class="space-y-6 sm:space-y-8"></div>
   </div>
 
-  <!-- Notificações -->
-  <div id="notifications" class="fixed top-4 right-4 space-y-2 z-50 pointer-events-none"></div>
-
   <script>
-    const backendUrl = 'https://random-8jtr0timo8xt8.vertraweb.app';
-    const wsUrl = 'wss://random-8jtr0timo8xt8.vertraweb.app/ws'; // Seu endpoint WebSocket
-    const token = localStorage.getItem('access_token') || '';
-    let ws = null;
-    let currentUser = null;
-
     // Particles
     const canvas = document.getElementById('particles');
     const ctx = canvas.getContext('2d');
@@ -73,216 +62,172 @@
     window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight;init();});
     init(); animate();
 
-    // Conectar WebSocket
-    function connectWebSocket() {
-      if (!token) return;
-      ws = new WebSocket(wsUrl);
-
-      ws.onopen = () => {
-        ws.send(JSON.stringify({ type: 'auth', token }));
-      };
-
-      ws.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        if (data.type === 'new_comment') {
-          addCommentToList(data);
-        } else if (data.type === 'new_reply') {
-          addReplyToComment(data.comment_id, data);
-          if (data.parent_author_id === currentUser?.id) {
-            showNotification(`Alguém respondeu seu comentário!`);
-          }
-        }
-      };
-
-      ws.onclose = () => setTimeout(connectWebSocket, 3000);
+    // Função para gerar ID único
+    function generateId() {
+      return Date.now() + '-' + Math.random().toString(36).substr(2, 9);
     }
 
-    function showNotification(message) {
-      const div = document.createElement('div');
-      div.className = 'glass p-4 rounded-xl text-red-300 text-sm shadow-lg';
-      div.textContent = message;
-      document.getElementById('notifications').appendChild(div);
-      setTimeout(() => div.remove(), 6000);
-    }
-
-    async function loadUser() {
-      if (!token) {
-        alert('Faça login para acessar o fórum.');
-        return;
-      }
-      try {
-        const res = await fetch('https://discord.com/api/users/@me', { headers: { Authorization: `Bearer ${token}` } });
-        if (res.ok) currentUser = await res.json();
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    async function loadComments() {
+    // Carregar comentários do localStorage
+    function loadComments() {
       const list = document.getElementById('comments-list');
       list.innerHTML = '';
-      try {
-        const res = await fetch(`${backendUrl}/api/forum/comments`, { headers: { Authorization: `Bearer ${token}` } });
-        if (res.ok) {
-          const comments = await res.json();
-          comments.forEach(addCommentToList);
-        }
-      } catch (e) {
-        console.error(e);
-        list.innerHTML = '<p class="text-center text-red-300">Erro ao carregar comentários.</p>';
-      }
-    }
+      const stored = localStorage.getItem('veu_forum_comments');
+      if (!stored) return;
 
-    function addCommentToList(comment) {
-      const list = document.getElementById('comments-list');
-      const div = document.createElement('div');
-      div.className = 'glass p-5 sm:p-6 rounded-xl comment-card relative';
-      const author = comment.anonymous ? 'Anônimo' : (comment.user_name || 'Usuário');
-      const avatar = comment.anonymous || !comment.user_avatar ? '<div class="w-12 h-12 bg-red-900 rounded-full mr-4 flex items-center justify-center text-xl">?</div>' : `<img src="${comment.user_avatar}" class="w-12 h-12 rounded-full mr-4">`;
-      div.innerHTML = `
-        <div class="flex items-start gap-4">
-          ${avatar}
-          <div class="flex-1">
-            <h3 class="text-xl neon mb-1">${comment.title}</h3>
-            <p class="text-sm text-red-300 mb-3">Por ${author} • ${new Date(comment.date).toLocaleString()}</p>
-            <p class="mb-4">${comment.content}</p>
-            <div class="space-y-4" id="replies-${comment.id}"></div>
-            <textarea id="reply-${comment.id}" placeholder="Responder..." class="w-full p-3 mt-3 bg-black/60 border border-red-800 rounded-lg"></textarea>
-            <button onclick="postReply('${comment.id}')" class="bg-red-800 hover:bg-red-700 px-6 py-2 rounded-xl mt-2 text-sm">Responder</button>
+      const comments = JSON.parse(stored);
+      comments.forEach(comment => {
+        const div = document.createElement('div');
+        div.className = 'glass p-5 sm:p-6 rounded-xl comment-card relative';
+        const author = comment.anonymous ? 'Anônimo' : 'Usuário';
+        div.innerHTML = `
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-red-900 rounded-full flex items-center justify-center text-xl font-bold">${author[0]}</div>
+            <div class="flex-1">
+              <h3 class="text-xl neon mb-1">${comment.title}</h3>
+              <p class="text-sm text-red-300 mb-3">Por ${author} • ${new Date(comment.date).toLocaleString()}</p>
+              <p class="mb-4">${comment.content}</p>
+              <div class="space-y-4" id="replies-${comment.id}"></div>
+              <textarea id="reply-${comment.id}" placeholder="Responder..." class="w-full p-3 mt-3 bg-black/60 border border-red-800 rounded-lg"></textarea>
+              <button onclick="postReply('${comment.id}')" class="bg-red-800 hover:bg-red-700 px-6 py-2 rounded-xl mt-2 text-sm">Responder</button>
+            </div>
           </div>
-        </div>
-      `;
-      if (!comment.anonymous && comment.user_id === currentUser?.id) {
-        const del = document.createElement('button');
-        del.className = 'absolute top-4 right-4 bg-red-950 hover:bg-red-900 px-3 py-1 rounded-lg text-xs';
-        del.textContent = 'Apagar';
-        del.onclick = () => deleteComment(comment.id);
-        div.appendChild(del);
-      }
-      list.prepend(div); // Novos no topo
-      loadReplies(comment.id);
+        `;
+
+        // Botão de apagar (só se for dono - aqui usamos um ID de sessão simples)
+        const sessionId = localStorage.getItem('veu_session_id') || generateId();
+        localStorage.setItem('veu_session_id', sessionId);
+        if (comment.sessionId === sessionId) {
+          const del = document.createElement('button');
+          del.className = 'absolute top-4 right-4 bg-red-950 hover:bg-red-900 px-3 py-1 rounded-lg text-xs';
+          del.textContent = 'Apagar';
+          del.onclick = () => deleteComment(comment.id);
+          div.appendChild(del);
+        }
+
+        list.prepend(div);
+        loadReplies(comment.id);
+      });
     }
 
-    async function postComment() {
+    // Postar comentário
+    function postComment() {
       const title = document.getElementById('post-title').value.trim();
       const content = document.getElementById('post-content').value.trim();
       const anonymous = document.getElementById('post-anonymous').checked;
-      if (!title || !content) return alert("Preencha tudo!");
 
-      try {
-        const res = await fetch(`${backendUrl}/api/forum/comments`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ title, content, anonymous })
-        });
-        if (res.ok) {
-          document.getElementById('post-title').value = '';
-          document.getElementById('post-content').value = '';
-          document.getElementById('post-anonymous').checked = false;
-          // WebSocket vai atualizar para todos
-        } else {
-          alert('Erro ao postar.');
-        }
-      } catch (e) {
-        console.error(e);
-        alert('Erro ao postar.');
+      if (!title || !content) {
+        alert("Preencha título e mensagem!");
+        return;
       }
+
+      const sessionId = localStorage.getItem('veu_session_id') || generateId();
+      localStorage.setItem('veu_session_id', sessionId);
+
+      const newComment = {
+        id: generateId(),
+        title,
+        content,
+        anonymous,
+        sessionId: anonymous ? null : sessionId,
+        date: Date.now()
+      };
+
+      let stored = JSON.parse(localStorage.getItem('veu_forum_comments') || '[]');
+      stored.unshift(newComment);
+      localStorage.setItem('veu_forum_comments', JSON.stringify(stored));
+
+      document.getElementById('post-title').value = '';
+      document.getElementById('post-content').value = '';
+      document.getElementById('post-anonymous').checked = false;
+
+      loadComments();
     }
 
-    async function postReply(commentId) {
+    // Postar resposta
+    function postReply(commentId) {
       const textarea = document.getElementById(`reply-${commentId}`);
       const content = textarea.value.trim();
-      if (!content) return alert("Escreva algo!");
-
-      try {
-        const res = await fetch(`${backendUrl}/api/forum/replies`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ comment_id: commentId, content })
-        });
-        if (res.ok) {
-          textarea.value = '';
-          // WebSocket atualiza
-        } else {
-          alert('Erro ao responder.');
-        }
-      } catch (e) {
-        console.error(e);
-        alert('Erro ao responder.');
+      if (!content) {
+        alert("Escreva algo para responder!");
+        return;
       }
+
+      const sessionId = localStorage.getItem('veu_session_id') || generateId();
+      localStorage.setItem('veu_session_id', sessionId);
+
+      const newReply = {
+        id: generateId(),
+        comment_id: commentId,
+        content,
+        sessionId,
+        date: Date.now()
+      };
+
+      let storedReplies = JSON.parse(localStorage.getItem('veu_forum_replies') || '[]');
+      storedReplies.push(newReply);
+      localStorage.setItem('veu_forum_replies', JSON.stringify(storedReplies));
+
+      textarea.value = '';
+      loadReplies(commentId);
     }
 
-    async function loadReplies(commentId) {
+    // Carregar respostas de um comentário
+    function loadReplies(commentId) {
       const container = document.getElementById(`replies-${commentId}`);
       container.innerHTML = '';
-      try {
-        const res = await fetch(`${backendUrl}/api/forum/replies?comment_id=${commentId}`, { headers: { Authorization: `Bearer ${token}` } });
-        if (res.ok) {
-          const replies = await res.json();
-          replies.forEach(reply => {
-            const div = document.createElement('div');
-            div.className = 'glass p-4 rounded-lg reply';
-            const author = reply.anonymous ? 'Anônimo' : (reply.user_name || 'Usuário');
-            const avatar = reply.anonymous || !reply.user_avatar ? '<div class="w-8 h-8 bg-red-900 rounded-full mr-3 flex items-center justify-center text-sm">?</div>' : `<img src="${reply.user_avatar}" class="w-8 h-8 rounded-full mr-3">`;
-            div.innerHTML = `
-              <div class="flex items-start gap-3">
-                ${avatar}
-                <div class="flex-1">
-                  <p class="text-sm text-red-300">Por ${author} • ${new Date(reply.date).toLocaleString()}</p>
-                  <p class="mt-1">${reply.content}</p>
-                </div>
-              </div>
-            `;
-            if (!reply.anonymous && reply.user_id === currentUser?.id) {
-              const del = document.createElement('button');
-              del.className = 'text-xs bg-red-950 hover:bg-red-900 px-2 py-1 rounded mt-2';
-              del.textContent = 'Apagar';
-              del.onclick = () => deleteReply(reply.id, commentId);
-              div.appendChild(del);
-            }
-            container.appendChild(div);
-          });
+
+      const stored = JSON.parse(localStorage.getItem('veu_forum_replies') || '[]');
+      const commentReplies = stored.filter(r => r.comment_id === commentId);
+
+      commentReplies.forEach(reply => {
+        const div = document.createElement('div');
+        div.className = 'glass p-4 rounded-lg reply mt-3';
+        div.innerHTML = `
+          <p class="text-sm text-red-300 mb-1">Resposta • ${new Date(reply.date).toLocaleString()}</p>
+          <p>${reply.content}</p>
+        `;
+
+        const sessionId = localStorage.getItem('veu_session_id');
+        if (reply.sessionId === sessionId) {
+          const del = document.createElement('button');
+          del.className = 'text-xs bg-red-950 hover:bg-red-900 px-2 py-1 rounded mt-2';
+          del.textContent = 'Apagar';
+          del.onclick = () => deleteReply(reply.id, commentId);
+          div.appendChild(del);
         }
-      } catch (e) {
-        console.error(e);
-      }
+
+        container.appendChild(div);
+      });
     }
 
-    async function deleteComment(id) {
-      if (!confirm('Apagar este comentário?')) return;
-      try {
-        const res = await fetch(`${backendUrl}/api/forum/comments/${id}`, {
-          method: 'DELETE',
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        if (res.ok) {
-          document.querySelector(`#replies-${id}`)?.parentElement?.parentElement?.remove();
-        }
-      } catch (e) {
-        console.error(e);
-      }
+    // Apagar comentário
+    function deleteComment(id) {
+      if (!confirm('Apagar este comentário e todas as respostas?')) return;
+
+      let stored = JSON.parse(localStorage.getItem('veu_forum_comments') || '[]');
+      stored = stored.filter(c => c.id !== id);
+      localStorage.setItem('veu_forum_comments', JSON.stringify(stored));
+
+      let storedReplies = JSON.parse(localStorage.getItem('veu_forum_replies') || '[]');
+      storedReplies = storedReplies.filter(r => r.comment_id !== id);
+      localStorage.setItem('veu_forum_replies', JSON.stringify(storedReplies));
+
+      loadComments();
     }
 
-    async function deleteReply(id, commentId) {
+    // Apagar resposta
+    function deleteReply(id, commentId) {
       if (!confirm('Apagar esta resposta?')) return;
-      try {
-        const res = await fetch(`${backendUrl}/api/forum/replies/${id}`, {
-          method: 'DELETE',
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        if (res.ok) {
-          loadReplies(commentId);
-        }
-      } catch (e) {
-        console.error(e);
-      }
+
+      let stored = JSON.parse(localStorage.getItem('veu_forum_replies') || '[]');
+      stored = stored.filter(r => r.id !== id);
+      localStorage.setItem('veu_forum_replies', JSON.stringify(stored));
+
+      loadReplies(commentId);
     }
 
-    window.onload = async () => {
-      await loadUser();
-      await loadComments();
-      connectWebSocket();
-    };
+    // Carregar ao abrir a página
+    window.onload = loadComments;
   </script>
 </body>
 </html>
