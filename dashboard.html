@@ -8,571 +8,789 @@
   <link rel="icon" href="https://cdn.discordapp.com/attachments/1428432707284762654/1477310985504034999/ideogram-v3.0_circular_gothic_arcane_logo_badge_for_discord_bot_Veu_elegant_dark_red_wine_cri-0-Photoroom.png?ex=69a6ef92&is=69a59e12&hm=ee64bba757dc3d419605efd5957e269436a1f09191510bb6f05e31bb9f8b5b1c&" />
   <style>
     body { background: #000000; color: #f0d0d0; font-family: system-ui, sans-serif; overflow-x: hidden; }
-    .neon { text-shadow: 0 0 10px #ff0000, 0 0 20px #8b0000; }
-    .glass { background: rgba(20,0,5,0.85); backdrop-filter: blur(16px); border: 2px solid rgba(139,0,0,0.6); border-radius: 1.5rem; }
-    .blood-border { border: 2px solid #8b0000; box-shadow: 0 0 15px #4a0000; }
-    .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
-    canvas { display: block; }
-    .accordion-content { display: none; }
-    .accordion:checked ~ .accordion-content { display: block; }
-    .server-card { transition: all 0.2s; }
-    .server-card:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(139,0,0,0.6); }
+    .neon { text-shadow: 0 0 25px #8b0000, 0 0 50px #4a0000; }
+    .glass { background: rgba(20,0,5,0.92); backdrop-filter: blur(18px); border: 2px solid rgba(139,0,0,0.7); border-radius: 1.5rem; }
+    .sidebar-item { transition: all 0.3s; }
+    .sidebar-item:hover { background: rgba(139,0,0,0.3); transform: translateX(5px); }
+    .active { background: rgba(139,0,0,0.5); border-left: 4px solid #8b0000; }
+    canvas#particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.55; pointer-events: none; }
+    .toggle-switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #444; transition: .4s; border-radius: 24px; }
+    .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
+    input:checked + .slider { background-color: #8b0000; }
+    input:checked + .slider:before { transform: translateX(26px); }
+    .guild-card { transition: all 0.3s; box-shadow: 0 0 15px rgba(139,0,0,0.2); }
+    .guild-card:hover { box-shadow: 0 0 25px rgba(139,0,0,0.5); transform: scale(1.02); }
+    .selected-guild { border: 3px solid #8b0000; box-shadow: 0 0 30px #8b0000; background: rgba(139,0,0,0.15); }
+    .premium-lock { opacity: 0.5; pointer-events: none; filter: blur(1px); }
+    .premium-section { display: none; } /* Locked by default */
   </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-start py-8 px-4 relative overflow-hidden">
-  <canvas class="particles"></canvas>
+<body class="min-h-screen flex">
+  <canvas id="particles"></canvas>
 
-  <div class="w-full max-w-6xl glass p-8 blood-border">
-    <h1 class="text-4xl font-bold neon mb-8 text-center">Dashboard • Bot Véu</h1>
+  <!-- Sidebar -->
+  <aside class="w-64 bg-black/80 border-r border-red-900/50 h-screen overflow-y-auto fixed md:relative z-20">
+    <div class="p-6">
+      <div class="flex items-center mb-10">
+        <img src="https://cdn.discordapp.com/attachments/1428432707284762654/1477310985504034999/ideogram-v3.0_circular_gothic_arcane_logo_badge_for_discord_bot_Veu_elegant_dark_red_wine_cri-0-Photoroom.png" alt="Véu Logo" class="w-12 h-12 rounded-full mr-3">
+        <h1 class="text-2xl font-bold neon">Véu Dashboard</h1>
+      </div>
 
-    <!-- Perfil fixo (aparece imediatamente) -->
-    <div class="flex items-center justify-center mb-10">
-      <img src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar" class="w-20 h-20 rounded-full mr-6 blood-border">
-      <div>
-        <p class="text-3xl neon">Rosa xxx -Akay-ito</p>
-        <p class="text-sm opacity-80">ID: 551080982493528106</p>
-        <p class="text-sm opacity-80">Você administra 8 servidores</p>
+      <nav class="space-y-2">
+        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg active" data-section="overview"><span class="mr-3">🏠</span> Visão Geral</a>
+        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg" data-section="general"><span class="mr-3">⚙️</span> Configurações Gerais</a>
+        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg" data-section="tickets"><span class="mr-3">🎫</span> Sistema de Tickets</a>
+        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg" data-section="autorole"><span class="mr-3">🤖</span> AutoRole</a>
+        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg" data-section="announcements"><span class="mr-3">📢</span> Anúncios Automáticos</a>
+        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg" data-section="levels"><span class="mr-3">📈</span> Sistema de Níveis</a>
+        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg" data-section="economia"><span class="mr-3">💎</span> Economia & Fragmentos</a>
+        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg" data-section="loja"><span class="mr-3">🛒</span> Loja de Itens</a>
+        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg" data-section="loja_cor"><span class="mr-3">🎨</span> Loja de Cores</a>
+        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg" data-section="presentes"><span class="mr-3">🎁</span> Sistema de Presentes</a>
+        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg" data-section="missoes"><span class="mr-3">✨</span> Missões</a>
+        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg" data-section="ranking"><span class="mr-3">🏆</span> Ranking</a>
+        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg" data-section="social"><span class="mr-3">❤️</span> Sistema Social</a>
+        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg" data-section="anonymous"><span class="mr-3">🕯️</span> Confissões Anônimas</a>
+        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg" data-section="calls"><span class="mr-3">🎙️</span> Tempo em Chamadas</a>
+        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg" data-section="evento"><span class="mr-3">🎉</span> Eventos & Drops</a>
+        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg" data-section="perfil"><span class="mr-3">👤</span> Perfis Personalizados</a>
+      </nav>
+
+      <div class="mt-10 p-4 glass rounded-xl text-center">
+        <p class="text-sm text-red-300">Bem-vindo, Guardião</p>
+        <button onclick="logout()" class="mt-3 bg-red-900 hover:bg-red-800 px-6 py-2 rounded-xl w-full">
+          Sair
+        </button>
       </div>
     </div>
+  </aside>
 
-    <!-- Visão Geral (começa em 0, atualiza ao clicar em servidor) -->
-    <section class="mb-12">
-      <h2 class="text-2xl neon mb-6 text-center">Visão Geral</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="glass p-6 text-center blood-border">
-          <p class="text-6xl font-bold neon" id="membros-online">0</p>
-          <p class="mt-2">Membros online (aprox.)</p>
-        </div>
-        <div class="glass p-6 text-center blood-border">
-          <p class="text-6xl font-bold neon" id="total-membros">0</p>
-          <p class="mt-2">Total de membros</p>
-        </div>
-        <div class="glass p-6 text-center blood-border">
-          <p class="text-6xl font-bold neon" id="plano-selecionado">Free</p>
-          <p class="mt-2">Plano selecionado</p>
-        </div>
+  <!-- Main Content -->
+  <main class="flex-1 p-6 md:ml-64 overflow-y-auto">
+    <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+      <h2 id="current-section" class="text-3xl font-bold neon">Visão Geral</h2>
+      <div class="w-full sm:w-auto">
+        <label class="block text-sm mb-1 text-red-300">Servidor selecionado para configurar:</label>
+        <select id="guild-select" class="bg-black/80 border border-red-800 rounded-lg p-3 w-full sm:w-80 focus:outline-none focus:ring-2 focus:ring-red-600">
+          <option value="">Selecione um servidor</option>
+        </select>
       </div>
-    </section>
+    </header>
 
-    <!-- Servidores (retangulares horizontais, clicáveis, um abaixo do outro) -->
-    <section class="mb-12">
-      <h2 class="text-2xl neon mb-6 text-center">Seus servidores administráveis</h2>
-      <div class="flex flex-col gap-6">
-        <div class="server-card glass p-6 flex justify-between items-center blood-border cursor-pointer" onclick="updateStats(31, 75, 'Free')">
-          <div class="flex items-center">
-            <div class="w-16 h-16 bg-gray-700 rounded-full mr-6 flex items-center justify-center text-2xl">🌙</div>
-            <div>
-              <p class="text-xl neon">333 Design | Store | Teaching</p>
-              <p class="text-sm opacity-80">ID: 14398850376553987390</p>
-            </div>
-          </div>
-          <div class="text-right opacity-80">
-            <p>Membros: 75</p>
-            <p>Online: 31</p>
+    <!-- Loading -->
+    <div id="loading" class="text-center py-20">
+      <div class="animate-spin w-12 h-12 border-4 border-red-800 border-t-transparent rounded-full mx-auto mb-4"></div>
+      <p>Carregando seus servidores do Discord...</p>
+    </div>
+
+    <!-- Content -->
+    <div id="content" class="space-y-8 hidden">
+      <!-- 1. Visão Geral -->
+      <section id="overview-section" class="glass p-6">
+        <h3 class="text-2xl mb-6 neon">Visão Geral</h3>
+
+        <div id="user-profile" class="mb-8 flex flex-col sm:flex-row items-center gap-6 bg-black/40 p-6 rounded-xl glass">
+          <img id="user-avatar" src="" alt="Seu avatar" class="w-20 h-20 rounded-full border-4 border-red-800 shadow-lg">
+          <div>
+            <p id="user-name" class="text-2xl font-bold neon">Carregando...</p>
+            <p id="user-id" class="text-sm text-red-300">ID: ...</p>
+            <p class="text-sm mt-1">Você administra <span id="guild-count">0</span> servidores</p>
           </div>
         </div>
 
-        <div class="server-card glass p-6 flex justify-between items-center blood-border cursor-pointer" onclick="updateStats(2, 4, 'Free')">
-          <div class="flex items-center">
-            <div class="w-16 h-16 bg-gray-700 rounded-full mr-6 flex items-center justify-center text-2xl">💀</div>
-            <div>
-              <p class="text-xl neon">REAL SEAS BEASTS (RSB)</p>
-              <p class="text-sm opacity-80">ID: 1453030301512110132</p>
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div class="bg-black/40 p-6 rounded-xl text-center glass">
+            <p id="active-members" class="text-4xl font-bold text-red-500 neon">—</p>
+            <p class="text-sm text-red-300">Membros online (aprox.)</p>
           </div>
-          <div class="text-right opacity-80">
-            <p>Membros: 4</p>
-            <p>Online: 2</p>
+          <div class="bg-black/40 p-6 rounded-xl text-center glass">
+            <p id="total-members" class="text-4xl font-bold text-red-500 neon">—</p>
+            <p class="text-sm text-red-300">Total de membros</p>
           </div>
-        </div>
-
-        <div class="server-card glass p-6 flex justify-between items-center blood-border cursor-pointer" onclick="updateStats(8, 21, 'Free')">
-          <div class="flex items-center">
-            <div class="w-16 h-16 bg-gray-700 rounded-full mr-6 flex items-center justify-center text-2xl">🎮</div>
-            <div>
-              <p class="text-xl neon">RPG OEV informações</p>
-              <p class="text-sm opacity-80">ID: 1460704629011775623</p>
-            </div>
-          </div>
-          <div class="text-right opacity-80">
-            <p>Membros: 21</p>
-            <p>Online: 8</p>
+          <div class="bg-black/40 p-6 rounded-xl text-center glass">
+            <p id="current-plan" class="text-4xl font-bold text-red-500 neon">Free</p>
+            <p class="text-sm text-red-300">Plano selecionado</p>
           </div>
         </div>
 
-        <div class="server-card glass p-6 flex justify-between items-center blood-border cursor-pointer" onclick="updateStats(34, 127, 'Free')">
-          <div class="flex items-center">
-            <div class="w-16 h-16 bg-gray-700 rounded-full mr-6 flex items-center justify-center text-2xl">🕯️</div>
-            <div>
-              <p class="text-xl neon">Véu Entre Mundos</p>
-              <p class="text-sm opacity-80">ID: 1462160787530508153</p>
-            </div>
+        <h4 class="text-xl mt-8 mb-4 neon">Seus servidores administráveis</h4>
+        <div id="guild-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+        <!-- Info do servidor selecionado -->
+        <div id="selected-guild-info" class="mt-8 glass p-6 hidden">
+          <h4 class="text-xl mb-4 neon">Servidor Selecionado</h4>
+          <div class="flex items-center mb-4">
+            <img id="selected-guild-icon" src="" alt="Ícone" class="w-16 h-16 rounded-full mr-4 border-2 border-red-800 shadow-md">
+            <h5 id="selected-guild-name" class="text-lg font-bold neon">—</h5>
           </div>
-          <div class="text-right opacity-80">
-            <p>Membros: 127</p>
-            <p>Online: 34</p>
+          <p id="selected-guild-id" class="text-sm text-red-300 mb-2">ID: —</p>
+          <p id="selected-guild-members" class="text-sm mb-2">Membros: —</p>
+          <p id="selected-guild-online" class="text-sm mb-2">Online: —</p>
+          <p id="selected-guild-fragments" class="text-sm mb-2">Fragmentos Circulando: —</p>
+          <p id="selected-guild-plan" class="text-sm font-bold">Plano: —</p>
+          <div id="invite-bot-container" class="mt-4 hidden">
+            <p class="text-red-300 mb-2">O bot Véu não está neste servidor.</p>
+            <a href="https://discord.com/oauth2/authorize?client_id=1466550471920713933&scope=bot&permissions=8&guild_id=selected_guild_id" target="_blank" class="bg-red-800 hover:bg-red-700 px-6 py-3 rounded-xl neon inline-block">
+              Convidar Bot para o Servidor
+            </a>
           </div>
         </div>
 
-        <div class="server-card glass p-6 flex justify-between items-center blood-border cursor-pointer" onclick="updateStats(8, 11, 'Free')">
-          <div class="flex items-center">
-            <div class="w-16 h-16 bg-gray-700 rounded-full mr-6 flex items-center justify-center text-2xl">👑</div>
-            <div>
-              <p class="text-xl neon">LOS_LOKINHOS GUILDA</p>
-              <p class="text-sm opacity-80">ID: 1463887831884763169</p>
-            </div>
-          </div>
-          <div class="text-right opacity-80">
-            <p>Membros: 11</p>
-            <p>Online: 8</p>
-          </div>
+        <div id="premium-upgrade" class="mt-8 text-center hidden">
+          <p class="text-red-300 mb-4">Este servidor requer Premium para configurações avançadas.</p>
+          <a href="loja.html" class="bg-red-800 hover:bg-red-700 px-6 py-3 rounded-xl neon inline-block">Comprar Premium</a>
         </div>
+      </section>
 
-        <div class="server-card glass p-6 flex justify-between items-center blood-border cursor-pointer" onclick="updateStats(2, 3, 'Free')">
-          <div class="flex items-center">
-            <div class="w-16 h-16 bg-gray-700 rounded-full mr-6 flex items-center justify-center text-2xl">🧪</div>
-            <div>
-              <p class="text-xl neon">testes do bot V</p>
-              <p class="text-sm opacity-80">ID: 1464379886310260920</p>
-            </div>
+      <!-- 2. Configurações Gerais -->
+      <section id="general-section" class="glass p-6 hidden">
+        <h3 class="text-2xl mb-6 neon">Configurações Gerais</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block mb-2">Prefixo do Bot</label>
+            <input type="text" id="general-prefix" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg" value="!">
           </div>
-          <div class="text-right opacity-80">
-            <p>Membros: 3</p>
-            <p>Online: 2</p>
-          </div>
-        </div>
-
-        <!-- Se quiser os outros 2 servidores que faltaram, é só copiar o padrão e mudar nome/ID/números -->
-      </div>
-    </section>
-
-    <!-- Configurações (17 seções completas) -->
-    <section class="mt-12">
-      <h2 class="text-2xl neon mb-6 text-center">Configurações</h2>
-      <div class="space-y-6">
-        <!-- 1. Geral -->
-        <div class="glass p-6 blood-border">
-          <input type="checkbox" id="sec1" class="hidden accordion">
-          <label for="sec1" class="flex justify-between items-center cursor-pointer text-xl neon">
-            1. Geral
-            <span>▼</span>
-          </label>
-          <div class="accordion-content mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block mb-1">Prefixo do Bot</label>
-              <input type="text" class="w-full bg-gray-900 p-3 rounded border-red-800" value="!" />
-            </div>
-            <div class="flex items-center">
-              <input type="checkbox" class="mr-2" checked />
-              <label>Bot Ativado</label>
-            </div>
-          </div>
-        </div>
-
-        <!-- 2. Economia -->
-        <div class="glass p-6 blood-border">
-          <input type="checkbox" id="sec2" class="hidden accordion">
-          <label for="sec2" class="flex justify-between items-center cursor-pointer text-xl neon">
-            2. Economia
-            <span>▼</span>
-          </label>
-          <div class="accordion-content mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block mb-1">Daily Mínimo</label>
-              <input type="number" class="w-full bg-gray-900 p-3 rounded border-red-800" value="100" />
-            </div>
-            <div>
-              <label class="block mb-1">Daily Máximo</label>
-              <input type="number" class="w-full bg-gray-900 p-3 rounded border-red-800" value="500" />
-            </div>
-            <div>
-              <label class="block mb-1">Bônus VIP Daily</label>
-              <input type="number" step="0.1" class="w-full bg-gray-900 p-3 rounded border-red-800" value="1.5" />
-            </div>
-            <div>
-              <label class="block mb-1">Work Cooldown (s)</label>
-              <input type="number" class="w-full bg-gray-900 p-3 rounded border-red-800" value="3600" />
-            </div>
-          </div>
-        </div>
-
-        <!-- 3. Níveis -->
-        <div class="glass p-6 blood-border">
-          <input type="checkbox" id="sec3" class="hidden accordion">
-          <label for="sec3" class="flex justify-between items-center cursor-pointer text-xl neon">
-            3. Níveis
-            <span>▼</span>
-          </label>
-          <div class="accordion-content mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="flex items-center">
-              <input type="checkbox" class="mr-2" checked />
-              <label>Níveis Ativados</label>
-            </div>
-            <div>
-              <label class="block mb-1">Canal de Level Up</label>
-              <input type="text" class="w-full bg-gray-900 p-3 rounded border-red-800" placeholder="ID canal" />
-            </div>
-            <div>
-              <label class="block mb-1">XP Mínimo</label>
-              <input type="number" class="w-full bg-gray-900 p-3 rounded border-red-800" value="15" />
-            </div>
-            <div>
-              <label class="block mb-1">XP Máximo</label>
-              <input type="number" class="w-full bg-gray-900 p-3 rounded border-red-800" value="25" />
-            </div>
-            <div>
-              <label class="block mb-1">Cooldown XP (s)</label>
-              <input type="number" class="w-full bg-gray-900 p-3 rounded border-red-800" value="60" />
-            </div>
-          </div>
-        </div>
-
-        <!-- 4. Missões -->
-        <div class="glass p-6 blood-border">
-          <input type="checkbox" id="sec4" class="hidden accordion">
-          <label for="sec4" class="flex justify-between items-center cursor-pointer text-xl neon">
-            4. Missões
-            <span>▼</span>
-          </label>
-          <div class="accordion-content mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="flex items-center">
-              <input type="checkbox" class="mr-2" checked />
-              <label>Missões Ativadas</label>
-            </div>
-            <div>
-              <label class="block mb-1">Missões Diárias (JSON)</label>
-              <textarea class="w-full bg-gray-900 p-3 rounded border-red-800 h-24">[{"nome":"Mensageiro","meta":50,"recompensa":200}]</textarea>
-            </div>
-            <div>
-              <label class="block mb-1">Missões Semanais (JSON)</label>
-              <textarea class="w-full bg-gray-900 p-3 rounded border-red-800 h-24">[{"nome":"Explorador","meta":3600,"recompensa":1000}]</textarea>
-            </div>
-          </div>
-        </div>
-
-        <!-- 5. Ranking -->
-        <div class="glass p-6 blood-border">
-          <input type="checkbox" id="sec5" class="hidden accordion">
-          <label for="sec5" class="flex justify-between items-center cursor-pointer text-xl neon">
-            5. Ranking
-            <span>▼</span>
-          </label>
-          <div class="accordion-content mt-4">
-            <div>
-              <label class="block mb-1">Máximo de Usuários no Ranking</label>
-              <input type="number" class="w-full bg-gray-900 p-3 rounded border-red-800" value="50" />
-            </div>
-          </div>
-        </div>
-
-        <!-- 6. Social -->
-        <div class="glass p-6 blood-border">
-          <input type="checkbox" id="sec6" class="hidden accordion">
-          <label for="sec6" class="flex justify-between items-center cursor-pointer text-xl neon">
-            6. Social
-            <span>▼</span>
-          </label>
-          <div class="accordion-content mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="flex items-center">
-              <input type="checkbox" class="mr-2" checked />
-              <label>Social Ativado</label>
-            </div>
-            <div>
-              <label class="block mb-1">Cooldown Casamento (s)</label>
-              <input type="number" class="w-full bg-gray-900 p-3 rounded border-red-800" value="86400" />
-            </div>
-          </div>
-        </div>
-
-        <!-- 7. Anônimo -->
-        <div class="glass p-6 blood-border">
-          <input type="checkbox" id="sec7" class="hidden accordion">
-          <label for="sec7" class="flex justify-between items-center cursor-pointer text-xl neon">
-            7. Anônimo
-            <span>▼</span>
-          </label>
-          <div class="accordion-content mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="flex items-center">
-              <input type="checkbox" class="mr-2" checked />
-              <label>Anônimo Ativado</label>
-            </div>
-            <div>
-              <label class="block mb-1">Canal Logs</label>
-              <input type="text" class="w-full bg-gray-900 p-3 rounded border-red-800" placeholder="ID" />
-            </div>
-            <div>
-              <label class="block mb-1">Cooldown (s)</label>
-              <input type="number" class="w-full bg-gray-900 p-3 rounded border-red-800" value="120" />
-            </div>
-          </div>
-        </div>
-
-        <!-- 8. Autorole -->
-        <div class="glass p-6 blood-border">
-          <input type="checkbox" id="sec8" class="hidden accordion">
-          <label for="sec8" class="flex justify-between items-center cursor-pointer text-xl neon">
-            8. Autorole
-            <span>▼</span>
-          </label>
-          <div class="accordion-content mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block mb-1">Cargos por Tempo (JSON)</label>
-              <textarea class="w-full bg-gray-900 p-3 rounded border-red-800 h-24">[{"days":30,"role_id":"123456"}]</textarea>
-            </div>
-            <div>
-              <label class="block mb-1">Cargo VIP Auto</label>
-              <input type="text" class="w-full bg-gray-900 p-3 rounded border-red-800" placeholder="ID" />
-            </div>
-          </div>
-        </div>
-
-        <!-- 9. Anúncios -->
-        <div class="glass p-6 blood-border">
-          <input type="checkbox" id="sec9" class="hidden accordion">
-          <label for="sec9" class="flex justify-between items-center cursor-pointer text-xl neon">
-            9. Anúncios
-            <span>▼</span>
-          </label>
-          <div class="accordion-content mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="flex items-center">
-              <input type="checkbox" class="mr-2" checked />
-              <label>Ativado</label>
-            </div>
-            <div>
-              <label class="block mb-1">Canal</label>
-              <input type="text" class="w-full bg-gray-900 p-3 rounded border-red-800" placeholder="ID" />
-            </div>
-            <div>
-              <label class="block mb-1">Mensagem</label>
-              <input type="text" class="w-full bg-gray-900 p-3 rounded border-red-800" value="Bem-vindo ao Véu!" />
-            </div>
-          </div>
-        </div>
-
-        <!-- 10. Loja -->
-        <div class="glass p-6 blood-border">
-          <input type="checkbox" id="sec10" class="hidden accordion">
-          <label for="sec10" class="flex justify-between items-center cursor-pointer text-xl neon">
-            10. Loja
-            <span>▼</span>
-          </label>
-          <div class="accordion-content mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="flex items-center">
-              <input type="checkbox" class="mr-2" checked />
-              <label>Ativada</label>
-            </div>
-            <div>
-              <label class="block mb-1">Itens (JSON)</label>
-              <textarea class="w-full bg-gray-900 p-3 rounded border-red-800 h-24">{"rosa":{"preco":100,"desc":"Rosa Eterna"}}</textarea>
-            </div>
-          </div>
-        </div>
-
-        <!-- 11. Loja de Cores -->
-        <div class="glass p-6 blood-border">
-          <input type="checkbox" id="sec11" class="hidden accordion">
-          <label for="sec11" class="flex justify-between items-center cursor-pointer text-xl neon">
-            11. Loja de Cores
-            <span>▼</span>
-          </label>
-          <div class="accordion-content mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="flex items-center">
-              <input type="checkbox" class="mr-2" checked />
-              <label>Ativada</label>
-            </div>
-            <div>
-              <label class="block mb-1">Cores (JSON)</label>
-              <textarea class="w-full bg-gray-900 p-3 rounded border-red-800 h-24">{"Violeta":{"price":1500,"hex":89478485}}</textarea>
-            </div>
-            <div>
-              <label class="block mb-1">Desconto VIP</label>
-              <input type="number" step="0.01" class="w-full bg-gray-900 p-3 rounded border-red-800" value="0.20" />
-            </div>
-          </div>
-        </div>
-
-        <!-- 12. Gifts -->
-        <div class="glass p-6 blood-border">
-          <input type="checkbox" id="sec12" class="hidden accordion">
-          <label for="sec12" class="flex justify-between items-center cursor-pointer text-xl neon">
-            12. Gifts
-            <span>▼</span>
-          </label>
-          <div class="accordion-content mt-4">
-            <div class="flex items-center">
-              <input type="checkbox" class="mr-2" checked />
-              <label>Ativado</label>
-            </div>
-          </div>
-        </div>
-
-        <!-- 13. Evento -->
-        <div class="glass p-6 blood-border">
-          <input type="checkbox" id="sec13" class="hidden accordion">
-          <label for="sec13" class="flex justify-between items-center cursor-pointer text-xl neon">
-            13. Evento
-            <span>▼</span>
-          </label>
-          <div class="accordion-content mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="flex items-center">
-              <input type="checkbox" class="mr-2" checked />
-              <label>Ativado</label>
-            </div>
-            <div>
-              <label class="block mb-1">Chance Drops (%)</label>
-              <input type="number" class="w-full bg-gray-900 p-3 rounded border-red-800" value="1.0" />
-            </div>
-            <div>
-              <label class="block mb-1">Mínimo</label>
-              <input type="number" class="w-full bg-gray-900 p-3 rounded border-red-800" value="50" />
-            </div>
-            <div>
-              <label class="block mb-1">Máximo</label>
-              <input type="number" class="w-full bg-gray-900 p-3 rounded border-red-800" value="200" />
-            </div>
-          </div>
-        </div>
-
-        <!-- 14. Call Manager -->
-        <div class="glass p-6 blood-border">
-          <input type="checkbox" id="sec14" class="hidden accordion">
-          <label for="sec14" class="flex justify-between items-center cursor-pointer text-xl neon">
-            14. Call Manager
-            <span>▼</span>
-          </label>
-          <div class="accordion-content mt-4">
-            <div class="flex items-center">
-              <input type="checkbox" class="mr-2" checked />
-              <label>Ativado</label>
-            </div>
-          </div>
-        </div>
-
-        <!-- 15. Perfil -->
-        <div class="glass p-6 blood-border">
-          <input type="checkbox" id="sec15" class="hidden accordion">
-          <label for="sec15" class="flex justify-between items-center cursor-pointer text-xl neon">
-            15. Perfil
-            <span>▼</span>
-          </label>
-          <div class="accordion-content mt-4">
-            <div class="flex items-center">
-              <input type="checkbox" class="mr-2" checked />
-              <label>Ativado</label>
-            </div>
-          </div>
-        </div>
-
-        <!-- 16. Ticket -->
-        <div class="glass p-6 blood-border">
-          <input type="checkbox" id="sec16" class="hidden accordion">
-          <label for="sec16" class="flex justify-between items-center cursor-pointer text-xl neon">
-            16. Ticket
-            <span>▼</span>
-          </label>
-          <div class="accordion-content mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="flex items-center">
-              <input type="checkbox" class="mr-2" checked />
-              <label>Ativado</label>
-            </div>
-            <div>
-              <label class="block mb-1">Canal Painel</label>
-              <input type="text" class="w-full bg-gray-900 p-3 rounded border-red-800" placeholder="ID" />
-            </div>
-            <div>
-              <label class="block mb-1">Texto Painel</label>
-              <input type="text" class="w-full bg-gray-900 p-3 rounded border-red-800" value="Selecione o tipo..." />
-            </div>
-            <div>
-              <label class="block mb-1">Imagem Painel</label>
-              <input type="text" class="w-full bg-gray-900 p-3 rounded border-red-800" value="https://..." />
-            </div>
-            <div>
-              <label class="block mb-1">Botões (JSON)</label>
-              <textarea class="w-full bg-gray-900 p-3 rounded border-red-800 h-24">[{"label":"Denúncia","emoji":"🚨"}]</textarea>
-            </div>
-          </div>
-        </div>
-
-        <!-- 17. Premium / Loja -->
-        <div class="glass p-6 blood-border">
-          <input type="checkbox" id="sec17" class="hidden accordion">
-          <label for="sec17" class="flex justify-between items-center cursor-pointer text-xl neon">
-            17. Premium / Loja
-            <span>▼</span>
-          </label>
-          <div class="accordion-content mt-4">
-            <div class="space-y-6">
-              <div class="flex items-center">
-                <input type="checkbox" class="mr-2" />
-                <label>Ativar Premium</label>
+          <div>
+            <label class="flex items-center">
+              <div class="toggle-switch mr-3">
+                <input type="checkbox" id="general-bot-enabled" checked>
+                <span class="slider"></span>
               </div>
-              <div>
-                <label class="block mb-1">Expiração Premium</label>
-                <input type="date" class="w-full bg-gray-900 p-3 rounded border-red-800" />
-              </div>
-              <a href="loja.html" class="block text-center bg-red-900 p-4 rounded neon hover:bg-red-700 mt-6">Ir para a Loja e Comprar Premium</a>
+              Ativar Bot no Servidor
+            </label>
+          </div>
+          <div>
+            <label class="block mb-2">Canal de Boas-Vindas</label>
+            <select id="general-welcome-channel" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg">
+              <option>Selecione um canal</option>
+            </select>
+          </div>
+          <div>
+            <label class="block mb-2">Idioma Padrão</label>
+            <select id="general-language" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg">
+              <option>Português (BR)</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Sistema de Tickets -->
+      <section id="tickets-section" class="glass p-6 hidden">
+        <h3 class="text-2xl mb-6 neon">Sistema de Tickets</h3>
+        <div class="space-y-6">
+          <label class="flex items-center">
+            <div class="toggle-switch mr-3">
+              <input type="checkbox" id="tickets-enabled">
+              <span class="slider"></span>
+            </div>
+            Ativar Sistema de Tickets
+          </label>
+          <div>
+            <label class="block mb-2">Canal do Painel de Tickets</label>
+            <select id="tickets-panel-channel" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg">
+              <option>Selecione um canal</option>
+            </select>
+          </div>
+          <div>
+            <label class="block mb-2">Categoria para Novos Tickets</label>
+            <select id="tickets-category" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg">
+              <option>Selecione uma categoria</option>
+            </select>
+          </div>
+          <div>
+            <label class="block mb-2">Texto do Painel</label>
+            <input type="text" id="tickets-panel-text" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg" value="Abra um ticket!">
+          </div>
+          <div>
+            <label class="block mb-2">Imagem do Painel</label>
+            <input type="url" id="tickets-panel-image" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg" placeholder="URL da imagem">
+          </div>
+          <div class="space-y-4">
+            <h4 class="text-xl neon">Botões do Ticket</h4>
+            <div id="tickets-botoes-container" class="space-y-4"></div>
+            <button onclick="addTicketButton()" class="bg-red-800 hover:bg-red-700 px-6 py-3 rounded-xl">
+              + Adicionar Botão de Ticket
+            </button>
+          </div>
+        </div>
+        <div class="mt-8">
+          <h4 class="text-xl mb-4 neon">Pré-visualização do Painel</h4>
+          <div class="bg-black/60 p-6 rounded-xl text-center">
+            <p class="text-red-300">Painel de Tickets será exibido aqui</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. AutoRole -->
+      <section id="autorole-section" class="glass p-6 hidden">
+        <h3 class="text-2xl mb-6 neon">AutoRole</h3>
+        <div class="space-y-6">
+          <label class="flex items-center">
+            <div class="toggle-switch mr-3">
+              <input type="checkbox" id="autorole-enabled">
+              <span class="slider"></span>
+            </div>
+            Ativar AutoRole
+          </label>
+          <div>
+            <label class="block mb-2">Cargo VIP Automático</label>
+            <select id="autorole-vip-role" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg">
+              <option>Selecione um cargo</option>
+            </select>
+          </div>
+          <div class="space-y-4">
+            <h4 class="text-xl neon">Cargos por Tempo de Conta</h4>
+            <div id="autorole-time-roles-container" class="space-y-4"></div>
+            <button onclick="addTimeRoleButton()" class="bg-red-800 hover:bg-red-700 px-6 py-3 rounded-xl">
+              + Adicionar Cargo por Tempo
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. Anúncios Automáticos -->
+      <section id="announcements-section" class="glass p-6 hidden">
+        <h3 class="text-2xl mb-6 neon">Anúncios Automáticos</h3>
+        <div class="space-y-6">
+          <label class="flex items-center">
+            <div class="toggle-switch mr-3">
+              <input type="checkbox" id="announce-enabled">
+              <span class="slider"></span>
+            </div>
+            Ativar Anúncios Automáticos
+          </label>
+          <div>
+            <label class="block mb-2">Canal de Anúncios</label>
+            <select id="announce-channel" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg">
+              <option>Selecione um canal</option>
+            </select>
+          </div>
+          <div>
+            <label class="block mb-2">Intervalo entre Anúncios (horas)</label>
+            <input type="number" id="announce-interval" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg" value="48">
+          </div>
+        </div>
+        <div class="mt-8">
+          <h4 class="text-xl mb-4 neon">Pré-visualização do Anúncio</h4>
+          <div class="bg-black/60 p-6 rounded-xl text-center">
+            <p class="text-red-300">Anúncio de teste: O Véu observa tudo. Continue evoluindo, guardião.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. Sistema de Níveis -->
+      <section id="levels-section" class="glass p-6 hidden">
+        <h3 class="text-2xl mb-6 neon">Sistema de Níveis</h3>
+        <div class="space-y-6">
+          <label class="flex items-center">
+            <div class="toggle-switch mr-3">
+              <input type="checkbox" id="levels-enabled">
+              <span class="slider"></span>
+            </div>
+            Ativar Sistema de Níveis
+          </label>
+          <div class="grid grid-cols-2 gap-6">
+            <div>
+              <label class="block mb-2">XP Mínimo por Mensagem</label>
+              <input type="number" id="levels-xp-min" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg" value="15">
+            </div>
+            <div>
+              <label class="block mb-2">XP Máximo por Mensagem</label>
+              <input type="number" id="levels-xp-max" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg" value="25">
+            </div>
+          </div>
+          <div>
+            <label class="block mb-2">Canal de Anúncios de Level Up</label>
+            <select id="levels-announce-channel" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg">
+              <option>Selecione um canal</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. Economia & Fragmentos -->
+      <section id="economia-section" class="glass p-6 hidden">
+        <h3 class="text-2xl mb-6 neon">Economia & Fragmentos</h3>
+        <div class="space-y-6">
+          <label class="flex items-center">
+            <div class="toggle-switch mr-3">
+              <input type="checkbox" id="economia-enabled">
+              <span class="slider"></span>
+            </div>
+            Ativar Economia
+          </label>
+          <div class="grid grid-cols-2 gap-6">
+            <div>
+              <label class="block mb-2">Recompensa Diária Base</label>
+              <input type="number" id="economia-daily-base" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg" value="300">
+            </div>
+            <div>
+              <label class="block mb-2">Bônus VIP Diário</label>
+              <input type="number" id="economia-vip-daily-bonus" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg" value="1.5">
+            </div>
+            <div>
+              <label class="block mb-2">Recompensa Semanal Base</label>
+              <input type="number" id="economia-weekly-base" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg" value="1500">
+            </div>
+            <div>
+              <label class="block mb-2">Bônus VIP Semanal</label>
+              <input type="number" id="economia-vip-weekly-bonus" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg" value="1.5">
             </div>
           </div>
         </div>
-      </div>
-      <button class="mt-10 w-full bg-red-900 p-4 rounded neon hover:bg-red-700">Salvar Configurações (exemplo)</button>
-    </section>
-  </div>
+      </section>
+
+      <!-- 8. Loja de Itens -->
+      <section id="loja-section" class="glass p-6 hidden">
+        <h3 class="text-2xl mb-6 neon">Loja de Itens</h3>
+        <div class="space-y-6">
+          <label class="flex items-center">
+            <div class="toggle-switch mr-3">
+              <input type="checkbox" id="loja-enabled">
+              <span class="slider"></span>
+            </div>
+            Ativar Loja de Itens
+          </label>
+          <div class="space-y-4">
+            <h4 class="text-xl neon">Itens da Loja</h4>
+            <div id="loja-items-container" class="space-y-4"></div>
+            <button onclick="addLojaItemButton()" class="bg-red-800 hover:bg-red-700 px-6 py-3 rounded-xl">
+              + Adicionar Item
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. Loja de Cores -->
+      <section id="loja_cor-section" class="glass p-6 hidden">
+        <h3 class="text-2xl mb-6 neon">Loja de Cores</h3>
+        <div class="space-y-6">
+          <label class="flex items-center">
+            <div class="toggle-switch mr-3">
+              <input type="checkbox" id="loja-cor-enabled">
+              <span class="slider"></span>
+            </div>
+            Ativar Loja de Cores
+          </label>
+          <p class="text-red-300 text-sm">Nota: O bot deve estar acima do cargo na hierarquia para mudar cores de nick.</p>
+          <div class="space-y-4">
+            <h4 class="text-xl neon">Cores da Loja</h4>
+            <div id="loja-cor-container" class="space-y-4"></div>
+            <button onclick="addLojaCorButton()" class="bg-red-800 hover:bg-red-700 px-6 py-3 rounded-xl">
+              + Adicionar Cor
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10. Sistema de Presentes -->
+      <section id="presentes-section" class="glass p-6 hidden">
+        <h3 class="text-2xl mb-6 neon">Sistema de Presentes</h3>
+        <div class="space-y-6">
+          <label class="flex items-center">
+            <div class="toggle-switch mr-3">
+              <input type="checkbox" id="presentes-enabled">
+              <span class="slider"></span>
+            </div>
+            Ativar Sistema de Presentes
+          </label>
+          <div class="space-y-4">
+            <h4 class="text-xl neon">Presentes da Loja</h4>
+            <div id="presentes-container" class="space-y-4"></div>
+            <button onclick="addPresenteButton()" class="bg-red-800 hover:bg-red-700 px-6 py-3 rounded-xl">
+              + Adicionar Presente
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 11. Missões -->
+      <section id="missoes-section" class="glass p-6 hidden">
+        <h3 class="text-2xl mb-6 neon">Missões</h3>
+        <div class="space-y-6">
+          <label class="flex items-center">
+            <div class="toggle-switch mr-3">
+              <input type="checkbox" id="missoes-enabled">
+              <span class="slider"></span>
+            </div>
+            Ativar Missões
+          </label>
+          <div class="space-y-4">
+            <h4 class="text-xl neon">Missões Diárias/Semanais</h4>
+            <div id="missoes-container" class="space-y-4"></div>
+            <button onclick="addMissaoButton()" class="bg-red-800 hover:bg-red-700 px-6 py-3 rounded-xl">
+              + Adicionar Missão
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 12. Ranking -->
+      <section id="ranking-section" class="glass p-6 hidden">
+        <h3 class="text-2xl mb-6 neon">Ranking</h3>
+        <div class="space-y-6">
+          <label class="flex items-center">
+            <div class="toggle-switch mr-3">
+              <input type="checkbox" id="ranking-enabled">
+              <span class="slider"></span>
+            </div>
+            Ativar Ranking
+          </label>
+          <div>
+            <label class="block mb-2">Canal de Ranking</label>
+            <select id="ranking-channel" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg">
+              <option>Selecione um canal</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- 13. Sistema Social -->
+      <section id="social-section" class="glass p-6 hidden">
+        <h3 class="text-2xl mb-6 neon">Sistema Social</h3>
+        <div class="space-y-6">
+          <label class="flex items-center">
+            <div class="toggle-switch mr-3">
+              <input type="checkbox" id="social-enabled">
+              <span class="slider"></span>
+            </div>
+            Ativar Sistema Social
+          </label>
+          <div class="grid grid-cols-2 gap-6">
+            <div>
+              <label class="block mb-2">Custo de Casamento</label>
+              <input type="number" id="social-marriage-cost" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg" value="500">
+            </div>
+            <div>
+              <label class="block mb-2">Custo de Divórcio</label>
+              <input type="number" id="social-divorce-cost" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg" value="300">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 14. Confissões Anônimas -->
+      <section id="anonymous-section" class="glass p-6 hidden">
+        <h3 class="text-2xl mb-6 neon">Confissões Anônimas</h3>
+        <div class="space-y-6">
+          <label class="flex items-center">
+            <div class="toggle-switch mr-3">
+              <input type="checkbox" id="anonymous-enabled">
+              <span class="slider"></span>
+            </div>
+            Ativar Confissões Anônimas
+          </label>
+          <div>
+            <label class="block mb-2">Canal de Logs Anônimos</label>
+            <select id="anonymous-logs-channel" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg">
+              <option>Selecione um canal</option>
+            </select>
+          </div>
+          <div>
+            <label class="block mb-2">Cooldown (segundos)</label>
+            <input type="number" id="anonymous-cooldown" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg" value="120">
+          </div>
+        </div>
+      </section>
+
+      <!-- 15. Tempo em Chamadas -->
+      <section id="calls-section" class="glass p-6 hidden">
+        <h3 class="text-2xl mb-6 neon">Tempo em Chamadas</h3>
+        <div class="space-y-6">
+          <label class="flex items-center">
+            <div class="toggle-switch mr-3">
+              <input type="checkbox" id="calls-enabled">
+              <span class="slider"></span>
+            </div>
+            Ativar Monitoramento de Chamadas
+          </label>
+          <div>
+            <label class="block mb-2">Recompensa por Hora em Call</label>
+            <input type="number" id="calls-reward-per-hour" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg" value="50">
+          </div>
+        </div>
+      </section>
+
+      <!-- 16. Eventos & Drops -->
+      <section id="evento-section" class="glass p-6 hidden">
+        <h3 class="text-2xl mb-6 neon">Eventos & Drops</h3>
+        <div class="space-y-6">
+          <label class="flex items-center">
+            <div class="toggle-switch mr-3">
+              <input type="checkbox" id="evento-enabled">
+              <span class="slider"></span>
+            </div>
+            Ativar Eventos & Drops
+          </label>
+          <div class="grid grid-cols-2 gap-6">
+            <div>
+              <label class="block mb-2">Chance de Drop (%)</label>
+              <input type="number" id="evento-drop-chance" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg" value="1">
+            </div>
+            <div>
+              <label class="block mb-2">Cooldown de Drop (segundos)</label>
+              <input type="number" id="evento-drop-cooldown" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg" value="60">
+            </div>
+            <div>
+              <label class="block mb-2">Valor Mínimo de Drop</label>
+              <input type="number" id="evento-drop-min" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg" value="50">
+            </div>
+            <div>
+              <label class="block mb-2">Valor Máximo de Drop</label>
+              <input type="number" id="evento-drop-max" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg" value="200">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 17. Perfis Personalizados -->
+      <section id="perfil-section" class="glass p-6 hidden">
+        <h3 class="text-2xl mb-6 neon">Perfis Personalizados</h3>
+        <div class="space-y-6">
+          <label class="flex items-center">
+            <div class="toggle-switch mr-3">
+              <input type="checkbox" id="perfil-enabled">
+              <span class="slider"></span>
+            </div>
+            Ativar Perfis Personalizados
+          </label>
+          <div>
+            <label class="block mb-2">Fundo Padrão (URL)</label>
+            <input type="url" id="perfil-default-bg" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg" placeholder="URL do fundo padrão">
+          </div>
+          <div>
+            <label class="block mb-2">Moldura Personalizada (URL)</label>
+            <input type="url" id="perfil-custom-frame" class="w-full p-3 bg-black/60 border border-red-800 rounded-lg" placeholder="URL da moldura personalizada">
+          </div>
+          <div class="mt-8">
+            <h4 class="text-xl mb-4 neon">Pré-visualização do Perfil</h4>
+            <div class="bg-black/60 p-6 rounded-xl text-center">
+              <p class="text-red-300">Perfil de teste será exibido aqui</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Botão Salvar -->
+    <div id="save-container" class="fixed bottom-6 right-6 z-10 hidden">
+      <button id="save-btn" class="bg-green-800 hover:bg-green-700 px-8 py-4 rounded-xl text-lg font-bold shadow-2xl neon">
+        Salvar Alterações
+      </button>
+    </div>
+  </main>
 
   <script>
-    // Partículas
-    const canvas = document.querySelector('.particles');
+    const FREE_GUILD_IDS = ['1462160787530580153', '1465132627437813862'];
+    const backendUrl = 'https://random-8jtr0timo8xt8.vertraweb.app';
+    const BOT_CLIENT_ID = '1466550471920713933';
+
+    // Particles
+    const canvas = document.getElementById('particles');
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-
-    class Particle {
-      constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 3 + 1;
-        this.speedX = Math.random() * 2 - 1;
-        this.speedY = Math.random() * 2 - 1;
-      }
-      update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
-      }
-      draw() {
-        ctx.fillStyle = 'rgba(220,30,30,0.8)';
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
     let particles = [];
-    function initParticles() {
-      particles = [];
-      for (let i = 0; i < 170; i++) particles.push(new Particle());
-    }
-    function animateParticles() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(p => { p.update(); p.draw(); });
-      requestAnimationFrame(animateParticles);
-    }
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      initParticles();
-    });
-    initParticles();
-    animateParticles();
+    class Particle { constructor() { this.x = Math.random()*canvas.width; this.y = Math.random()*canvas.height; this.size = Math.random()*2.6+0.6; this.speedX = Math.random()*0.7-0.35; this.speedY = Math.random()*0.7-0.35; } update() { this.x += this.speedX; this.y += this.speedY; if(this.x<0||this.x>canvas.width)this.speedX*=-1; if(this.y<0||this.y>canvas.height)this.speedY*=-1; } draw() { ctx.fillStyle='rgba(220,30,30,0.8)'; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }}
+    function init(){particles=[];for(let i=0;i<170;i++)particles.push(new Particle());}
+    function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(p=>{p.update();p.draw();});requestAnimationFrame(animate);}
+    window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight;init();});
+    init(); animate();
 
-    // Atualizar visão geral ao clicar no servidor
-    function updateStats(online, total, plano) {
-      document.getElementById('membros-online').textContent = online;
-      document.getElementById('total-membros').textContent = total;
-      document.getElementById('plano-selecionado').textContent = plano;
+    // Navegação
+    document.querySelectorAll('[data-section]').forEach(item => {
+      item.addEventListener('click', e => {
+        e.preventDefault();
+        document.querySelectorAll('[data-section]').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        document.getElementById('current-section').textContent = item.textContent.trim();
+
+        document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+        document.getElementById(`${item.dataset.section}-section`).classList.remove('hidden');
+      });
+    });
+
+    function logout() {
+      if (confirm('Deseja sair?')) {
+        localStorage.removeItem('access_token');
+        location.href = 'index.html';
+      }
     }
+
+    function addTicketButton() {
+      const c = document.getElementById('tickets-botoes-container');
+      if (!c) return;
+      const d = document.createElement('div');
+      d.className = 'grid grid-cols-1 sm:grid-cols-4 gap-4 bg-black/40 p-5 rounded-xl';
+      d.innerHTML = `
+        <input type="text" placeholder="Label" class="p-3 rounded-xl bg-black/60 border border-red-800">
+        <input type="text" placeholder="Emoji (ex: 🎫)" class="p-3 rounded-xl bg-black/60 border border-red-800">
+        <input type="text" placeholder="Descrição curta" class="p-3 rounded-xl bg-black/60 border border-red-800 sm:col-span-2">
+        <button onclick="this.parentElement.remove()" class="bg-red-950 hover:bg-red-900 px-6 py-3 rounded-xl col-span-full sm:col-auto">Remover</button>
+      `;
+      c.appendChild(d);
+    }
+
+    // Inicialização
+    window.onload = async () => {
+      const token = localStorage.getItem('access_token');
+      if (!token) return logout();
+
+      try {
+        const user = await (await fetch('https://discord.com/api/users/@me', { headers: { Authorization: `Bearer ${token}` } })).json();
+        document.getElementById('user-avatar').src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128`;
+        document.getElementById('user-name').textContent = user.global_name || user.username;
+        document.getElementById('user-id').textContent = `ID: ${user.id}`;
+
+        const guilds = await (await fetch('https://discord.com/api/users/@me/guilds?with_counts=true', { headers: { Authorization: `Bearer ${token}` } })).json();
+
+        const select = document.getElementById('guild-select');
+        const list = document.getElementById('guild-list');
+        let adminCount = 0, totalOnline = 0, totalMembers = 0;
+
+        guilds.forEach(g => {
+          if ((g.permissions & 0x8) !== 0x8) return;
+
+          adminCount++;
+          totalOnline += g.approximate_presence_count || 0;
+          totalMembers += g.approximate_member_count || 0;
+
+          const opt = document.createElement('option');
+          opt.value = g.id;
+          opt.textContent = g.name;
+          select.appendChild(opt);
+
+          const card = document.createElement('div');
+          card.className = 'guild-card bg-black/50 p-5 rounded-xl cursor-pointer';
+          card.dataset.guildId = g.id;
+          card.innerHTML = `
+            <div class="flex items-center gap-4 mb-3">
+              ${g.icon ? `<img src="https://cdn.discordapp.com/icons/${g.id}/${g.icon}.png?size=64" class="w-14 h-14 rounded-full border-2 border-red-800">` : '<div class="w-14 h-14 bg-red-900 rounded-full flex items-center justify-center text-2xl font-bold">V</div>'}
+              <div>
+                <h5 class="text-lg font-bold neon">${g.name}</h5>
+                <p class="text-xs text-red-400">ID: ${g.id}</p>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 text-sm gap-2">
+              <p>Membros: <strong>${g.approximate_member_count || '—'}</strong></p>
+              <p>Online: <strong>${g.approximate_presence_count || '—'}</strong></p>
+            </div>
+          `;
+          card.onclick = () => {
+            document.querySelectorAll('.guild-card').forEach(c => c.classList.remove('selected-guild'));
+            card.classList.add('selected-guild');
+            select.value = g.id;
+            select.dispatchEvent(new Event('change'));
+          };
+          list.appendChild(card);
+        });
+
+        document.getElementById('guild-count').textContent = adminCount;
+        document.getElementById('active-members').textContent = totalOnline.toLocaleString();
+        document.getElementById('total-members').textContent = totalMembers.toLocaleString();
+
+        // Evento de mudança de servidor
+        select.onchange = async () => {
+          const gid = select.value;
+          if (!gid) {
+            document.getElementById('save-container').classList.add('hidden');
+            document.getElementById('selected-guild-info').classList.add('hidden');
+            document.getElementById('premium-upgrade').classList.add('hidden');
+            document.getElementById('invite-bot-container').classList.add('hidden');
+            document.querySelectorAll('section:not(#overview-section)').forEach(s => s.classList.add('premium-lock'));
+            return;
+          }
+
+          document.getElementById('selected-guild-info').classList.remove('hidden');
+
+          const guild = guilds.find(g => g.id === gid);
+          if (guild) {
+            document.getElementById('selected-guild-icon').src = guild.icon ? `https://cdn.discordapp.com/icons/${gid}/${guild.icon}.png?size=64` : '';
+            document.getElementById('selected-guild-name').textContent = guild.name;
+            document.getElementById('selected-guild-id').textContent = `ID: ${gid}`;
+            document.getElementById('selected-guild-members').textContent = `Membros: ${guild.approximate_member_count || '—'}`;
+            document.getElementById('selected-guild-online').textContent = `Online: ${guild.approximate_presence_count || '—'}`;
+            document.getElementById('selected-guild-fragments').textContent = `Fragmentos Circulando: —`;
+
+            const isFree = FREE_GUILD_IDS.includes(gid);
+            const planText = isFree ? 'Free (Grátis)' : 'Premium Necessário';
+            document.getElementById('selected-guild-plan').textContent = `Plano: ${planText}`;
+            document.getElementById('selected-guild-plan').className = isFree ? 'text-green-400 font-bold' : 'text-red-400 font-bold';
+
+            if (isFree) {
+              document.getElementById('save-container').classList.remove('hidden');
+              document.getElementById('premium-upgrade').classList.add('hidden');
+              document.querySelectorAll('section').forEach(s => s.classList.remove('premium-lock'));
+              document.getElementById('save-btn').disabled = false;
+              document.getElementById('save-btn').textContent = 'Salvar Alterações';
+            } else {
+              document.getElementById('save-container').classList.add('hidden');
+              document.getElementById('premium-upgrade').classList.remove('hidden');
+              document.querySelectorAll('section:not(#overview-section)').forEach(s => s.classList.add('premium-lock'));
+            }
+
+            // Check if bot is in guild
+            const botInGuildRes = await fetch(`https://discord.com/api/guilds/${gid}/members/${BOT_CLIENT_ID}`, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+            const botInGuild = botInGuildRes.ok;
+            document.getElementById('invite-bot-container').classList.toggle('hidden', botInGuild);
+            document.getElementById('invite-bot-container').querySelector('a').href = `https://discord.com/oauth2/authorize?client_id=${BOT_CLIENT_ID}&scope=bot&permissions=8&guild_id=${gid}`;
+          }
+
+          // Carregar configs do backend
+          try {
+            const configRes = await fetch(`${backendUrl}/api/config?guild_id=${gid}`, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+            if (configRes.ok) {
+              const config = await configRes.json();
+              // Preencher campos (exemplo)
+              document.getElementById('general-prefix').value = config.prefix || '!';
+              // ... preencher outros
+            }
+          } catch (e) {
+            console.error('Erro ao carregar configs', e);
+          }
+        };
+
+        document.getElementById('loading').classList.add('hidden');
+        document.getElementById('content').classList.remove('hidden');
+      } catch (e) {
+        console.error(e);
+        alert('Erro ao carregar dados. Tente logar novamente.');
+        logout();
+      }
+    };
+
+    // Salvar
+    document.getElementById('save-btn').addEventListener('click', async () => {
+      const token = localStorage.getItem('access_token');
+      const gid = document.getElementById('guild-select').value;
+      if (!gid) return;
+
+      const config = {
+        guild_id: gid,
+        prefix: document.getElementById('general-prefix').value,
+        bot_enabled: document.getElementById('general-bot-enabled').checked,
+        // ... coletar outros campos
+      };
+
+      try {
+        const res = await fetch(`${backendUrl}/api/config`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify(config)
+        });
+        if (res.ok) alert('Configurações salvas com sucesso!');
+        else alert('Erro ao salvar configs.');
+      } catch (e) {
+        console.error(e);
+        alert('Erro ao salvar configs.');
+      }
+    });
   </script>
 </body>
 </html>
