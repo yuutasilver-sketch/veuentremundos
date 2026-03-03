@@ -17,6 +17,7 @@
     .category-item { cursor:pointer; padding:0.75rem 1rem; border-radius:0.75rem; transition:all 0.2s; }
     .category-item:hover { background:rgba(139,0,0,0.25); }
     .category-item.active { background:rgba(139,0,0,0.45); border-left:4px solid #ff0000; }
+    .premium-lock { position:relative; pointer-events:none; opacity:0.65; }
     .premium-lock::after { content:'🔒 Lendário'; position:absolute; inset:0; background:rgba(0,0,0,0.78); display:flex; align-items:center; justify-content:center; color:gold; font-size:1.4rem; font-weight:bold; border-radius:1rem; z-index:10; }
     .spinner { width:28px; height:28px; border:4px solid #fff; border-top-color:transparent; border-radius:50%; animation:spin 1s linear infinite; }
     @keyframes spin { to { transform:rotate(360deg); } }
@@ -26,7 +27,7 @@
 
 <canvas class="particles" id="particles"></canvas>
 
-<!-- TOP BAR (estilo ProBot: logo + selector central + user info direita) -->
+<!-- Top bar estilo ProBot -->
 <nav class="topbar fixed top-0 left-0 right-0 z-50 h-16 flex items-center px-6 shadow-2xl">
   <div class="flex items-center gap-3">
     <img src="https://cdn.discordapp.com/attachments/1428432707284762654/1477310985504034999/ideogram-v3.0_circular_gothic_arcane_logo_badge_for_discord_bot_Veu_elegant_dark_red_wine_cri-0-Photoroom.png" class="w-9 h-9 rounded-full border border-red-800" alt="Véu">
@@ -47,7 +48,7 @@
 </nav>
 
 <div class="flex pt-16">
-  <!-- SIDEBAR (estilo ProBot: categorias verticais limpas) -->
+  <!-- Sidebar estilo ProBot -->
   <aside class="w-72 bg-black/95 border-r border-red-900/50 h-[calc(100vh-4rem)] overflow-y-auto p-6 fixed md:sticky top-16">
     <div class="text-xl neon mb-6 flex items-center gap-2"><span class="text-2xl">🩸</span> Configurações</div>
     <nav class="space-y-1.5 text-sm">
@@ -71,7 +72,7 @@
     </nav>
   </aside>
 
-  <!-- CONTEÚDO PRINCIPAL -->
+  <!-- Conteúdo principal -->
   <main class="flex-1 p-6 md:p-10 overflow-y-auto min-h-screen">
     <div id="overview">
       <h1 class="text-5xl font-bold neon mb-10">Visão Geral</h1>
@@ -125,7 +126,7 @@
           </div>
         </div>
 
-        <!-- 4. Missões (Premium) -->
+        <!-- 4. Missões -->
         <div id="panel-4" class="panel glass p-8 blood-border premium-lock hidden">
           <h3 class="text-2xl neon mb-6">4. Missões</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -160,7 +161,7 @@
           </div>
         </div>
 
-        <!-- 8. Autorole (Premium) -->
+        <!-- 8. Autorole -->
         <div id="panel-8" class="panel glass p-8 blood-border premium-lock hidden">
           <h3 class="text-2xl neon mb-6">8. Autorole</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -169,7 +170,7 @@
           </div>
         </div>
 
-        <!-- 9. Anúncios (Premium) -->
+        <!-- 9. Anúncios -->
         <div id="panel-9" class="panel glass p-8 blood-border premium-lock hidden">
           <h3 class="text-2xl neon mb-6">9. Anúncios</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -188,7 +189,7 @@
           </div>
         </div>
 
-        <!-- 11. Loja de Cores (Premium) -->
+        <!-- 11. Loja de Cores -->
         <div id="panel-11" class="panel glass p-8 blood-border premium-lock hidden">
           <h3 class="text-2xl neon mb-6">11. Loja de Cores</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -204,7 +205,7 @@
           <div class="flex items-center"><input id="gifts-enabled" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" checked /><label>Gifts Ativados</label></div>
         </div>
 
-        <!-- 13. Evento (Premium) -->
+        <!-- 13. Evento -->
         <div id="panel-13" class="panel glass p-8 blood-border premium-lock hidden">
           <h3 class="text-2xl neon mb-6">13. Evento</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -249,13 +250,12 @@
         </div>
       </div>
 
-      <!-- Botão Salvar fixo -->
       <div class="mt-16 sticky bottom-8 z-40">
         <button id="save-btn" class="w-full bg-gradient-to-r from-red-700 to-red-600 hover:from-red-600 hover:to-red-500 py-6 rounded-3xl text-2xl font-bold neon flex items-center justify-center gap-4 shadow-2xl">
           <span id="save-text">SALVAR TODAS AS CONFIGURAÇÕES</span>
           <div id="save-spinner" class="hidden spinner"></div>
         </button>
-        <div id="save-success" class="hidden mt-4 text-center text-green-400 text-2xl font-bold animate-pulse">✅ Salvo com sucesso! Recarregando...</div>
+        <div id="save-success" class="hidden mt-4 text-center text-green-400 text-2xl font-bold animate-pulse">✅ Salvo! Recarregando...</div>
         <div id="save-error" class="hidden mt-4 text-center text-red-400 text-xl"></div>
       </div>
     </div>
@@ -268,7 +268,7 @@ let token = localStorage.getItem('access_token') || localStorage.getItem('token'
 let currentGuildId = null;
 const OWNER_ID = "551080982493528106";
 
-// Partículas vermelhas (mantém o tema vampírico)
+// Partículas vampíricas
 const canvas = document.getElementById('particles');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth; canvas.height = window.innerHeight;
@@ -277,7 +277,7 @@ let particles = []; for(let i=0;i<180;i++) particles.push(new Particle());
 function animate() { ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.update();p.draw();}); requestAnimationFrame(animate); }
 animate();
 
-// Navegação entre painéis (estilo ProBot: clique na sidebar muda o conteúdo)
+// Navegação
 document.querySelectorAll('.category-item').forEach(item => {
   item.addEventListener('click', () => {
     document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active'));
@@ -325,88 +325,93 @@ async function loadDashboard() {
     grid.appendChild(card);
   });
 
-  // Libera TUDO para o dono (seu ID)
   if (user.id === OWNER_ID) {
     document.querySelectorAll('.premium-lock').forEach(el => el.classList.remove('premium-lock'));
     document.getElementById('user-plan').textContent = 'Lendário (Dono)';
   }
 }
 
-// Carregar configs do servidor
+// Carregar configs
 async function loadServerConfig(guildId) {
   currentGuildId = guildId;
   document.getElementById('overview').classList.add('hidden');
   document.getElementById('config-area').classList.remove('hidden');
 
-  const res = await fetch(`${backendUrl}/api/config`, { headers: { Authorization: `Bearer ${token}` } });
-  const all = await res.json();
-  const g = all[guildId] || {};
+  try {
+    const res = await fetch(`${backendUrl}/api/config`, { headers: { Authorization: `Bearer ${token}` } });
+    if (!res.ok) throw new Error(`Erro ao carregar configs: ${res.status}`);
+    const all = await res.json();
+    const g = all[guildId] || {};
 
-  document.getElementById('selected-server-name').textContent = `— ${document.querySelector(`#server-select option[value="${guildId}"]`).textContent}`;
+    document.getElementById('selected-server-name').textContent = `— ${document.querySelector(`#server-select option[value="${guildId}"]`).textContent}`;
 
-  // Preenche todos os campos (chaves exatas do seu backend)
-  document.getElementById('general-prefix').value = g.general?.prefix || '!';
-  document.getElementById('general-bot-enabled').checked = g.general?.bot_enabled !== false;
+    // Preenche campos
+    document.getElementById('general-prefix').value = g.general?.prefix || '!';
+    document.getElementById('general-bot-enabled').checked = g.general?.bot_enabled !== false;
 
-  document.getElementById('economia-daily-min').value = g.economia?.daily_min ?? 100;
-  document.getElementById('economia-daily-max').value = g.economia?.daily_max ?? 500;
-  document.getElementById('economia-vip-bonus').value = g.economia?.vip_bonus ?? 1.5;
-  document.getElementById('economia-work-cooldown').value = g.economia?.work_cooldown ?? 3600;
+    document.getElementById('economia-daily-min').value = g.economia?.daily_min ?? 100;
+    document.getElementById('economia-daily-max').value = g.economia?.daily_max ?? 500;
+    document.getElementById('economia-vip-bonus').value = g.economia?.vip_bonus ?? 1.5;
+    document.getElementById('economia-work-cooldown').value = g.economia?.work_cooldown ?? 3600;
 
-  document.getElementById('levels-enabled').checked = g.levels?.enabled !== false;
-  document.getElementById('levels-announce-channel').value = g.levels?.announce_channel || '';
-  document.getElementById('levels-xp-min').value = g.levels?.xp_min ?? 15;
-  document.getElementById('levels-xp-max').value = g.levels?.xp_max ?? 25;
-  document.getElementById('levels-cooldown').value = g.levels?.cooldown ?? 60;
+    document.getElementById('levels-enabled').checked = g.levels?.enabled !== false;
+    document.getElementById('levels-announce-channel').value = g.levels?.announce_channel || '';
+    document.getElementById('levels-xp-min').value = g.levels?.xp_min ?? 15;
+    document.getElementById('levels-xp-max').value = g.levels?.xp_max ?? 25;
+    document.getElementById('levels-cooldown').value = g.levels?.cooldown ?? 60;
 
-  document.getElementById('missoes-enabled').checked = g.missoes?.enabled !== false;
-  document.getElementById('missoes-daily').value = JSON.stringify(g.missoes?.daily || [], null, 2);
-  document.getElementById('missoes-weekly').value = JSON.stringify(g.missoes?.weekly || [], null, 2);
+    document.getElementById('missoes-enabled').checked = g.missoes?.enabled !== false;
+    document.getElementById('missoes-daily').value = JSON.stringify(g.missoes?.daily || [], null, 2);
+    document.getElementById('missoes-weekly').value = JSON.stringify(g.missoes?.weekly || [], null, 2);
 
-  document.getElementById('ranking-max-users').value = g.ranking?.max_users ?? 50;
+    document.getElementById('ranking-max-users').value = g.ranking?.max_users ?? 50;
 
-  document.getElementById('social-enabled').checked = g.social?.enabled !== false;
-  document.getElementById('social-cooldown-marriage').value = g.social?.cooldown_marriage ?? 86400;
+    document.getElementById('social-enabled').checked = g.social?.enabled !== false;
+    document.getElementById('social-cooldown-marriage').value = g.social?.cooldown_marriage ?? 86400;
 
-  document.getElementById('anonymous-enabled').checked = g.anonymous?.enabled !== false;
-  document.getElementById('anonymous-logs').value = g.anonymous?.logs_channel || '';
-  document.getElementById('anonymous-cooldown').value = g.anonymous?.cooldown ?? 120;
+    document.getElementById('anonymous-enabled').checked = g.anonymous?.enabled !== false;
+    document.getElementById('anonymous-logs').value = g.anonymous?.logs_channel || '';
+    document.getElementById('anonymous-cooldown').value = g.anonymous?.cooldown ?? 120;
 
-  document.getElementById('autorole-time-roles').value = JSON.stringify(g.autorole?.time_roles || [], null, 2);
-  document.getElementById('autorole-vip').value = g.autorole?.vip_role || '';
+    document.getElementById('autorole-time-roles').value = JSON.stringify(g.autorole?.time_roles || [], null, 2);
+    document.getElementById('autorole-vip').value = g.autorole?.vip_role || '';
 
-  document.getElementById('announce-enabled').checked = g.announce?.enabled !== false;
-  document.getElementById('announce-channel').value = g.announce?.channel || '';
-  document.getElementById('announce-message').value = g.announce?.message || 'Bem-vindo ao Véu! Use /ajuda para comandos.';
+    document.getElementById('announce-enabled').checked = g.announce?.enabled !== false;
+    document.getElementById('announce-channel').value = g.announce?.channel || '';
+    document.getElementById('announce-message').value = g.announce?.message || 'Bem-vindo ao Véu! Use /ajuda para comandos.';
 
-  document.getElementById('loja-enabled').checked = g.loja?.enabled !== false;
-  document.getElementById('loja-itens').value = JSON.stringify(g.loja?.itens || {}, null, 2);
+    document.getElementById('loja-enabled').checked = g.loja?.enabled !== false;
+    document.getElementById('loja-itens').value = JSON.stringify(g.loja?.itens || {}, null, 2);
 
-  document.getElementById('loja-cor-enabled').checked = g.loja_cor?.enabled !== false;
-  document.getElementById('loja-cor-colors').value = JSON.stringify(g.loja_cor?.colors || {}, null, 2);
-  document.getElementById('loja-cor-vip-discount').value = g.loja_cor?.vip_discount ?? 0.20;
+    document.getElementById('loja-cor-enabled').checked = g.loja_cor?.enabled !== false;
+    document.getElementById('loja-cor-colors').value = JSON.stringify(g.loja_cor?.colors || {}, null, 2);
+    document.getElementById('loja-cor-vip-discount').value = g.loja_cor?.vip_discount ?? 0.20;
 
-  document.getElementById('gifts-enabled').checked = g.gifts?.enabled !== false;
+    document.getElementById('gifts-enabled').checked = g.gifts?.enabled !== false;
 
-  document.getElementById('evento-enabled').checked = g.evento?.enabled !== false;
-  document.getElementById('evento-drops-chance').value = g.evento?.drops_chance ?? 1.0;
-  document.getElementById('evento-drops-min').value = g.evento?.drops_min ?? 50;
-  document.getElementById('evento-drops-max').value = g.evento?.drops_max ?? 200;
+    document.getElementById('evento-enabled').checked = g.evento?.enabled !== false;
+    document.getElementById('evento-drops-chance').value = g.evento?.drops_chance ?? 1.0;
+    document.getElementById('evento-drops-min').value = g.evento?.drops_min ?? 50;
+    document.getElementById('evento-drops-max').value = g.evento?.drops_max ?? 200;
 
-  document.getElementById('call-manager-enabled').checked = g.call_manager?.enabled !== false;
-  document.getElementById('perfil-enabled').checked = g.perfil?.enabled !== false;
+    document.getElementById('call-manager-enabled').checked = g.call_manager?.enabled !== false;
+    document.getElementById('perfil-enabled').checked = g.perfil?.enabled !== false;
 
-  document.getElementById('tickets-enabled').checked = g.ticket?.enabled !== false;
-  document.getElementById('tickets-panel-canal').value = g.ticket?.panel_channel || '';
-  document.getElementById('tickets-panel-text').value = g.ticket?.panel_text || 'Selecione o tipo de atendimento.';
-  document.getElementById('tickets-panel-image').value = g.ticket?.panel_image || '';
-  document.getElementById('tickets-botoes').value = JSON.stringify(g.ticket?.buttons || [], null, 2);
+    document.getElementById('tickets-enabled').checked = g.ticket?.enabled !== false;
+    document.getElementById('tickets-panel-canal').value = g.ticket?.panel_channel || '';
+    document.getElementById('tickets-panel-text').value = g.ticket?.panel_text || 'Selecione o tipo de atendimento.';
+    document.getElementById('tickets-panel-image').value = g.ticket?.panel_image || '';
+    document.getElementById('tickets-botoes').value = JSON.stringify(g.ticket?.buttons || [], null, 2);
 
-  document.getElementById('premium-ativo').checked = !!g.premium?.ativo;
-  document.getElementById('premium-expira').value = g.premium?.expira || '';
-};
+    document.getElementById('premium-ativo').checked = !!g.premium?.ativo;
+    document.getElementById('premium-expira').value = g.premium?.expira || '';
+  } catch(e) {
+    console.error('Erro ao carregar configs:', e);
+    alert('Erro ao carregar configurações: ' + e.message);
+  }
+}
 
-// SALVAR CONFIGURAÇÕES (com recarregamento automático para confirmar persistência)
+// Salvar
 document.getElementById('save-btn').addEventListener('click', async () => {
   if(!currentGuildId) return alert('Selecione um servidor primeiro');
 
@@ -446,13 +451,14 @@ document.getElementById('save-btn').addEventListener('click', async () => {
       document.getElementById('save-success').classList.remove('hidden');
       setTimeout(() => {
         document.getElementById('save-success').classList.add('hidden');
-        loadServerConfig(currentGuildId); // recarrega configs para confirmar persistência
-      }, 4000);
+        loadServerConfig(currentGuildId); // recarrega para confirmar
+      }, 3000);
     } else {
-      throw new Error(await res.text());
+      const errorText = await res.text();
+      throw new Error(`Status ${res.status}: ${errorText}`);
     }
   } catch(e) {
-    console.error(e);
+    console.error('Erro completo ao salvar:', e);
     document.getElementById('save-error').textContent = 'Erro ao salvar: ' + e.message;
     document.getElementById('save-error').classList.remove('hidden');
   } finally {
