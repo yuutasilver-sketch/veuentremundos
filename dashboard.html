@@ -26,8 +26,11 @@
     .selected-server { border: 3px solid #ff0000 !important; box-shadow: 0 0 30px #ff0000 !important; background: rgba(139,0,0,0.15); }
     .premium-lock { position: relative; pointer-events: none; opacity: 0.7; }
     .premium-lock::after { content: '🔒 Premium'; position: absolute; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center; color: gold; font-size: 1.8rem; font-weight: bold; border-radius: 1rem; }
-    #config-area { opacity: 0.45; pointer-events: none; transition: opacity 0.4s; }
-    #config-area.active { opacity: 1; pointer-events: auto; }
+    .category-item { cursor: pointer; padding: 1rem; border-radius: 0.75rem; transition: all 0.2s; }
+    .category-item:hover { background: rgba(139,0,0,0.3); }
+    .category-item.active { background: rgba(139,0,0,0.5); border-left: 4px solid #ff0000; }
+    #config-area { display: none; }
+    #overview { display: block; }
   </style>
 </head>
 <body>
@@ -35,319 +38,428 @@
   <canvas class="particles"></canvas>
 
   <div class="flex flex-col md:flex-row min-h-screen">
-    <!-- Sidebar -->
-    <aside class="w-full md:w-64 bg-black/90 border-b md:border-r border-red-900/50 p-6 overflow-y-auto md:sticky md:top-0 md:h-screen">
+    <!-- Sidebar esquerdo com menu de categorias -->
+    <aside class="w-full md:w-72 bg-black/90 border-b md:border-r border-red-900/50 p-6 md:sticky md:top-0 md:h-screen overflow-y-auto">
       <div class="flex items-center mb-10">
         <img src="https://cdn.discordapp.com/attachments/1428432707284762654/1477310985504034999/ideogram-v3.0_circular_gothic_arcane_logo_badge_for_discord_bot_Veu_elegant_dark_red_wine_cri-0-Photoroom.png" alt="Véu" class="w-12 h-12 rounded-full mr-3">
         <h1 class="text-2xl font-bold neon">Véu Dashboard</h1>
       </div>
 
-      <nav class="space-y-3">
-        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg bg-red-900/30 active"><span class="mr-3 text-xl">🏠</span> Visão Geral</a>
-        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg"><span class="mr-3 text-xl">⚙️</span> Configurações Gerais</a>
-        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg"><span class="mr-3 text-xl">🎫</span> Sistema de Tickets</a>
-        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg"><span class="mr-3 text-xl">🤖</span> AutoRole</a>
-        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg"><span class="mr-3 text-xl">📢</span> Anúncios Automáticos</a>
-        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg"><span class="mr-3 text-xl">📈</span> Sistema de Níveis</a>
-        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg"><span class="mr-3 text-xl">💎</span> Economia & Fragmentos</a>
-        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg"><span class="mr-3 text-xl">🛒</span> Loja de Itens</a>
-        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg"><span class="mr-3 text-xl">🎨</span> Loja de Cores</a>
-        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg"><span class="mr-3 text-xl">🎁</span> Sistema de Presentes</a>
-        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg"><span class="mr-3 text-xl">✨</span> Missões</a>
-        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg"><span class="mr-3 text-xl">🏆</span> Ranking</a>
-        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg"><span class="mr-3 text-xl">❤️</span> Sistema Social</a>
-        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg"><span class="mr-3 text-xl">🕯️</span> Confissões Anônimas</a>
-        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg"><span class="mr-3 text-xl">🎙️</span> Tempo em Chamadas</a>
-        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg"><span class="mr-3 text-xl">🎉</span> Eventos & Drops</a>
-        <a href="#" class="sidebar-item flex items-center p-3 rounded-lg"><span class="mr-3 text-xl">👤</span> Perfis Personalizados</a>
+      <nav id="category-menu" class="space-y-2 hidden">
+        <div class="text-xl neon mb-4">Configurações do Servidor</div>
+        <div class="category-item active" data-panel="1">1. Geral</div>
+        <div class="category-item" data-panel="2">2. Economia</div>
+        <div class="category-item" data-panel="3">3. Níveis</div>
+        <div class="category-item" data-panel="4">4. Missões</div>
+        <div class="category-item" data-panel="5">5. Ranking</div>
+        <div class="category-item" data-panel="6">6. Social</div>
+        <div class="category-item" data-panel="7">7. Anônimo</div>
+        <div class="category-item" data-panel="8">8. Autorole</div>
+        <div class="category-item" data-panel="9">9. Anúncios</div>
+        <div class="category-item" data-panel="10">10. Loja</div>
+        <div class="category-item" data-panel="11">11. Loja de Cores</div>
+        <div class="category-item" data-panel="12">12. Gifts</div>
+        <div class="category-item" data-panel="13">13. Evento</div>
+        <div class="category-item" data-panel="14">14. Call Manager</div>
+        <div class="category-item" data-panel="15">15. Perfil</div>
+        <div class="category-item" data-panel="16">16. Ticket</div>
+        <div class="category-item" data-panel="17">17. Premium / Loja</div>
       </nav>
     </aside>
 
     <!-- Conteúdo principal -->
-    <main class="flex-1 p-6 md:p-10">
-      <header class="mb-10">
-        <h2 class="text-4xl font-bold neon mb-2">Visão Geral</h2>
-      </header>
+    <main class="flex-1 p-6 md:p-10 overflow-y-auto">
+      <!-- Visão Geral -->
+      <div id="overview">
+        <header class="mb-10">
+          <h2 class="text-4xl font-bold neon mb-2">Visão Geral</h2>
+        </header>
 
-      <!-- Perfil do usuário -->
-      <div class="glass p-6 mb-10 blood-border">
-        <div class="flex items-center gap-6">
-          <img id="user-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar" class="w-20 h-20 rounded-full border-4 border-red-800">
-          <div>
-            <p id="user-name" class="text-3xl neon">Carregando...</p>
-            <p id="user-id" class="text-sm opacity-80 mt-1">ID: Carregando...</p>
-            <p id="admin-servers" class="text-sm opacity-80 mt-1">Você administra 0 servidores</p>
+        <div class="glass p-6 mb-10 blood-border">
+          <div class="flex items-center gap-6">
+            <img id="user-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar" class="w-20 h-20 rounded-full border-4 border-red-800">
+            <div>
+              <p id="user-name" class="text-3xl neon">Carregando...</p>
+              <p id="user-id" class="text-sm opacity-80 mt-1">ID: Carregando...</p>
+              <p id="admin-servers" class="text-sm opacity-80 mt-1">Você administra 0 servidores</p>
+            </div>
           </div>
         </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <div class="glass p-8 text-center blood-border">
+            <p id="membros-online" class="text-6xl font-bold neon">0</p>
+            <p class="mt-3 text-lg">Membros online (aprox.)</p>
+          </div>
+          <div class="glass p-8 text-center blood-border">
+            <p id="total-membros" class="text-6xl font-bold neon">0</p>
+            <p class="mt-3 text-lg">Total de membros</p>
+          </div>
+          <div class="glass p-8 text-center blood-border">
+            <p id="plano-selecionado" class="text-6xl font-bold neon">Free</p>
+            <p class="mt-3 text-lg">Plano selecionado</p>
+          </div>
+        </div>
+
+        <div class="glass p-8 blood-border">
+          <h3 class="text-2xl neon mb-6">Seus servidores administráveis</h3>
+          <div id="guild-list" class="flex flex-col gap-6"></div>
+        </div>
       </div>
 
-      <!-- Visão Geral quadrados -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <div class="glass p-8 text-center blood-border">
-          <p id="membros-online" class="text-6xl font-bold neon">0</p>
-          <p class="mt-3 text-lg">Membros online (aprox.)</p>
-        </div>
-        <div class="glass p-8 text-center blood-border">
-          <p id="total-membros" class="text-6xl font-bold neon">0</p>
-          <p class="mt-3 text-lg">Total de membros</p>
-        </div>
-        <div class="glass p-8 text-center blood-border">
-          <p id="plano-selecionado" class="text-6xl font-bold neon">Free</p>
-          <p class="mt-3 text-lg">Plano selecionado</p>
-        </div>
-      </div>
-
-      <!-- Lista de servidores -->
-      <div class="glass p-8 blood-border mb-12">
-        <h3 class="text-2xl neon mb-6">Seus servidores administráveis</h3>
-        <div id="guild-list" class="flex flex-col gap-6"></div>
-      </div>
-
-      <!-- Configurações (bloqueadas até selecionar servidor) -->
-      <section id="config-area">
+      <!-- Área de configurações -->
+      <section id="config-area" class="mt-12 hidden">
         <h2 class="text-3xl neon mb-8 text-center">Configurações do Servidor Selecionado <span id="selected-server-name" class="text-xl opacity-70"></span></h2>
-        <div class="space-y-8">
 
-          <!-- 1. Geral -->
-          <div class="glass p-8 blood-border">
-            <input type="checkbox" id="sec1" class="hidden accordion">
-            <label for="sec1" class="flex justify-between items-center cursor-pointer text-2xl neon">
-              1. Geral <span>▼</span>
-            </label>
-            <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- 1. Geral -->
+        <div id="panel-1" class="config-panel glass p-8 blood-border">
+          <input type="checkbox" id="sec1" class="hidden accordion">
+          <label for="sec1" class="flex justify-between items-center cursor-pointer text-2xl neon">
+            1. Geral <span>▼</span>
+          </label>
+          <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block mb-2 text-lg">Prefixo do Bot</label>
+              <input id="general-prefix" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="!" />
+            </div>
+            <div class="flex items-center pt-10">
+              <input id="general-bot-enabled" type="checkbox" class="w-6 h-6 mr-3" checked />
+              <label class="text-lg">Bot Ativado no Servidor</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Economia -->
+        <div id="panel-2" class="config-panel glass p-8 blood-border premium-lock hidden">
+          <input type="checkbox" id="sec2" class="hidden accordion">
+          <label for="sec2" class="flex justify-between items-center cursor-pointer text-2xl neon">
+            2. Economia <span>▼</span>
+          </label>
+          <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block mb-2 text-lg">Daily Mínimo</label>
+              <input id="economia-daily-min" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="100" />
+            </div>
+            <div>
+              <label class="block mb-2 text-lg">Daily Máximo</label>
+              <input id="economia-daily-max" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="500" />
+            </div>
+            <div>
+              <label class="block mb-2 text-lg">Bônus VIP Daily</label>
+              <input id="economia-vip-bonus" type="number" step="0.1" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="1.5" />
+            </div>
+            <div>
+              <label class="block mb-2 text-lg">Work Cooldown (segundos)</label>
+              <input id="economia-work-cooldown" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="3600" />
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Níveis -->
+        <div id="panel-3" class="config-panel glass p-8 blood-border hidden">
+          <input type="checkbox" id="sec3" class="hidden accordion">
+          <label for="sec3" class="flex justify-between items-center cursor-pointer text-2xl neon">
+            3. Níveis <span>▼</span>
+          </label>
+          <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="flex items-center">
+              <input id="levels-enabled" type="checkbox" class="w-6 h-6 mr-3" checked />
+              <label class="text-lg">Níveis Ativados</label>
+            </div>
+            <div>
+              <label class="block mb-2 text-lg">Canal de Anúncio de Level Up</label>
+              <input id="levels-announce-channel" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" placeholder="ID do canal" />
+            </div>
+            <div>
+              <label class="block mb-2 text-lg">XP Mínimo por Mensagem</label>
+              <input id="levels-xp-min" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="15" />
+            </div>
+            <div>
+              <label class="block mb-2 text-lg">XP Máximo por Mensagem</label>
+              <input id="levels-xp-max" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="25" />
+            </div>
+            <div>
+              <label class="block mb-2 text-lg">Cooldown de XP (segundos)</label>
+              <input id="levels-cooldown" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="60" />
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Missões -->
+        <div id="panel-4" class="config-panel glass p-8 blood-border premium-lock hidden">
+          <input type="checkbox" id="sec4" class="hidden accordion">
+          <label for="sec4" class="flex justify-between items-center cursor-pointer text-2xl neon">
+            4. Missões <span>▼</span>
+          </label>
+          <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="flex items-center">
+              <input id="missoes-enabled" type="checkbox" class="w-6 h-6 mr-3" checked />
+              <label class="text-lg">Missões Ativadas</label>
+            </div>
+            <div>
+              <label class="block mb-2 text-lg">Missões Diárias (JSON)</label>
+              <textarea id="missoes-daily" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">[{"nome":"Mensageiro do Véu","tipo":"mensagens","meta":50,"recompensa":200}]</textarea>
+            </div>
+            <div>
+              <label class="block mb-2 text-lg">Missões Semanais (JSON)</label>
+              <textarea id="missoes-weekly" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">[{"nome":"Explorador Semanal","tipo":"tempo_call","meta":3600,"recompensa":1000}]</textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Ranking -->
+        <div id="panel-5" class="config-panel glass p-8 blood-border hidden">
+          <input type="checkbox" id="sec5" class="hidden accordion">
+          <label for="sec5" class="flex justify-between items-center cursor-pointer text-2xl neon">
+            5. Ranking <span>▼</span>
+          </label>
+          <div class="accordion-content mt-6">
+            <div>
+              <label class="block mb-2 text-lg">Máximo de Usuários no Ranking</label>
+              <input id="ranking-max-users" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="50" />
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. Social -->
+        <div id="panel-6" class="config-panel glass p-8 blood-border hidden">
+          <input type="checkbox" id="sec6" class="hidden accordion">
+          <label for="sec6" class="flex justify-between items-center cursor-pointer text-2xl neon">
+            6. Social <span>▼</span>
+          </label>
+          <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="flex items-center">
+              <input id="social-enabled" type="checkbox" class="w-6 h-6 mr-3" checked />
+              <label class="text-lg">Social Ativado</label>
+            </div>
+            <div>
+              <label class="block mb-2 text-lg">Cooldown de Casamento (segundos)</label>
+              <input id="social-cooldown-marriage" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="86400" />
+            </div>
+          </div>
+        </div>
+
+        <!-- 7. Anônimo -->
+        <div id="panel-7" class="config-panel glass p-8 blood-border hidden">
+          <input type="checkbox" id="sec7" class="hidden accordion">
+          <label for="sec7" class="flex justify-between items-center cursor-pointer text-2xl neon">
+            7. Anônimo <span>▼</span>
+          </label>
+          <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="flex items-center">
+              <input id="anonymous-enabled" type="checkbox" class="w-6 h-6 mr-3" checked />
+              <label class="text-lg">Anônimo Ativado</label>
+            </div>
+            <div>
+              <label class="block mb-2 text-lg">Canal de Logs Anônimos</label>
+              <input id="anonymous-logs" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" placeholder="ID do canal" />
+            </div>
+            <div>
+              <label class="block mb-2 text-lg">Cooldown Anônimo (segundos)</label>
+              <input id="anonymous-cooldown" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="120" />
+            </div>
+          </div>
+        </div>
+
+        <!-- 8. Autorole -->
+        <div id="panel-8" class="config-panel glass p-8 blood-border premium-lock hidden">
+          <input type="checkbox" id="sec8" class="hidden accordion">
+          <label for="sec8" class="flex justify-between items-center cursor-pointer text-2xl neon">
+            8. Autorole <span>▼</span>
+          </label>
+          <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block mb-2 text-lg">Cargos por Tempo de Conta (JSON)</label>
+              <textarea id="autorole-time-roles" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">[{"days":30,"role_id":"123456789"}]</textarea>
+            </div>
+            <div>
+              <label class="block mb-2 text-lg">Cargo VIP Automático</label>
+              <input id="autorole-vip" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" placeholder="ID do cargo" />
+            </div>
+          </div>
+        </div>
+
+        <!-- 9. Anúncios -->
+        <div id="panel-9" class="config-panel glass p-8 blood-border hidden">
+          <input type="checkbox" id="sec9" class="hidden accordion">
+          <label for="sec9" class="flex justify-between items-center cursor-pointer text-2xl neon">
+            9. Anúncios <span>▼</span>
+          </label>
+          <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="flex items-center">
+              <input id="announce-enabled" type="checkbox" class="w-6 h-6 mr-3" checked />
+              <label class="text-lg">Anúncios Ativados</label>
+            </div>
+            <div>
+              <label class="block mb-2 text-lg">Canal de Anúncios</label>
+              <input id="announce-channel" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" placeholder="ID do canal" />
+            </div>
+            <div>
+              <label class="block mb-2 text-lg">Mensagem de Anúncio</label>
+              <input id="announce-message" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="Bem-vindo ao Véu! Use /ajuda para comandos." />
+            </div>
+          </div>
+        </div>
+
+        <!-- 10. Loja -->
+        <div id="panel-10" class="config-panel glass p-8 blood-border hidden">
+          <input type="checkbox" id="sec10" class="hidden accordion">
+          <label for="sec10" class="flex justify-between items-center cursor-pointer text-2xl neon">
+            10. Loja <span>▼</span>
+          </label>
+          <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="flex items-center">
+              <input id="loja-enabled" type="checkbox" class="mr-2" checked />
+              <label class="text-lg">Loja Ativada</label>
+            </div>
+            <div>
+              <label class="block mb-2 text-lg">Itens da Loja (JSON)</label>
+              <textarea id="loja-itens" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">{"rosa":{"preco":100,"descricao":"Rosa Eterna"}}</textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- 11. Loja de Cores -->
+        <div id="panel-11" class="config-panel glass p-8 blood-border premium-lock hidden">
+          <input type="checkbox" id="sec11" class="hidden accordion">
+          <label for="sec11" class="flex justify-between items-center cursor-pointer text-2xl neon">
+            11. Loja de Cores <span>▼</span>
+          </label>
+          <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="flex items-center">
+              <input id="loja-cor-enabled" type="checkbox" class="mr-2" checked />
+              <label class="text-lg">Loja de Cores Ativada</label>
+            </div>
+            <div>
+              <label class="block mb-2 text-lg">Cores Disponíveis (JSON)</label>
+              <textarea id="loja-cor-colors" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">{"Violeta do Véu":{"price":1500,"hex":0x8e44ad}}</textarea>
+            </div>
+            <div>
+              <label class="block mb-2 text-lg">Desconto VIP</label>
+              <input id="loja-cor-vip-discount" type="number" step="0.01" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="0.20" />
+            </div>
+          </div>
+        </div>
+
+        <!-- 12. Gifts -->
+        <div id="panel-12" class="config-panel glass p-8 blood-border hidden">
+          <input type="checkbox" id="sec12" class="hidden accordion">
+          <label for="sec12" class="flex justify-between items-center cursor-pointer text-2xl neon">
+            12. Gifts <span>▼</span>
+          </label>
+          <div class="accordion-content mt-6">
+            <div class="flex items-center">
+              <input id="gifts-enabled" type="checkbox" class="mr-2" checked />
+              <label class="text-lg">Gifts Ativados</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- 13. Evento -->
+        <div id="panel-13" class="config-panel glass p-8 blood-border hidden">
+          <input type="checkbox" id="sec13" class="hidden accordion">
+          <label for="sec13" class="flex justify-between items-center cursor-pointer text-2xl neon">
+            13. Evento <span>▼</span>
+          </label>
+          <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="flex items-center">
+              <input id="evento-enabled" type="checkbox" class="mr-2" checked />
+              <label class="text-lg">Evento Ativado</label>
+            </div>
+            <div>
+              <label class="block mb-2 text-lg">Chance de Drops (%)</label>
+              <input id="evento-drops-chance" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="1.0" />
+            </div>
+            <div>
+              <label class="block mb-2 text-lg">Drops Mínimo</label>
+              <input id="evento-drops-min" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="50" />
+            </div>
+            <div>
+              <label class="block mb-2 text-lg">Drops Máximo</label>
+              <input id="evento-drops-max" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="200" />
+            </div>
+          </div>
+        </div>
+
+        <!-- 14. Call Manager -->
+        <div id="panel-14" class="config-panel glass p-8 blood-border hidden">
+          <input type="checkbox" id="sec14" class="hidden accordion">
+          <label for="sec14" class="flex justify-between items-center cursor-pointer text-2xl neon">
+            14. Call Manager <span>▼</span>
+          </label>
+          <div class="accordion-content mt-6">
+            <div class="flex items-center">
+              <input id="call-manager-enabled" type="checkbox" class="mr-2" checked />
+              <label class="text-lg">Call Manager Ativado</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- 15. Perfil -->
+        <div id="panel-15" class="config-panel glass p-8 blood-border hidden">
+          <input type="checkbox" id="sec15" class="hidden accordion">
+          <label for="sec15" class="flex justify-between items-center cursor-pointer text-2xl neon">
+            15. Perfil <span>▼</span>
+          </label>
+          <div class="accordion-content mt-6">
+            <div class="flex items-center">
+              <input id="perfil-enabled" type="checkbox" class="mr-2" checked />
+              <label class="text-lg">Perfil Ativado</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- 16. Ticket -->
+        <div id="panel-16" class="config-panel glass p-8 blood-border hidden">
+          <input type="checkbox" id="sec16" class="hidden accordion">
+          <label for="sec16" class="flex justify-between items-center cursor-pointer text-2xl neon">
+            16. Ticket <span>▼</span>
+          </label>
+          <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="flex items-center">
+              <input id="tickets-enabled" type="checkbox" class="mr-2" checked />
+              <label class="text-lg">Tickets Ativados</label>
+            </div>
+            <div>
+              <label class="block mb-2 text-lg">Canal do Painel</label>
+              <input id="tickets-panel-canal" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" placeholder="ID do canal" />
+            </div>
+            <div>
+              <label class="block mb-2 text-lg">Texto do Painel</label>
+              <input id="tickets-panel-text" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="Selecione o tipo de atendimento." />
+            </div>
+            <div>
+              <label class="block mb-2 text-lg">Imagem do Painel</label>
+              <input id="tickets-panel-image" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="https://cdn.discordapp.com/..." />
+            </div>
+            <div>
+              <label class="block mb-2 text-lg">Botões do Ticket (JSON)</label>
+              <textarea id="tickets-botoes" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">[{"label":"Denúncia","emoji":"🚨","descricao":"Abrir denúncia"},{"label":"Sugestão","emoji":"💡","descricao":"Enviar sugestão"},{"label":"Dúvida Geral","emoji":"❓","descricao":"Perguntar algo"},{"label":"Outro","emoji":"🗂️","descricao":"Outros assuntos"}]</textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- 17. Premium / Loja -->
+        <div id="panel-17" class="config-panel glass p-8 blood-border hidden">
+          <input type="checkbox" id="sec17" class="hidden accordion">
+          <label for="sec17" class="flex justify-between items-center cursor-pointer text-2xl neon">
+            17. Premium / Loja <span>▼</span>
+          </label>
+          <div class="accordion-content mt-6">
+            <div class="space-y-8">
+              <div class="flex items-center">
+                <input id="premium-ativo" type="checkbox" class="w-6 h-6 mr-3" />
+                <label class="text-lg">Ativar Premium neste servidor</label>
+              </div>
               <div>
-                <label class="block mb-2 text-lg">Prefixo do Bot</label>
-                <input id="general-prefix" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="!" />
+                <label class="block mb-2 text-lg">Expiração Premium (YYYY-MM-DD)</label>
+                <input id="premium-expira" type="date" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" />
               </div>
-              <div class="flex items-center pt-10">
-                <input id="general-bot-enabled" type="checkbox" class="w-6 h-6 mr-3" checked />
-                <label class="text-lg">Bot Ativado no Servidor</label>
-              </div>
+              <a href="loja.html" class="block text-center bg-red-900 hover:bg-red-800 p-5 rounded-xl neon text-xl mt-6">
+                Ir para a Loja e Comprar Premium
+              </a>
             </div>
           </div>
-
-          <!-- 2. Economia (Premium) -->
-          <div class="glass p-8 blood-border premium-lock">
-            <input type="checkbox" id="sec2" class="hidden accordion">
-            <label for="sec2" class="flex justify-between items-center cursor-pointer text-2xl neon">
-              2. Economia <span>▼</span>
-            </label>
-            <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div><label class="block mb-2 text-lg">Daily Mínimo</label><input id="economia-daily-min" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="100" /></div>
-              <div><label class="block mb-2 text-lg">Daily Máximo</label><input id="economia-daily-max" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="500" /></div>
-              <div><label class="block mb-2 text-lg">Bônus VIP Daily</label><input id="economia-vip-bonus" type="number" step="0.1" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="1.5" /></div>
-              <div><label class="block mb-2 text-lg">Work Cooldown (segundos)</label><input id="economia-work-cooldown" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="3600" /></div>
-            </div>
-          </div>
-
-          <!-- 3. Níveis -->
-          <div class="glass p-8 blood-border">
-            <input type="checkbox" id="sec3" class="hidden accordion">
-            <label for="sec3" class="flex justify-between items-center cursor-pointer text-2xl neon">
-              3. Níveis <span>▼</span>
-            </label>
-            <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="flex items-center"><input id="levels-enabled" type="checkbox" class="w-6 h-6 mr-3" checked /><label class="text-lg">Níveis Ativados</label></div>
-              <div><label class="block mb-2 text-lg">Canal de Anúncio de Level Up</label><input id="levels-announce-channel" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" placeholder="ID do canal" /></div>
-              <div><label class="block mb-2 text-lg">XP Mínimo por Mensagem</label><input id="levels-xp-min" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="15" /></div>
-              <div><label class="block mb-2 text-lg">XP Máximo por Mensagem</label><input id="levels-xp-max" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="25" /></div>
-              <div><label class="block mb-2 text-lg">Cooldown de XP (segundos)</label><input id="levels-cooldown" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="60" /></div>
-            </div>
-          </div>
-
-          <!-- 4. Missões (Premium) -->
-          <div class="glass p-8 blood-border premium-lock">
-            <input type="checkbox" id="sec4" class="hidden accordion">
-            <label for="sec4" class="flex justify-between items-center cursor-pointer text-2xl neon">
-              4. Missões <span>▼</span>
-            </label>
-            <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="flex items-center"><input id="missoes-enabled" type="checkbox" class="w-6 h-6 mr-3" checked /><label class="text-lg">Missões Ativadas</label></div>
-              <div><label class="block mb-2 text-lg">Missões Diárias (JSON)</label><textarea id="missoes-daily" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">[{"nome":"Mensageiro do Véu","tipo":"mensagens","meta":50,"recompensa":200}]</textarea></div>
-              <div><label class="block mb-2 text-lg">Missões Semanais (JSON)</label><textarea id="missoes-weekly" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">[{"nome":"Explorador Semanal","tipo":"tempo_call","meta":3600,"recompensa":1000}]</textarea></div>
-            </div>
-          </div>
-
-          <!-- 5. Ranking -->
-          <div class="glass p-8 blood-border">
-            <input type="checkbox" id="sec5" class="hidden accordion">
-            <label for="sec5" class="flex justify-between items-center cursor-pointer text-2xl neon">
-              5. Ranking <span>▼</span>
-            </label>
-            <div class="accordion-content mt-6">
-              <div><label class="block mb-2 text-lg">Máximo de Usuários no Ranking</label><input id="ranking-max-users" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="50" /></div>
-            </div>
-          </div>
-
-          <!-- 6. Social -->
-          <div class="glass p-8 blood-border">
-            <input type="checkbox" id="sec6" class="hidden accordion">
-            <label for="sec6" class="flex justify-between items-center cursor-pointer text-2xl neon">
-              6. Social <span>▼</span>
-            </label>
-            <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="flex items-center"><input id="social-enabled" type="checkbox" class="w-6 h-6 mr-3" checked /><label class="text-lg">Social Ativado</label></div>
-              <div><label class="block mb-2 text-lg">Cooldown de Casamento (segundos)</label><input id="social-cooldown-marriage" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="86400" /></div>
-            </div>
-          </div>
-
-          <!-- 7. Anônimo -->
-          <div class="glass p-8 blood-border">
-            <input type="checkbox" id="sec7" class="hidden accordion">
-            <label for="sec7" class="flex justify-between items-center cursor-pointer text-2xl neon">
-              7. Anônimo <span>▼</span>
-            </label>
-            <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="flex items-center"><input id="anonymous-enabled" type="checkbox" class="w-6 h-6 mr-3" checked /><label class="text-lg">Anônimo Ativado</label></div>
-              <div><label class="block mb-2 text-lg">Canal de Logs Anônimos</label><input id="anonymous-logs" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" placeholder="ID do canal" /></div>
-              <div><label class="block mb-2 text-lg">Cooldown Anônimo (segundos)</label><input id="anonymous-cooldown" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="120" /></div>
-            </div>
-          </div>
-
-          <!-- 8. Autorole (Premium) -->
-          <div class="glass p-8 blood-border premium-lock">
-            <input type="checkbox" id="sec8" class="hidden accordion">
-            <label for="sec8" class="flex justify-between items-center cursor-pointer text-2xl neon">
-              8. Autorole <span>▼</span>
-            </label>
-            <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div><label class="block mb-2 text-lg">Cargos por Tempo de Conta (JSON)</label><textarea id="autorole-time-roles" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">[{"days":30,"role_id":"123456789"}]</textarea></div>
-              <div><label class="block mb-2 text-lg">Cargo VIP Automático</label><input id="autorole-vip" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" placeholder="ID do cargo" /></div>
-            </div>
-          </div>
-
-          <!-- 9. Anúncios -->
-          <div class="glass p-8 blood-border">
-            <input type="checkbox" id="sec9" class="hidden accordion">
-            <label for="sec9" class="flex justify-between items-center cursor-pointer text-2xl neon">
-              9. Anúncios <span>▼</span>
-            </label>
-            <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="flex items-center"><input id="announce-enabled" type="checkbox" class="w-6 h-6 mr-3" checked /><label class="text-lg">Anúncios Ativados</label></div>
-              <div><label class="block mb-2 text-lg">Canal de Anúncios</label><input id="announce-channel" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" placeholder="ID do canal" /></div>
-              <div><label class="block mb-2 text-lg">Mensagem de Anúncio</label><input id="announce-message" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="Bem-vindo ao Véu! Use /ajuda para comandos." /></div>
-            </div>
-          </div>
-
-          <!-- 10. Loja -->
-          <div class="glass p-8 blood-border">
-            <input type="checkbox" id="sec10" class="hidden accordion">
-            <label for="sec10" class="flex justify-between items-center cursor-pointer text-2xl neon">
-              10. Loja <span>▼</span>
-            </label>
-            <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="flex items-center"><input id="loja-enabled" type="checkbox" class="mr-2" checked /><label class="text-lg">Loja Ativada</label></div>
-              <div><label class="block mb-2 text-lg">Itens da Loja (JSON)</label><textarea id="loja-itens" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">{"rosa":{"preco":100,"descricao":"Rosa Eterna"}}</textarea></div>
-            </div>
-          </div>
-
-          <!-- 11. Loja de Cores (Premium) -->
-          <div class="glass p-8 blood-border premium-lock">
-            <input type="checkbox" id="sec11" class="hidden accordion">
-            <label for="sec11" class="flex justify-between items-center cursor-pointer text-2xl neon">
-              11. Loja de Cores <span>▼</span>
-            </label>
-            <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="flex items-center"><input id="loja-cor-enabled" type="checkbox" class="mr-2" checked /><label class="text-lg">Loja de Cores Ativada</label></div>
-              <div><label class="block mb-2 text-lg">Cores Disponíveis (JSON)</label><textarea id="loja-cor-colors" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">{"Violeta do Véu":{"price":1500,"hex":0x8e44ad}}</textarea></div>
-              <div><label class="block mb-2 text-lg">Desconto VIP</label><input id="loja-cor-vip-discount" type="number" step="0.01" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="0.20" /></div>
-            </div>
-          </div>
-
-          <!-- 12. Gifts -->
-          <div class="glass p-8 blood-border">
-            <input type="checkbox" id="sec12" class="hidden accordion">
-            <label for="sec12" class="flex justify-between items-center cursor-pointer text-2xl neon">
-              12. Gifts <span>▼</span>
-            </label>
-            <div class="accordion-content mt-6">
-              <div class="flex items-center">
-                <input id="gifts-enabled" type="checkbox" class="mr-2" checked />
-                <label class="text-lg">Gifts Ativados</label>
-              </div>
-            </div>
-          </div>
-
-          <!-- 13. Evento -->
-          <div class="glass p-8 blood-border">
-            <input type="checkbox" id="sec13" class="hidden accordion">
-            <label for="sec13" class="flex justify-between items-center cursor-pointer text-2xl neon">
-              13. Evento <span>▼</span>
-            </label>
-            <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="flex items-center"><input id="evento-enabled" type="checkbox" class="mr-2" checked /><label class="text-lg">Evento Ativado</label></div>
-              <div><label class="block mb-2 text-lg">Chance de Drops (%)</label><input id="evento-drops-chance" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="1.0" /></div>
-              <div><label class="block mb-2 text-lg">Drops Mínimo</label><input id="evento-drops-min" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="50" /></div>
-              <div><label class="block mb-2 text-lg">Drops Máximo</label><input id="evento-drops-max" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="200" /></div>
-            </div>
-          </div>
-
-          <!-- 14. Call Manager -->
-          <div class="glass p-8 blood-border">
-            <input type="checkbox" id="sec14" class="hidden accordion">
-            <label for="sec14" class="flex justify-between items-center cursor-pointer text-2xl neon">
-              14. Call Manager <span>▼</span>
-            </label>
-            <div class="accordion-content mt-6">
-              <div class="flex items-center">
-                <input id="call-manager-enabled" type="checkbox" class="mr-2" checked />
-                <label class="text-lg">Call Manager Ativado</label>
-              </div>
-            </div>
-          </div>
-
-          <!-- 15. Perfil -->
-          <div class="glass p-8 blood-border">
-            <input type="checkbox" id="sec15" class="hidden accordion">
-            <label for="sec15" class="flex justify-between items-center cursor-pointer text-2xl neon">
-              15. Perfil <span>▼</span>
-            </label>
-            <div class="accordion-content mt-6">
-              <div class="flex items-center">
-                <input id="perfil-enabled" type="checkbox" class="mr-2" checked />
-                <label class="text-lg">Perfil Ativado</label>
-              </div>
-            </div>
-          </div>
-
-          <!-- 16. Ticket -->
-          <div class="glass p-8 blood-border">
-            <input type="checkbox" id="sec16" class="hidden accordion">
-            <label for="sec16" class="flex justify-between items-center cursor-pointer text-2xl neon">
-              16. Ticket <span>▼</span>
-            </label>
-            <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="flex items-center"><input id="tickets-enabled" type="checkbox" class="mr-2" checked /><label class="text-lg">Tickets Ativados</label></div>
-              <div><label class="block mb-2 text-lg">Canal do Painel</label><input id="tickets-panel-canal" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" placeholder="ID do canal" /></div>
-              <div><label class="block mb-2 text-lg">Texto do Painel</label><input id="tickets-panel-text" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="Selecione o tipo de atendimento." /></div>
-              <div><label class="block mb-2 text-lg">Imagem do Painel</label><input id="tickets-panel-image" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="https://cdn.discordapp.com/..." /></div>
-              <div><label class="block mb-2 text-lg">Botões do Ticket (JSON)</label><textarea id="tickets-botoes" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">[{"label":"Denúncia","emoji":"🚨","descricao":"Abrir denúncia"},{"label":"Sugestão","emoji":"💡","descricao":"Enviar sugestão"},{"label":"Dúvida Geral","emoji":"❓","descricao":"Perguntar algo"},{"label":"Outro","emoji":"🗂️","descricao":"Outros assuntos"}]</textarea></div>
-            </div>
-          </div>
-
-          <!-- 17. Premium / Loja -->
-          <div class="glass p-8 blood-border">
-            <input type="checkbox" id="sec17" class="hidden accordion">
-            <label for="sec17" class="flex justify-between items-center cursor-pointer text-2xl neon">
-              17. Premium / Loja <span>▼</span>
-            </label>
-            <div class="accordion-content mt-6">
-              <div class="space-y-8">
-                <div class="flex items-center">
-                  <input id="premium-ativo" type="checkbox" class="w-6 h-6 mr-3" />
-                  <label class="text-lg">Ativar Premium neste servidor</label>
-                </div>
-                <div>
-                  <label class="block mb-2 text-lg">Expiração Premium (YYYY-MM-DD)</label>
-                  <input id="premium-expira" type="date" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" />
-                </div>
-                <a href="loja.html" class="block text-center bg-red-900 hover:bg-red-800 p-5 rounded-xl neon text-xl mt-6">
-                  Ir para a Loja e Comprar Premium
-                </a>
-              </div>
-            </div>
-          </div>
-
         </div>
       </section>
     </main>
@@ -401,12 +513,23 @@
     initParticles();
     animateParticles();
 
-    // Atualizar quadrados
+    // Atualizar stats
     function updateStats(online, total, plano) {
       document.getElementById('membros-online').textContent = online || 0;
       document.getElementById('total-membros').textContent = total || 0;
       document.getElementById('plano-selecionado').textContent = plano || 'Free';
     }
+
+    // Clique nas categorias
+    document.querySelectorAll('.category-item').forEach(item => {
+      item.addEventListener('click', () => {
+        document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        const panelId = `panel-${item.dataset.panel}`;
+        document.querySelectorAll('.config-panel').forEach(p => p.classList.add('hidden'));
+        document.getElementById(panelId).classList.remove('hidden');
+      });
+    });
 
     // Carregar dashboard
     async function loadDashboard() {
@@ -417,7 +540,6 @@
       }
 
       try {
-        // Perfil do usuário
         const userRes = await fetch('https://discord.com/api/users/@me', {
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -429,10 +551,8 @@
         document.getElementById('user-name').textContent = user.global_name || user.username;
         document.getElementById('user-id').textContent = `ID: ${user.id}`;
 
-        // Plano (seu ID tem tudo liberado)
-        let currentPlan = (user.id === "551080982493528106") ? "Lendário" : "Free";
+        let currentPlan = user.id === "551080982493528106" ? "Lendário" : "Free";
 
-        // Servidores
         const guildsRes = await fetch('https://discord.com/api/users/@me/guilds?with_counts=true', {
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -444,7 +564,6 @@
 
         guilds.forEach(guild => {
           if ((guild.permissions & 0x8) === 0) return;
-
           adminCount++;
 
           const card = document.createElement('div');
@@ -475,10 +594,15 @@
             );
             document.getElementById('selected-server-name').textContent = `— ${guild.name}`;
 
-            // Libera as configurações
-            document.getElementById('config-area').classList.add('active');
+            // Mostra configurações e esconde visão geral
+            document.getElementById('overview').style.display = 'none';
+            document.getElementById('config-area').style.display = 'block';
+            document.getElementById('category-menu').classList.remove('hidden');
 
-            // Se for seu ID ou tiver plano → destrava premium
+            // Abre Geral automaticamente
+            document.querySelector('[data-panel="1"]').click();
+
+            // Libera premium
             if (user.id === "551080982493528106" || currentPlan !== "Free") {
               document.querySelectorAll('.premium-lock').forEach(el => el.classList.remove('premium-lock'));
             }
