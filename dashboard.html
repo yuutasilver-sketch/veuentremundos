@@ -112,6 +112,7 @@
           <button onclick="voltarParaOverview()" class="bg-red-900 hover:bg-red-800 px-6 py-3 rounded-xl neon font-bold">← Voltar para Visão Geral</button>
         </div>
 
+        <!-- Todas as 17 seções (exatamente como você tinha) -->
         <!-- 1. Geral -->
         <div id="panel-1" class="config-panel glass p-8 blood-border">
           <input type="checkbox" id="sec1" class="hidden accordion">
@@ -353,7 +354,7 @@
 
   <script>
     const backendUrl = 'https://random-8jtr0timo8xt8.vertraweb.app';
-    let token = localStorage.getItem('token') || localStorage.getItem('access_token');
+    let token = localStorage.getItem('access_token') || localStorage.getItem('token');
 
     // Partículas
     const canvas = document.querySelector('.particles');
@@ -378,14 +379,13 @@
       document.getElementById('category-menu').classList.add('hidden');
     }
 
-    // Carregar configs do backend
+    // Carregar configs salvas do backend
     async function loadServerConfig(guildId) {
       try {
         const res = await fetch(`${backendUrl}/api/config`, {
           method: 'GET',
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        if (!res.ok) throw new Error('GET falhou');
         const configs = await res.json();
         const g = configs[guildId] || {};
 
@@ -410,9 +410,9 @@
         document.getElementById('premium-ativo').checked = g.premium?.ativo || false;
         document.getElementById('premium-expira').value = g.premium?.expira || '';
 
-        console.log('Configs carregadas do backend');
+        console.log('✅ Configurações carregadas do backend');
       } catch (e) {
-        console.error('Erro ao carregar:', e);
+        console.error('Erro ao carregar configs:', e);
       }
     }
 
@@ -452,7 +452,7 @@
         if (response.ok) {
           saveSuccess.classList.remove('hidden');
           setTimeout(() => saveSuccess.classList.add('hidden'), 3000);
-          await loadServerConfig(guildId); // Atualiza a tela com o salvo
+          await loadServerConfig(guildId); // Recarrega os valores salvos
         } else {
           throw new Error('Falha no servidor');
         }
@@ -481,7 +481,7 @@
     // Carregar dashboard
     async function loadDashboard() {
       if (!token) {
-        alert('Você precisa estar logado.');
+        alert('Você precisa estar logado. Faça login novamente.');
         window.location.href = '/';
         return;
       }
