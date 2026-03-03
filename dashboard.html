@@ -7,26 +7,52 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="icon" href="https://cdn.discordapp.com/attachments/1428432707284762654/1477310985504034999/ideogram-v3.0_circular_gothic_arcane_logo_badge_for_discord_bot_Veu_elegant_dark_red_wine_cri-0-Photoroom.png" />
   <style>
-    :root { --blood: #8b0000; --neon: #ff0000; }
-    body { background:#000; color:#f0d0d0; font-family:system-ui,sans-serif; margin:0; min-height:100vh; overflow-x:hidden; }
-    .neon { text-shadow:0 0 10px var(--neon), 0 0 25px var(--blood); }
-    .glass { background:rgba(20,0,5,0.88); backdrop-filter:blur(16px); border:2px solid rgba(139,0,0,0.7); border-radius:1.25rem; }
-    .blood-border { border:2px solid #8b0000; box-shadow:0 0 20px rgba(139,0,0,0.5); }
-    .particles { position:fixed; inset:0; pointer-events:none; z-index:-1; }
-    .topbar { background:rgba(10,0,3,0.96); border-bottom:2px solid #8b0000; }
-    .category-item { cursor:pointer; padding:0.75rem 1rem; border-radius:0.75rem; transition:all 0.2s; }
-    .category-item:hover { background:rgba(139,0,0,0.25); }
-    .category-item.active { background:rgba(139,0,0,0.45); border-left:4px solid #ff0000; }
-    .premium-lock::after { content:'🔒 Lendário'; position:absolute; inset:0; background:rgba(0,0,0,0.78); display:flex; align-items:center; justify-content:center; color:gold; font-size:1.4rem; font-weight:bold; border-radius:1rem; z-index:10; }
-    .spinner { width:28px; height:28px; border:4px solid #fff; border-top-color:transparent; border-radius:50%; animation:spin 1s linear infinite; }
-    @keyframes spin { to { transform:rotate(360deg); } }
+    :root {
+      --blood: #8b0000;
+      --neon: #ff0000;
+      --text: #f0d0d0;
+    }
+    body {
+      background: #000;
+      color: var(--text);
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .neon { text-shadow: 0 0 10px var(--neon), 0 0 25px var(--blood); }
+    .glass { background: rgba(20,0,5,0.88); backdrop-filter: blur(16px); border: 2px solid rgba(139,0,0,0.7); border-radius: 1.25rem; }
+    .blood-border { border: 2px solid var(--blood); box-shadow: 0 0 20px rgba(139,0,0,0.5); }
+    .particles { position: fixed; inset: 0; pointer-events: none; z-index: -1; }
+    .topbar { background: rgba(10,0,3,0.96); border-bottom: 2px solid var(--blood); backdrop-filter: blur(12px); }
+    .category-item { cursor: pointer; padding: 0.75rem 1rem; border-radius: 0.75rem; transition: all 0.2s; }
+    .category-item:hover { background: rgba(139,0,0,0.25); }
+    .category-item.active { background: rgba(139,0,0,0.45); border-left: 4px solid var(--neon); }
+    .premium-lock { position: relative; pointer-events: none; opacity: 0.65; }
+    .premium-lock::after {
+      content: '🔒 Premium';
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.78);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: gold;
+      font-size: 1.4rem;
+      font-weight: bold;
+      border-radius: 1rem;
+      z-index: 10;
+    }
+    .spinner { width: 28px; height: 28px; border: 4px solid #fff; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
 
 <canvas class="particles" id="particles"></canvas>
 
-<nav class="topbar fixed top-0 left-0 right-0 z-50 h-16 flex items-center px-6">
+<!-- TOP BAR -->
+<nav class="topbar fixed top-0 left-0 right-0 z-50 h-16 flex items-center px-6 shadow-2xl">
   <div class="flex items-center gap-3">
     <img src="https://cdn.discordapp.com/attachments/1428432707284762654/1477310985504034999/ideogram-v3.0_circular_gothic_arcane_logo_badge_for_discord_bot_Veu_elegant_dark_red_wine_cri-0-Photoroom.png" class="w-9 h-9 rounded-full border border-red-800" alt="Véu">
     <span class="text-2xl font-bold neon">Véu</span>
@@ -46,32 +72,32 @@
 </nav>
 
 <div class="flex pt-16">
-  <!-- Sidebar -->
+  <!-- SIDEBAR -->
   <aside class="w-72 bg-black/95 border-r border-red-900/50 h-[calc(100vh-4rem)] overflow-y-auto p-6 fixed md:sticky top-16">
     <div class="text-xl neon mb-6 flex items-center gap-2"><span class="text-2xl">🩸</span> Configurações</div>
-    <nav class="space-y-1 text-sm">
-      <div class="category-item active" data-panel="1">1. Geral</div>
-      <div class="category-item" data-panel="2">2. Economia</div>
-      <div class="category-item" data-panel="3">3. Níveis</div>
-      <div class="category-item premium-lock" data-panel="4">4. Missões</div>
-      <div class="category-item" data-panel="5">5. Ranking</div>
-      <div class="category-item" data-panel="6">6. Social</div>
-      <div class="category-item" data-panel="7">7. Anônimo</div>
-      <div class="category-item premium-lock" data-panel="8">8. Autorole</div>
-      <div class="category-item" data-panel="9">9. Anúncios</div>
-      <div class="category-item" data-panel="10">10. Loja</div>
-      <div class="category-item premium-lock" data-panel="11">11. Loja de Cores</div>
-      <div class="category-item" data-panel="12">12. Gifts</div>
-      <div class="category-item" data-panel="13">13. Evento</div>
-      <div class="category-item" data-panel="14">14. Call Manager</div>
-      <div class="category-item" data-panel="15">15. Perfil</div>
-      <div class="category-item" data-panel="16">16. Ticket</div>
-      <div class="category-item" data-panel="17">17. Premium / Loja</div>
+    <nav class="space-y-1.5 text-sm">
+      <div class="category-item active" data-panel="1" title="Gratuito + Iniciante + Lendário">1. Geral</div>
+      <div class="category-item" data-panel="2" title="Gratuito + Iniciante + Lendário">2. Economia</div>
+      <div class="category-item" data-panel="3" title="Gratuito + Iniciante + Lendário">3. Níveis</div>
+      <div class="category-item premium-lock" data-panel="4" title="Apenas Lendário">4. Missões</div>
+      <div class="category-item" data-panel="5" title="Gratuito + Iniciante + Lendário">5. Ranking</div>
+      <div class="category-item" data-panel="6" title="Gratuito + Iniciante + Lendário">6. Social</div>
+      <div class="category-item" data-panel="7" title="Gratuito + Iniciante + Lendário">7. Anônimo básico</div>
+      <div class="category-item premium-lock" data-panel="8" title="Apenas Lendário">8. Autorole</div>
+      <div class="category-item premium-lock" data-panel="9" title="Apenas Lendário">9. Anúncios automáticos</div>
+      <div class="category-item" data-panel="10" title="Gratuito + Iniciante + Lendário">10. Loja</div>
+      <div class="category-item premium-lock" data-panel="11" title="Apenas Lendário">11. Loja de Cores</div>
+      <div class="category-item" data-panel="12" title="Gratuito + Iniciante + Lendário">12. Gifts / Presentes</div>
+      <div class="category-item premium-lock" data-panel="13" title="Apenas Lendário">13. Evento & Drops ilimitados</div>
+      <div class="category-item" data-panel="14" title="Gratuito + Iniciante + Lendário">14. Call Manager</div>
+      <div class="category-item" data-panel="15" title="Gratuito + Iniciante + Lendário">15. Perfil</div>
+      <div class="category-item" data-panel="16" title="Gratuito + Iniciante + Lendário">16. Ticket</div>
+      <div class="category-item" data-panel="17" title="Gratuito + Iniciante + Lendário">17. Premium / Loja</div>
     </nav>
   </aside>
 
+  <!-- CONTEÚDO PRINCIPAL -->
   <main class="flex-1 p-6 md:p-10 overflow-y-auto min-h-screen">
-    <!-- Overview -->
     <div id="overview">
       <h1 class="text-5xl font-bold neon mb-10">Visão Geral</h1>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
@@ -85,7 +111,6 @@
       </div>
     </div>
 
-    <!-- Config Area -->
     <div id="config-area" class="hidden">
       <div class="flex justify-between items-center mb-10">
         <h2 class="text-4xl font-bold neon">Configurações <span id="selected-server-name" class="text-2xl opacity-70"></span></h2>
@@ -103,7 +128,7 @@
         </div>
 
         <!-- 2. Economia -->
-        <div id="panel-2" class="panel glass p-8 blood-border premium-lock hidden">
+        <div id="panel-2" class="panel glass p-8 blood-border">
           <h3 class="text-2xl neon mb-6">2. Economia</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div><label>Daily Mínimo</label><input id="economia-daily-min" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="100" /></div>
@@ -114,7 +139,7 @@
         </div>
 
         <!-- 3. Níveis -->
-        <div id="panel-3" class="panel glass p-8 blood-border hidden">
+        <div id="panel-3" class="panel glass p-8 blood-border">
           <h3 class="text-2xl neon mb-6">3. Níveis</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="flex items-center"><input id="levels-enabled" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" checked /><label>Níveis Ativados</label></div>
@@ -125,7 +150,7 @@
           </div>
         </div>
 
-        <!-- 4. Missões -->
+        <!-- 4. Missões (Lendário) -->
         <div id="panel-4" class="panel glass p-8 blood-border premium-lock hidden">
           <h3 class="text-2xl neon mb-6">4. Missões</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -136,13 +161,13 @@
         </div>
 
         <!-- 5. Ranking -->
-        <div id="panel-5" class="panel glass p-8 blood-border hidden">
+        <div id="panel-5" class="panel glass p-8 blood-border">
           <h3 class="text-2xl neon mb-6">5. Ranking</h3>
           <div><label>Máx usuários no ranking</label><input id="ranking-max-users" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="50" /></div>
         </div>
 
         <!-- 6. Social -->
-        <div id="panel-6" class="panel glass p-8 blood-border hidden">
+        <div id="panel-6" class="panel glass p-8 blood-border">
           <h3 class="text-2xl neon mb-6">6. Social</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="flex items-center"><input id="social-enabled" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" checked /><label>Social Ativado</label></div>
@@ -151,7 +176,7 @@
         </div>
 
         <!-- 7. Anônimo -->
-        <div id="panel-7" class="panel glass p-8 blood-border hidden">
+        <div id="panel-7" class="panel glass p-8 blood-border">
           <h3 class="text-2xl neon mb-6">7. Anônimo</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="flex items-center"><input id="anonymous-enabled" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" checked /><label>Anônimo Ativado</label></div>
@@ -160,7 +185,7 @@
           </div>
         </div>
 
-        <!-- 8. Autorole -->
+        <!-- 8. Autorole (Lendário) -->
         <div id="panel-8" class="panel glass p-8 blood-border premium-lock hidden">
           <h3 class="text-2xl neon mb-6">8. Autorole</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -169,8 +194,8 @@
           </div>
         </div>
 
-        <!-- 9. Anúncios -->
-        <div id="panel-9" class="panel glass p-8 blood-border hidden">
+        <!-- 9. Anúncios (Lendário) -->
+        <div id="panel-9" class="panel glass p-8 blood-border premium-lock hidden">
           <h3 class="text-2xl neon mb-6">9. Anúncios</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="flex items-center"><input id="announce-enabled" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" checked /><label>Anúncios Ativados</label></div>
@@ -180,7 +205,7 @@
         </div>
 
         <!-- 10. Loja -->
-        <div id="panel-10" class="panel glass p-8 blood-border hidden">
+        <div id="panel-10" class="panel glass p-8 blood-border">
           <h3 class="text-2xl neon mb-6">10. Loja</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="flex items-center"><input id="loja-enabled" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" checked /><label>Loja Ativada</label></div>
@@ -188,7 +213,7 @@
           </div>
         </div>
 
-        <!-- 11. Loja de Cores -->
+        <!-- 11. Loja de Cores (Lendário) -->
         <div id="panel-11" class="panel glass p-8 blood-border premium-lock hidden">
           <h3 class="text-2xl neon mb-6">11. Loja de Cores</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -199,13 +224,13 @@
         </div>
 
         <!-- 12. Gifts -->
-        <div id="panel-12" class="panel glass p-8 blood-border hidden">
+        <div id="panel-12" class="panel glass p-8 blood-border">
           <h3 class="text-2xl neon mb-6">12. Gifts</h3>
           <div class="flex items-center"><input id="gifts-enabled" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" checked /><label>Gifts Ativados</label></div>
         </div>
 
-        <!-- 13. Evento -->
-        <div id="panel-13" class="panel glass p-8 blood-border hidden">
+        <!-- 13. Evento (Lendário) -->
+        <div id="panel-13" class="panel glass p-8 blood-border premium-lock hidden">
           <h3 class="text-2xl neon mb-6">13. Evento</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="flex items-center"><input id="evento-enabled" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" checked /><label>Evento Ativado</label></div>
@@ -216,19 +241,19 @@
         </div>
 
         <!-- 14. Call Manager -->
-        <div id="panel-14" class="panel glass p-8 blood-border hidden">
+        <div id="panel-14" class="panel glass p-8 blood-border">
           <h3 class="text-2xl neon mb-6">14. Call Manager</h3>
           <div class="flex items-center"><input id="call-manager-enabled" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" checked /><label>Call Manager Ativado</label></div>
         </div>
 
         <!-- 15. Perfil -->
-        <div id="panel-15" class="panel glass p-8 blood-border hidden">
+        <div id="panel-15" class="panel glass p-8 blood-border">
           <h3 class="text-2xl neon mb-6">15. Perfil</h3>
           <div class="flex items-center"><input id="perfil-enabled" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" checked /><label>Perfil Ativado</label></div>
         </div>
 
         <!-- 16. Ticket -->
-        <div id="panel-16" class="panel glass p-8 blood-border hidden">
+        <div id="panel-16" class="panel glass p-8 blood-border">
           <h3 class="text-2xl neon mb-6">16. Ticket</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="flex items-center"><input id="tickets-enabled" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" checked /><label>Tickets Ativados</label></div>
@@ -240,7 +265,7 @@
         </div>
 
         <!-- 17. Premium -->
-        <div id="panel-17" class="panel glass p-8 blood-border hidden">
+        <div id="panel-17" class="panel glass p-8 blood-border">
           <h3 class="text-2xl neon mb-6">17. Premium / Loja</h3>
           <div class="space-y-6">
             <div class="flex items-center"><input id="premium-ativo" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" /><label>Ativar Premium neste servidor</label></div>
@@ -267,7 +292,7 @@ let token = localStorage.getItem('access_token') || localStorage.getItem('token'
 let currentGuildId = null;
 const OWNER_ID = "551080982493528106";
 
-// Partículas
+// Partículas vermelhas
 const canvas = document.getElementById('particles');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth; canvas.height = window.innerHeight;
@@ -276,7 +301,7 @@ let particles = []; for(let i=0;i<180;i++) particles.push(new Particle());
 function animate() { ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.update();p.draw();}); requestAnimationFrame(animate); }
 animate();
 
-// Navegação entre painéis
+// Navegação entre categorias
 document.querySelectorAll('.category-item').forEach(item => {
   item.addEventListener('click', () => {
     document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active'));
@@ -323,9 +348,15 @@ async function loadDashboard() {
     card.onclick = () => { select.value = g.id; loadServerConfig(g.id); };
     grid.appendChild(card);
   });
+
+  // Libera tudo para o dono (ID 551080982493528106)
+  if (user.id === OWNER_ID) {
+    document.querySelectorAll('.premium-lock').forEach(el => el.classList.remove('premium-lock'));
+    document.getElementById('user-plan').textContent = 'Lendário (Dono)';
+  }
 }
 
-// Carregar configurações do servidor selecionado
+// Carregar configs
 async function loadServerConfig(guildId) {
   currentGuildId = guildId;
   document.getElementById('overview').classList.add('hidden');
@@ -337,7 +368,7 @@ async function loadServerConfig(guildId) {
 
   document.getElementById('selected-server-name').textContent = `— ${document.querySelector(`#server-select option[value="${guildId}"]`).textContent}`;
 
-  // Preenche todos os campos (chaves exatas do backend)
+  // Preenche campos (chaves 100% alinhadas com seu backend)
   document.getElementById('general-prefix').value = g.general?.prefix || '!';
   document.getElementById('general-bot-enabled').checked = g.general?.bot_enabled !== false;
 
@@ -398,13 +429,13 @@ async function loadServerConfig(guildId) {
   document.getElementById('premium-ativo').checked = !!g.premium?.ativo;
   document.getElementById('premium-expira').value = g.premium?.expira || '';
 
-  // Libera tudo para o dono (ID 551080982493528106)
-  if (document.getElementById('user-name').textContent.includes("551080982493528106") || document.getElementById('user-name').textContent.includes("Akayto")) {
+  // Libera tudo para o dono (551080982493528106)
+  if (document.getElementById('user-name').textContent.includes("551080982493528106") || document.getElementById('user-name').textContent.includes("Sr")) {
     document.querySelectorAll('.premium-lock').forEach(el => el.classList.remove('premium-lock'));
   }
-};
+}
 
-// SALVAR
+// SALVAR CONFIGURAÇÕES
 document.getElementById('save-btn').addEventListener('click', async () => {
   if(!currentGuildId) return alert('Selecione um servidor primeiro');
 
