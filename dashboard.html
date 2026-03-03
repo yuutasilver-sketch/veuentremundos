@@ -46,6 +46,7 @@
 </nav>
 
 <div class="flex pt-16">
+  <!-- Sidebar -->
   <aside class="w-72 bg-black/95 border-r border-red-900/50 h-[calc(100vh-4rem)] overflow-y-auto p-6 fixed md:sticky top-16">
     <div class="text-xl neon mb-6 flex items-center gap-2"><span class="text-2xl">🩸</span> Configurações</div>
     <nav class="space-y-1 text-sm">
@@ -70,6 +71,7 @@
   </aside>
 
   <main class="flex-1 p-6 md:p-10 overflow-y-auto min-h-screen">
+    <!-- Overview -->
     <div id="overview">
       <h1 class="text-5xl font-bold neon mb-10">Visão Geral</h1>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
@@ -83,6 +85,7 @@
       </div>
     </div>
 
+    <!-- Config Area -->
     <div id="config-area" class="hidden">
       <div class="flex justify-between items-center mb-10">
         <h2 class="text-4xl font-bold neon">Configurações <span id="selected-server-name" class="text-2xl opacity-70"></span></h2>
@@ -262,6 +265,7 @@
 const backendUrl = 'https://random-8jtr0timo8xt8.vertraweb.app';
 let token = localStorage.getItem('access_token') || localStorage.getItem('token');
 let currentGuildId = null;
+const OWNER_ID = "551080982493528106";
 
 // Partículas
 const canvas = document.getElementById('particles');
@@ -272,7 +276,7 @@ let particles = []; for(let i=0;i<180;i++) particles.push(new Particle());
 function animate() { ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.update();p.draw();}); requestAnimationFrame(animate); }
 animate();
 
-// Navegação
+// Navegação entre painéis
 document.querySelectorAll('.category-item').forEach(item => {
   item.addEventListener('click', () => {
     document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active'));
@@ -321,7 +325,7 @@ async function loadDashboard() {
   });
 }
 
-// Carregar configs do servidor
+// Carregar configurações do servidor selecionado
 async function loadServerConfig(guildId) {
   currentGuildId = guildId;
   document.getElementById('overview').classList.add('hidden');
@@ -333,7 +337,7 @@ async function loadServerConfig(guildId) {
 
   document.getElementById('selected-server-name').textContent = `— ${document.querySelector(`#server-select option[value="${guildId}"]`).textContent}`;
 
-  // Preenche todos os campos (chaves EXATAS do seu backend)
+  // Preenche todos os campos (chaves exatas do backend)
   document.getElementById('general-prefix').value = g.general?.prefix || '!';
   document.getElementById('general-bot-enabled').checked = g.general?.bot_enabled !== false;
 
@@ -393,6 +397,11 @@ async function loadServerConfig(guildId) {
 
   document.getElementById('premium-ativo').checked = !!g.premium?.ativo;
   document.getElementById('premium-expira').value = g.premium?.expira || '';
+
+  // Libera tudo para o dono (ID 551080982493528106)
+  if (document.getElementById('user-name').textContent.includes("551080982493528106") || document.getElementById('user-name').textContent.includes("Akayto")) {
+    document.querySelectorAll('.premium-lock').forEach(el => el.classList.remove('premium-lock'));
+  }
 };
 
 // SALVAR
