@@ -353,7 +353,7 @@
 
   <script>
     const backendUrl = 'https://random-8jtr0timo8xt8.vertraweb.app';
-    const token = localStorage.getItem('token') || localStorage.getItem('access_token');
+    let token = localStorage.getItem('token') || localStorage.getItem('access_token');
 
     // Partículas
     const canvas = document.querySelector('.particles');
@@ -378,44 +378,41 @@
       document.getElementById('category-menu').classList.add('hidden');
     }
 
-    // Carregar configs salvas do backend
+    // Carregar configs do backend
     async function loadServerConfig(guildId) {
       try {
         const res = await fetch(`${backendUrl}/api/config`, {
           method: 'GET',
           headers: { 'Authorization': `Bearer ${token}` }
         });
+        if (!res.ok) throw new Error('GET falhou');
         const configs = await res.json();
         const g = configs[guildId] || {};
 
-        // 1. Geral
+        // Atualiza todos os campos
         document.getElementById('general-prefix').value = g.general?.prefix || '!';
         document.getElementById('general-bot-enabled').checked = g.general?.bot_enabled !== false;
 
-        // 2. Economia
         document.getElementById('economia-daily-min').value = g.economia?.daily_min || 100;
         document.getElementById('economia-daily-max').value = g.economia?.daily_max || 500;
         document.getElementById('economia-vip-bonus').value = g.economia?.vip_bonus || 1.5;
         document.getElementById('economia-work-cooldown').value = g.economia?.work_cooldown || 3600;
 
-        // 3. Níveis
         document.getElementById('levels-enabled').checked = g.levels?.enabled !== false;
         document.getElementById('levels-announce-channel').value = g.levels?.announce_channel || '';
         document.getElementById('levels-xp-min').value = g.levels?.xp_min || 15;
         document.getElementById('levels-xp-max').value = g.levels?.xp_max || 25;
         document.getElementById('levels-cooldown').value = g.levels?.cooldown || 60;
 
-        // 10. Loja
         document.getElementById('loja-enabled').checked = g.loja?.enabled !== false;
         document.getElementById('loja-itens').value = g.loja?.itens || '{}';
 
-        // 17. Premium
         document.getElementById('premium-ativo').checked = g.premium?.ativo || false;
         document.getElementById('premium-expira').value = g.premium?.expira || '';
 
-        console.log('✅ Configurações carregadas do backend para guild', guildId);
+        console.log('Configs carregadas do backend');
       } catch (e) {
-        console.error('Erro ao carregar configs:', e);
+        console.error('Erro ao carregar:', e);
       }
     }
 
@@ -455,7 +452,7 @@
         if (response.ok) {
           saveSuccess.classList.remove('hidden');
           setTimeout(() => saveSuccess.classList.add('hidden'), 3000);
-          await loadServerConfig(guildId); // Recarrega os valores salvos na tela
+          await loadServerConfig(guildId); // Atualiza a tela com o salvo
         } else {
           throw new Error('Falha no servidor');
         }
