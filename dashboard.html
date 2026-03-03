@@ -388,32 +388,32 @@
         const configs = await res.json();
         const g = configs[guildId] || {};
 
-        // Geral
+        // 1. Geral
         document.getElementById('general-prefix').value = g.general?.prefix || '!';
         document.getElementById('general-bot-enabled').checked = g.general?.bot_enabled !== false;
 
-        // Economia
+        // 2. Economia
         document.getElementById('economia-daily-min').value = g.economia?.daily_min || 100;
         document.getElementById('economia-daily-max').value = g.economia?.daily_max || 500;
         document.getElementById('economia-vip-bonus').value = g.economia?.vip_bonus || 1.5;
         document.getElementById('economia-work-cooldown').value = g.economia?.work_cooldown || 3600;
 
-        // Níveis
+        // 3. Níveis
         document.getElementById('levels-enabled').checked = g.levels?.enabled !== false;
         document.getElementById('levels-announce-channel').value = g.levels?.announce_channel || '';
         document.getElementById('levels-xp-min').value = g.levels?.xp_min || 15;
         document.getElementById('levels-xp-max').value = g.levels?.xp_max || 25;
         document.getElementById('levels-cooldown').value = g.levels?.cooldown || 60;
 
-        // Loja
+        // 10. Loja
         document.getElementById('loja-enabled').checked = g.loja?.enabled !== false;
         document.getElementById('loja-itens').value = g.loja?.itens || '{}';
 
-        // Premium
+        // 17. Premium
         document.getElementById('premium-ativo').checked = g.premium?.ativo || false;
         document.getElementById('premium-expira').value = g.premium?.expira || '';
 
-        console.log('✅ Configurações carregadas do backend');
+        console.log('✅ Configurações carregadas do backend para guild', guildId);
       } catch (e) {
         console.error('Erro ao carregar configs:', e);
       }
@@ -455,7 +455,7 @@
         if (response.ok) {
           saveSuccess.classList.remove('hidden');
           setTimeout(() => saveSuccess.classList.add('hidden'), 3000);
-          await loadServerConfig(guildId); // Recarrega os valores salvos
+          await loadServerConfig(guildId); // Recarrega os valores salvos na tela
         } else {
           throw new Error('Falha no servidor');
         }
