@@ -7,105 +7,35 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="icon" href="https://cdn.discordapp.com/attachments/1428432707284762654/1477310985504034999/ideogram-v3.0_circular_gothic_arcane_logo_badge_for_discord_bot_Veu_elegant_dark_red_wine_cri-0-Photoroom.png" />
   <style>
-    :root {
-      --blood-dark: #4a0000;
-      --blood: #8b0000;
-      --blood-neon: #ff0000;
-      --text-off: #f0d0d0;
-      --glass-bg: rgba(20,0,5,0.88);
-    }
-    body {
-      background: #000;
-      color: var(--text-off);
-      font-family: system-ui, sans-serif;
-      margin: 0;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-    .neon {
-      text-shadow: 0 0 10px var(--blood-neon), 0 0 25px var(--blood);
-    }
-    .glass {
-      background: var(--glass-bg);
-      backdrop-filter: blur(16px);
-      border: 2px solid rgba(139,0,0,0.7);
-      border-radius: 1.25rem;
-    }
-    .blood-border {
-      border: 2px solid var(--blood);
-      box-shadow: 0 0 20px rgba(139,0,0,0.5);
-    }
-    .particles {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: -1;
-    }
-    .topbar {
-      background: rgba(10,0,3,0.96);
-      border-bottom: 2px solid var(--blood);
-      backdrop-filter: blur(12px);
-    }
-    .category-item {
-      cursor: pointer;
-      padding: 0.75rem 1rem;
-      border-radius: 0.75rem;
-      transition: all 0.2s;
-    }
-    .category-item:hover {
-      background: rgba(139,0,0,0.25);
-    }
-    .category-item.active {
-      background: rgba(139,0,0,0.45);
-      border-left: 4px solid var(--blood-neon);
-    }
-    .premium-lock {
-      position: relative;
-      pointer-events: none;
-      opacity: 0.65;
-    }
-    .premium-lock::after {
-      content: '🔒 Lendário';
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.78);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: gold;
-      font-size: 1.5rem;
-      font-weight: bold;
-      border-radius: 1rem;
-      z-index: 10;
-    }
-    .spinner {
-      width: 28px;
-      height: 28px;
-      border: 4px solid #fff;
-      border-top-color: transparent;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    :root { --blood: #8b0000; --neon: #ff0000; }
+    body { background:#000; color:#f0d0d0; font-family:system-ui,sans-serif; margin:0; min-height:100vh; overflow-x:hidden; }
+    .neon { text-shadow:0 0 10px var(--neon), 0 0 25px var(--blood); }
+    .glass { background:rgba(20,0,5,0.88); backdrop-filter:blur(16px); border:2px solid rgba(139,0,0,0.7); border-radius:1.25rem; }
+    .blood-border { border:2px solid #8b0000; box-shadow:0 0 20px rgba(139,0,0,0.5); }
+    .particles { position:fixed; inset:0; pointer-events:none; z-index:-1; }
+    .topbar { background:rgba(10,0,3,0.96); border-bottom:2px solid #8b0000; }
+    .category-item { cursor:pointer; padding:0.75rem 1rem; border-radius:0.75rem; transition:all 0.2s; }
+    .category-item:hover { background:rgba(139,0,0,0.25); }
+    .category-item.active { background:rgba(139,0,0,0.45); border-left:4px solid #ff0000; }
+    .premium-lock::after { content:'🔒 Lendário'; position:absolute; inset:0; background:rgba(0,0,0,0.78); display:flex; align-items:center; justify-content:center; color:gold; font-size:1.4rem; font-weight:bold; border-radius:1rem; z-index:10; }
+    .spinner { width:28px; height:28px; border:4px solid #fff; border-top-color:transparent; border-radius:50%; animation:spin 1s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
   </style>
 </head>
 <body>
 
 <canvas class="particles" id="particles"></canvas>
 
-<!-- TOP BAR estilo Loritta -->
-<nav class="topbar fixed top-0 left-0 right-0 z-50 h-16 flex items-center px-6 shadow-2xl">
+<nav class="topbar fixed top-0 left-0 right-0 z-50 h-16 flex items-center px-6">
   <div class="flex items-center gap-3">
     <img src="https://cdn.discordapp.com/attachments/1428432707284762654/1477310985504034999/ideogram-v3.0_circular_gothic_arcane_logo_badge_for_discord_bot_Veu_elegant_dark_red_wine_cri-0-Photoroom.png" class="w-9 h-9 rounded-full border border-red-800" alt="Véu">
     <span class="text-2xl font-bold neon">Véu</span>
   </div>
-
   <div class="flex-1 flex justify-center">
-    <select id="server-select" class="bg-black/70 border border-red-800 text-white px-6 py-2.5 rounded-2xl focus:outline-none focus:border-red-600 w-96 max-w-full">
+    <select id="server-select" class="bg-black/70 border border-red-800 text-white px-6 py-2.5 rounded-2xl w-96 focus:outline-none focus:border-red-600">
       <option value="">Selecione um servidor...</option>
     </select>
   </div>
-
   <div class="flex items-center gap-4">
     <img id="user-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" class="w-9 h-9 rounded-full border-2 border-red-800">
     <div>
@@ -116,12 +46,9 @@
 </nav>
 
 <div class="flex pt-16">
-  <!-- SIDEBAR CATEGORIAS -->
   <aside class="w-72 bg-black/95 border-r border-red-900/50 h-[calc(100vh-4rem)] overflow-y-auto p-6 fixed md:sticky top-16">
-    <div class="text-xl neon mb-6 flex items-center gap-2">
-      <span class="text-2xl">🩸</span> Configurações do Servidor
-    </div>
-    <nav class="space-y-1.5">
+    <div class="text-xl neon mb-6 flex items-center gap-2"><span class="text-2xl">🩸</span> Configurações</div>
+    <nav class="space-y-1 text-sm">
       <div class="category-item active" data-panel="1">1. Geral</div>
       <div class="category-item" data-panel="2">2. Economia</div>
       <div class="category-item" data-panel="3">3. Níveis</div>
@@ -142,55 +69,33 @@
     </nav>
   </aside>
 
-  <!-- CONTEÚDO PRINCIPAL -->
   <main class="flex-1 p-6 md:p-10 overflow-y-auto min-h-screen">
-
-    <!-- Overview inicial -->
     <div id="overview">
       <h1 class="text-5xl font-bold neon mb-10">Visão Geral</h1>
-
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-        <div class="glass p-8 text-center blood-border">
-          <p id="membros-online" class="text-6xl font-bold neon">0</p>
-          <p class="mt-3 text-lg">Membros online (aprox.)</p>
-        </div>
-        <div class="glass p-8 text-center blood-border">
-          <p id="total-membros" class="text-6xl font-bold neon">0</p>
-          <p class="mt-3 text-lg">Total de membros</p>
-        </div>
-        <div class="glass p-8 text-center blood-border">
-          <p id="plano-selecionado" class="text-6xl font-bold neon">Free</p>
-          <p class="mt-3 text-lg">Plano atual</p>
-        </div>
+        <div class="glass p-8 text-center blood-border"><p id="membros-online" class="text-6xl font-bold neon">0</p><p class="mt-3">Membros online</p></div>
+        <div class="glass p-8 text-center blood-border"><p id="total-membros" class="text-6xl font-bold neon">0</p><p class="mt-3">Total de membros</p></div>
+        <div class="glass p-8 text-center blood-border"><p id="plano-selecionado" class="text-6xl font-bold neon">Free</p><p class="mt-3">Plano atual</p></div>
       </div>
-
       <div class="glass p-8 blood-border">
-        <h3 class="text-3xl neon mb-6">Seus servidores administráveis</h3>
+        <h3 class="text-3xl neon mb-6">Seus servidores</h3>
         <div id="guild-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
       </div>
     </div>
 
-    <!-- Área de configuração (aparece ao selecionar servidor) -->
     <div id="config-area" class="hidden">
       <div class="flex justify-between items-center mb-10">
         <h2 class="text-4xl font-bold neon">Configurações <span id="selected-server-name" class="text-2xl opacity-70"></span></h2>
         <button onclick="voltarOverview()" class="bg-red-900 hover:bg-red-800 px-8 py-4 rounded-2xl text-lg font-bold">← Voltar</button>
       </div>
 
-      <!-- Todos os 17 painéis aqui -->
       <div class="space-y-10">
         <!-- 1. Geral -->
         <div id="panel-1" class="panel glass p-8 blood-border">
           <h3 class="text-2xl neon mb-6">1. Geral</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label class="block mb-2 text-lg">Prefixo do Bot</label>
-              <input id="general-prefix" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="!" />
-            </div>
-            <div class="flex items-center pt-10">
-              <input id="general-bot-enabled" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" checked />
-              <label class="text-lg">Bot Ativado no Servidor</label>
-            </div>
+            <div><label class="block mb-2">Prefixo do Bot</label><input id="general-prefix" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="!" /></div>
+            <div class="flex items-center pt-10"><input id="general-bot-enabled" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" checked /><label>Bot Ativado no Servidor</label></div>
           </div>
         </div>
 
@@ -198,10 +103,10 @@
         <div id="panel-2" class="panel glass p-8 blood-border premium-lock hidden">
           <h3 class="text-2xl neon mb-6">2. Economia</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div><label class="block mb-2">Daily Mínimo</label><input id="economia-daily-min" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="100" /></div>
-            <div><label class="block mb-2">Daily Máximo</label><input id="economia-daily-max" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="500" /></div>
-            <div><label class="block mb-2">Bônus VIP Daily</label><input id="economia-vip-bonus" type="number" step="0.1" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="1.5" /></div>
-            <div><label class="block mb-2">Work Cooldown (segundos)</label><input id="economia-work-cooldown" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="3600" /></div>
+            <div><label>Daily Mínimo</label><input id="economia-daily-min" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="100" /></div>
+            <div><label>Daily Máximo</label><input id="economia-daily-max" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="500" /></div>
+            <div><label>Bônus VIP Daily</label><input id="economia-vip-bonus" type="number" step="0.1" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="1.5" /></div>
+            <div><label>Work Cooldown (s)</label><input id="economia-work-cooldown" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="3600" /></div>
           </div>
         </div>
 
@@ -210,10 +115,10 @@
           <h3 class="text-2xl neon mb-6">3. Níveis</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="flex items-center"><input id="levels-enabled" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" checked /><label>Níveis Ativados</label></div>
-            <div><label class="block mb-2">Canal de Anúncio de Level Up</label><input id="levels-announce-channel" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" placeholder="ID do canal" /></div>
-            <div><label class="block mb-2">XP Mínimo por Mensagem</label><input id="levels-xp-min" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="15" /></div>
-            <div><label class="block mb-2">XP Máximo por Mensagem</label><input id="levels-xp-max" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="25" /></div>
-            <div><label class="block mb-2">Cooldown de XP (segundos)</label><input id="levels-cooldown" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="60" /></div>
+            <div><label>Canal de Level Up</label><input id="levels-announce-channel" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" placeholder="ID do canal" /></div>
+            <div><label>XP Mín por Msg</label><input id="levels-xp-min" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="15" /></div>
+            <div><label>XP Máx por Msg</label><input id="levels-xp-max" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="25" /></div>
+            <div><label>Cooldown XP (s)</label><input id="levels-cooldown" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="60" /></div>
           </div>
         </div>
 
@@ -222,15 +127,15 @@
           <h3 class="text-2xl neon mb-6">4. Missões</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="flex items-center"><input id="missoes-enabled" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" checked /><label>Missões Ativadas</label></div>
-            <div><label class="block mb-2">Missões Diárias (JSON)</label><textarea id="missoes-daily" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">[{"nome":"Mensageiro do Véu","tipo":"mensagens","meta":50,"recompensa":200}]</textarea></div>
-            <div><label class="block mb-2">Missões Semanais (JSON)</label><textarea id="missoes-weekly" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">[{"nome":"Explorador Semanal","tipo":"tempo_call","meta":3600,"recompensa":1000}]</textarea></div>
+            <div><label>Missões Diárias (JSON)</label><textarea id="missoes-daily" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">[{"nome":"Mensageiro do Véu","tipo":"mensagens","meta":50,"recompensa":200}]</textarea></div>
+            <div><label>Missões Semanais (JSON)</label><textarea id="missoes-weekly" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">[{"nome":"Explorador Semanal","tipo":"tempo_call","meta":3600,"recompensa":1000}]</textarea></div>
           </div>
         </div>
 
         <!-- 5. Ranking -->
         <div id="panel-5" class="panel glass p-8 blood-border hidden">
           <h3 class="text-2xl neon mb-6">5. Ranking</h3>
-          <div><label class="block mb-2">Máximo de Usuários no Ranking</label><input id="ranking-max-users" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="50" /></div>
+          <div><label>Máx usuários no ranking</label><input id="ranking-max-users" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="50" /></div>
         </div>
 
         <!-- 6. Social -->
@@ -238,7 +143,7 @@
           <h3 class="text-2xl neon mb-6">6. Social</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="flex items-center"><input id="social-enabled" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" checked /><label>Social Ativado</label></div>
-            <div><label class="block mb-2">Cooldown de Casamento (segundos)</label><input id="social-cooldown-marriage" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="86400" /></div>
+            <div><label>Cooldown Casamento (s)</label><input id="social-cooldown-marriage" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="86400" /></div>
           </div>
         </div>
 
@@ -247,8 +152,8 @@
           <h3 class="text-2xl neon mb-6">7. Anônimo</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="flex items-center"><input id="anonymous-enabled" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" checked /><label>Anônimo Ativado</label></div>
-            <div><label class="block mb-2">Canal de Logs Anônimos</label><input id="anonymous-logs" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" placeholder="ID do canal" /></div>
-            <div><label class="block mb-2">Cooldown Anônimo (segundos)</label><input id="anonymous-cooldown" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="120" /></div>
+            <div><label>Canal Logs Anônimos</label><input id="anonymous-logs" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" placeholder="ID do canal" /></div>
+            <div><label>Cooldown Anônimo (s)</label><input id="anonymous-cooldown" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="120" /></div>
           </div>
         </div>
 
@@ -256,8 +161,8 @@
         <div id="panel-8" class="panel glass p-8 blood-border premium-lock hidden">
           <h3 class="text-2xl neon mb-6">8. Autorole</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div><label class="block mb-2">Cargos por Tempo de Conta (JSON)</label><textarea id="autorole-time-roles" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">[{"days":30,"role_id":"123456789"}]</textarea></div>
-            <div><label class="block mb-2">Cargo VIP Automático</label><input id="autorole-vip" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" placeholder="ID do cargo" /></div>
+            <div><label>Cargos por Tempo (JSON)</label><textarea id="autorole-time-roles" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">[{"days":30,"role_id":"123456789"}]</textarea></div>
+            <div><label>Cargo VIP Automático</label><input id="autorole-vip" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" placeholder="ID do cargo" /></div>
           </div>
         </div>
 
@@ -266,8 +171,8 @@
           <h3 class="text-2xl neon mb-6">9. Anúncios</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="flex items-center"><input id="announce-enabled" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" checked /><label>Anúncios Ativados</label></div>
-            <div><label class="block mb-2">Canal de Anúncios</label><input id="announce-channel" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" placeholder="ID do canal" /></div>
-            <div><label class="block mb-2">Mensagem de Anúncio</label><input id="announce-message" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="Bem-vindo ao Véu! Use /ajuda para comandos." /></div>
+            <div><label>Canal de Anúncios</label><input id="announce-channel" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" placeholder="ID do canal" /></div>
+            <div><label>Mensagem de Anúncio</label><input id="announce-message" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="Bem-vindo ao Véu! Use /ajuda para comandos." /></div>
           </div>
         </div>
 
@@ -276,7 +181,7 @@
           <h3 class="text-2xl neon mb-6">10. Loja</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="flex items-center"><input id="loja-enabled" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" checked /><label>Loja Ativada</label></div>
-            <div><label class="block mb-2">Itens da Loja (JSON)</label><textarea id="loja-itens" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">{"rosa":{"preco":100,"descricao":"Rosa Eterna"}}</textarea></div>
+            <div><label>Itens da Loja (JSON)</label><textarea id="loja-itens" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">{"rosa":{"preco":100,"descricao":"Rosa Eterna"}}</textarea></div>
           </div>
         </div>
 
@@ -285,8 +190,8 @@
           <h3 class="text-2xl neon mb-6">11. Loja de Cores</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="flex items-center"><input id="loja-cor-enabled" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" checked /><label>Loja de Cores Ativada</label></div>
-            <div><label class="block mb-2">Cores Disponíveis (JSON)</label><textarea id="loja-cor-colors" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">{"Violeta do Véu":{"price":1500,"hex":"#8e44ad"}}</textarea></div>
-            <div><label class="block mb-2">Desconto VIP (%)</label><input id="loja-cor-vip-discount" type="number" step="0.01" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="0.20" /></div>
+            <div><label>Cores Disponíveis (JSON)</label><textarea id="loja-cor-colors" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">{"Violeta do Véu":{"price":1500,"hex":"#8e44ad"}}</textarea></div>
+            <div><label>Desconto VIP (%)</label><input id="loja-cor-vip-discount" type="number" step="0.01" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="0.20" /></div>
           </div>
         </div>
 
@@ -301,9 +206,9 @@
           <h3 class="text-2xl neon mb-6">13. Evento</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="flex items-center"><input id="evento-enabled" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" checked /><label>Evento Ativado</label></div>
-            <div><label class="block mb-2">Chance de Drops (%)</label><input id="evento-drops-chance" type="number" step="0.1" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="1.0" /></div>
-            <div><label class="block mb-2">Drops Mínimo</label><input id="evento-drops-min" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="50" /></div>
-            <div><label class="block mb-2">Drops Máximo</label><input id="evento-drops-max" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="200" /></div>
+            <div><label>Chance de Drops (%)</label><input id="evento-drops-chance" type="number" step="0.1" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="1.0" /></div>
+            <div><label>Drops Mínimo</label><input id="evento-drops-min" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="50" /></div>
+            <div><label>Drops Máximo</label><input id="evento-drops-max" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="200" /></div>
           </div>
         </div>
 
@@ -324,10 +229,10 @@
           <h3 class="text-2xl neon mb-6">16. Ticket</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="flex items-center"><input id="tickets-enabled" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" checked /><label>Tickets Ativados</label></div>
-            <div><label class="block mb-2">Canal do Painel</label><input id="tickets-panel-canal" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" placeholder="ID do canal" /></div>
-            <div><label class="block mb-2">Texto do Painel</label><input id="tickets-panel-text" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="Selecione o tipo de atendimento." /></div>
-            <div><label class="block mb-2">Imagem do Painel</label><input id="tickets-panel-image" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="https://..." /></div>
-            <div><label class="block mb-2">Botões do Ticket (JSON)</label><textarea id="tickets-botoes" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">[{"label":"Denúncia","emoji":"🚨","descricao":"Abrir denúncia"},{"label":"Sugestão","emoji":"💡","descricao":"Enviar sugestão"}]</textarea></div>
+            <div><label>Canal do Painel</label><input id="tickets-panel-canal" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" placeholder="ID do canal" /></div>
+            <div><label>Texto do Painel</label><input id="tickets-panel-text" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="Selecione o tipo de atendimento." /></div>
+            <div><label>Imagem do Painel</label><input id="tickets-panel-image" type="text" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="https://..." /></div>
+            <div><label>Botões (JSON)</label><textarea id="tickets-botoes" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">[{"label":"Denúncia","emoji":"🚨","descricao":"Abrir denúncia"}]</textarea></div>
           </div>
         </div>
 
@@ -335,50 +240,39 @@
         <div id="panel-17" class="panel glass p-8 blood-border hidden">
           <h3 class="text-2xl neon mb-6">17. Premium / Loja</h3>
           <div class="space-y-6">
-            <div class="flex items-center">
-              <input id="premium-ativo" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" />
-              <label class="text-lg">Ativar Premium neste servidor</label>
-            </div>
-            <div>
-              <label class="block mb-2 text-lg">Expiração Premium (YYYY-MM-DD)</label>
-              <input id="premium-expira" type="date" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl cursor-not-allowed opacity-70" readonly />
-              <p class="text-sm opacity-70 mt-1">Definida automaticamente na compra</p>
-            </div>
+            <div class="flex items-center"><input id="premium-ativo" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" /><label>Ativar Premium neste servidor</label></div>
+            <div><label>Expiração Premium (YYYY-MM-DD)</label><input id="premium-expira" type="date" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl cursor-not-allowed opacity-70" readonly /></div>
           </div>
         </div>
       </div>
 
-      <!-- Botão Salvar fixo -->
       <div class="mt-16 sticky bottom-8 z-40">
-        <button id="save-btn" class="w-full bg-gradient-to-r from-red-700 to-red-600 hover:from-red-600 hover:to-red-500 py-6 rounded-3xl text-2xl font-bold neon flex items-center justify-center gap-4 shadow-2xl transition">
+        <button id="save-btn" class="w-full bg-gradient-to-r from-red-700 to-red-600 hover:from-red-600 hover:to-red-500 py-6 rounded-3xl text-2xl font-bold neon flex items-center justify-center gap-4 shadow-2xl">
           <span id="save-text">SALVAR TODAS AS CONFIGURAÇÕES</span>
           <div id="save-spinner" class="hidden spinner"></div>
         </button>
-        <div id="save-success" class="hidden mt-4 text-center text-green-400 text-2xl font-bold animate-pulse">✅ Configurações salvas!</div>
-        <div id="save-error" class="hidden mt-4 text-center text-red-400 text-xl">Erro ao salvar. Verifique o console.</div>
+        <div id="save-success" class="hidden mt-4 text-center text-green-400 text-2xl font-bold animate-pulse">✅ Salvo com sucesso!</div>
+        <div id="save-error" class="hidden mt-4 text-center text-red-400 text-xl"></div>
       </div>
     </div>
   </main>
 </div>
 
 <script>
-// ─── BACKEND ────────────────────────────────────────────────
 const backendUrl = 'https://random-8jtr0timo8xt8.vertraweb.app';
 let token = localStorage.getItem('access_token') || localStorage.getItem('token');
 let currentGuildId = null;
-let userIsPremium = false;
 
-// ─── PARTÍCULAS VERMELHAS ──────────────────────────────────
+// Partículas
 const canvas = document.getElementById('particles');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-class Particle { constructor() { this.reset(); } reset() { this.x=Math.random()*canvas.width;this.y=Math.random()*canvas.height;this.size=Math.random()*3+1;this.speedX=Math.random()*2-1;this.speedY=Math.random()*2-1; } update() { this.x+=this.speedX;this.y+=this.speedY;if(this.x<0||this.x>canvas.width)this.speedX*=-1;if(this.y<0||this.y>canvas.height)this.speedY*=-1; } draw() { ctx.fillStyle='rgba(255,40,40,0.75)';ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fill(); }}
-let particles = []; for(let i=0;i<160;i++) particles.push(new Particle());
-function animateParticles() { ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.update();p.draw();}); requestAnimationFrame(animateParticles); }
-window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight;});
-animateParticles();
+class Particle { constructor() { this.reset(); } reset() { this.x=Math.random()*canvas.width;this.y=Math.random()*canvas.height;this.size=Math.random()*3+1;this.speedX=Math.random()*2-1;this.speedY=Math.random()*2-1; } update() { this.x+=this.speedX;this.y+=this.speedY;if(this.x<0||this.x>canvas.width)this.speedX*=-1;if(this.y<0||this.y>canvas.height)this.speedY*=-1; } draw() { ctx.fillStyle='rgba(255,40,40,0.8)'; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }}
+let particles = []; for(let i=0;i<180;i++) particles.push(new Particle());
+function animate() { ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.update();p.draw();}); requestAnimationFrame(animate); }
+animate();
 
-// ─── NAVEGAÇÃO ENTRE CATEGORIAS ─────────────────────────────
+// Navegação
 document.querySelectorAll('.category-item').forEach(item => {
   item.addEventListener('click', () => {
     document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active'));
@@ -388,304 +282,174 @@ document.querySelectorAll('.category-item').forEach(item => {
   });
 });
 
-// ─── VOLTAR AO OVERVIEW ─────────────────────────────────────
 function voltarOverview() {
   document.getElementById('config-area').classList.add('hidden');
   document.getElementById('overview').classList.remove('hidden');
-  document.getElementById('server-select').value = '';
 }
 
-// ─── CARREGAR DASHBOARD ─────────────────────────────────────
+// Carregar Dashboard
 async function loadDashboard() {
-  if (!token) {
-    alert('Faça login novamente.');
-    window.location.href = '/';
-    return;
-  }
+  if(!token) { alert('Faça login novamente'); window.location.href = '/'; return; }
 
-  try {
-    // Usuário
-    const userRes = await fetch('https://discord.com/api/users/@me', { headers: { Authorization: `Bearer ${token}` } });
-    const user = await userRes.json();
-    document.getElementById('user-avatar').src = user.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128` : 'https://cdn.discordapp.com/embed/avatars/0.png';
-    document.getElementById('user-name').textContent = user.global_name || user.username;
-    userIsPremium = user.id === "551080982493528106";
+  const userRes = await fetch('https://discord.com/api/users/@me', {headers:{Authorization:`Bearer ${token}`}});
+  const user = await userRes.json();
+  document.getElementById('user-avatar').src = user.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png` : 'https://cdn.discordapp.com/embed/avatars/0.png';
+  document.getElementById('user-name').textContent = user.global_name || user.username;
 
-    // Servidores
-    const guildsRes = await fetch('https://discord.com/api/users/@me/guilds?with_counts=true', { headers: { Authorization: `Bearer ${token}` } });
-    const guilds = await guildsRes.json();
+  const guildsRes = await fetch('https://discord.com/api/users/@me/guilds?with_counts=true', {headers:{Authorization:`Bearer ${token}`}});
+  const guilds = await guildsRes.json();
 
-    // Dropdown topbar
-    const select = document.getElementById('server-select');
-    select.innerHTML = '<option value="">Selecione um servidor...</option>';
-    guilds.filter(g => (g.permissions & 0x8)).forEach(g => {
-      const opt = document.createElement('option');
-      opt.value = g.id;
-      opt.textContent = g.name;
-      select.appendChild(opt);
-    });
+  const select = document.getElementById('server-select');
+  select.innerHTML = '<option value="">Selecione um servidor...</option>';
+  guilds.filter(g => (g.permissions & 0x8)).forEach(g => {
+    const opt = document.createElement('option');
+    opt.value = g.id;
+    opt.textContent = g.name;
+    select.appendChild(opt);
+  });
 
-    select.onchange = () => {
-      if (select.value) loadServerConfig(select.value);
-    };
+  select.onchange = () => select.value && loadServerConfig(select.value);
 
-    // Grid overview
-    const grid = document.getElementById('guild-list');
-    grid.innerHTML = '';
-    guilds.filter(g => (g.permissions & 0x8)).forEach(g => {
-      const card = document.createElement('div');
-      card.className = 'glass p-6 blood-border rounded-3xl cursor-pointer hover:scale-105 transition';
-      card.innerHTML = `
-        <div class="flex items-center gap-4">
-          ${g.icon ? `<img src="https://cdn.discordapp.com/icons/${g.id}/${g.icon}.png?size=64" class="w-14 h-14 rounded-2xl">` : '<div class="w-14 h-14 bg-red-900 rounded-2xl flex items-center justify-center text-3xl font-bold">V</div>'}
-          <div>
-            <p class="font-bold text-lg">${g.name}</p>
-            <p class="text-sm text-red-400">${g.approximate_member_count || '?'} membros</p>
-          </div>
-        </div>
-      `;
-      card.onclick = () => {
-        select.value = g.id;
-        loadServerConfig(g.id);
-      };
-      grid.appendChild(card);
-    });
-
-  } catch (e) {
-    console.error(e);
-    document.getElementById('user-name').textContent = 'Erro ao carregar';
-  }
+  const grid = document.getElementById('guild-list');
+  grid.innerHTML = '';
+  guilds.filter(g => (g.permissions & 0x8)).forEach(g => {
+    const card = document.createElement('div');
+    card.className = 'glass p-6 blood-border rounded-3xl cursor-pointer hover:scale-105 transition';
+    card.innerHTML = `<div class="flex items-center gap-4">${g.icon ? `<img src="https://cdn.discordapp.com/icons/${g.id}/${g.icon}.png?size=64" class="w-14 h-14 rounded-2xl">` : '<div class="w-14 h-14 bg-red-900 rounded-2xl flex items-center justify-center text-3xl">V</div>'}<div><p class="font-bold text-lg">${g.name}</p><p class="text-sm text-red-400">${g.approximate_member_count || '?'} membros</p></div></div>`;
+    card.onclick = () => { select.value = g.id; loadServerConfig(g.id); };
+    grid.appendChild(card);
+  });
 }
 
-// ─── CARREGAR CONFIGURAÇÕES DO SERVIDOR ──────────────────────
+// Carregar configs do servidor
 async function loadServerConfig(guildId) {
   currentGuildId = guildId;
   document.getElementById('overview').classList.add('hidden');
   document.getElementById('config-area').classList.remove('hidden');
 
-  try {
-    const res = await fetch(`${backendUrl}/api/config`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    const configs = await res.json();
-    const g = configs[guildId] || {};
+  const res = await fetch(`${backendUrl}/api/config`, { headers: { Authorization: `Bearer ${token}` } });
+  const all = await res.json();
+  const g = all[guildId] || {};
 
-    // Nome do servidor selecionado
-    const selectedOption = document.querySelector(`#server-select option[value="${guildId}"]`);
-    document.getElementById('selected-server-name').textContent = `— ${selectedOption?.textContent || 'Servidor'}`;
+  document.getElementById('selected-server-name').textContent = `— ${document.querySelector(`#server-select option[value="${guildId}"]`).textContent}`;
 
-    // Preenche campos
-    // Geral
-    document.getElementById('general-prefix').value = g.general?.prefix || '!';
-    document.getElementById('general-bot-enabled').checked = g.general?.bot_enabled !== false;
+  // Preenche todos os campos (chaves EXATAS do seu backend)
+  document.getElementById('general-prefix').value = g.general?.prefix || '!';
+  document.getElementById('general-bot-enabled').checked = g.general?.bot_enabled !== false;
 
-    // Economia
-    document.getElementById('economia-daily-min').value = g.economia?.daily_min ?? 100;
-    document.getElementById('economia-daily-max').value = g.economia?.daily_max ?? 500;
-    document.getElementById('economia-vip-bonus').value = g.economia?.vip_bonus ?? 1.5;
-    document.getElementById('economia-work-cooldown').value = g.economia?.work_cooldown ?? 3600;
+  document.getElementById('economia-daily-min').value = g.economia?.daily_min ?? 100;
+  document.getElementById('economia-daily-max').value = g.economia?.daily_max ?? 500;
+  document.getElementById('economia-vip-bonus').value = g.economia?.vip_bonus ?? 1.5;
+  document.getElementById('economia-work-cooldown').value = g.economia?.work_cooldown ?? 3600;
 
-    // Níveis
-    document.getElementById('levels-enabled').checked = g.levels?.enabled !== false;
-    document.getElementById('levels-announce-channel').value = g.levels?.announce_channel || '';
-    document.getElementById('levels-xp-min').value = g.levels?.xp_min ?? 15;
-    document.getElementById('levels-xp-max').value = g.levels?.xp_max ?? 25;
-    document.getElementById('levels-cooldown').value = g.levels?.cooldown ?? 60;
+  document.getElementById('levels-enabled').checked = g.levels?.enabled !== false;
+  document.getElementById('levels-announce-channel').value = g.levels?.announce_channel || '';
+  document.getElementById('levels-xp-min').value = g.levels?.xp_min ?? 15;
+  document.getElementById('levels-xp-max').value = g.levels?.xp_max ?? 25;
+  document.getElementById('levels-cooldown').value = g.levels?.cooldown ?? 60;
 
-    // Missões
-    document.getElementById('missoes-enabled').checked = g.missoes?.enabled !== false;
-    document.getElementById('missoes-daily').value = JSON.stringify(g.missoes?.daily || [], null, 2);
-    document.getElementById('missoes-weekly').value = JSON.stringify(g.missoes?.weekly || [], null, 2);
+  document.getElementById('missoes-enabled').checked = g.missoes?.enabled !== false;
+  document.getElementById('missoes-daily').value = JSON.stringify(g.missoes?.daily || [], null, 2);
+  document.getElementById('missoes-weekly').value = JSON.stringify(g.missoes?.weekly || [], null, 2);
 
-    // Ranking
-    document.getElementById('ranking-max-users').value = g.ranking?.max_users ?? 50;
+  document.getElementById('ranking-max-users').value = g.ranking?.max_users ?? 50;
 
-    // Social
-    document.getElementById('social-enabled').checked = g.social?.enabled !== false;
-    document.getElementById('social-cooldown-marriage').value = g.social?.cooldown_marriage ?? 86400;
+  document.getElementById('social-enabled').checked = g.social?.enabled !== false;
+  document.getElementById('social-cooldown-marriage').value = g.social?.cooldown_marriage ?? 86400;
 
-    // Anônimo
-    document.getElementById('anonymous-enabled').checked = g.anonymous?.enabled !== false;
-    document.getElementById('anonymous-logs').value = g.anonymous?.logs_channel || '';
-    document.getElementById('anonymous-cooldown').value = g.anonymous?.cooldown ?? 120;
+  document.getElementById('anonymous-enabled').checked = g.anonymous?.enabled !== false;
+  document.getElementById('anonymous-logs').value = g.anonymous?.logs_channel || '';
+  document.getElementById('anonymous-cooldown').value = g.anonymous?.cooldown ?? 120;
 
-    // Autorole
-    document.getElementById('autorole-time-roles').value = JSON.stringify(g.autorole?.time_roles || [], null, 2);
-    document.getElementById('autorole-vip').value = g.autorole?.vip_role || '';
+  document.getElementById('autorole-time-roles').value = JSON.stringify(g.autorole?.time_roles || [], null, 2);
+  document.getElementById('autorole-vip').value = g.autorole?.vip_role || '';
 
-    // Anúncios
-    document.getElementById('announce-enabled').checked = g.announce?.enabled !== false;
-    document.getElementById('announce-channel').value = g.announce?.channel || '';
-    document.getElementById('announce-message').value = g.announce?.message || 'Bem-vindo ao Véu! Use /ajuda para comandos.';
+  document.getElementById('announce-enabled').checked = g.announce?.enabled !== false;
+  document.getElementById('announce-channel').value = g.announce?.channel || '';
+  document.getElementById('announce-message').value = g.announce?.message || 'Bem-vindo ao Véu! Use /ajuda para comandos.';
 
-    // Loja
-    document.getElementById('loja-enabled').checked = g.loja?.enabled !== false;
-    document.getElementById('loja-itens').value = JSON.stringify(g.loja?.itens || {}, null, 2);
+  document.getElementById('loja-enabled').checked = g.loja?.enabled !== false;
+  document.getElementById('loja-itens').value = JSON.stringify(g.loja?.itens || {}, null, 2);
 
-    // Loja de Cores
-    document.getElementById('loja-cor-enabled').checked = g.loja_cores?.enabled !== false;
-    document.getElementById('loja-cor-colors').value = JSON.stringify(g.loja_cores?.colors || {}, null, 2);
-    document.getElementById('loja-cor-vip-discount').value = g.loja_cores?.vip_discount ?? 0.20;
+  document.getElementById('loja-cor-enabled').checked = g.loja_cores?.enabled !== false;
+  document.getElementById('loja-cor-colors').value = JSON.stringify(g.loja_cores?.colors || {}, null, 2);
+  document.getElementById('loja-cor-vip-discount').value = g.loja_cores?.vip_discount ?? 0.20;
 
-    // Gifts
-    document.getElementById('gifts-enabled').checked = g.gifts?.enabled !== false;
+  document.getElementById('gifts-enabled').checked = g.gifts?.enabled !== false;
 
-    // Evento
-    document.getElementById('evento-enabled').checked = g.evento?.enabled !== false;
-    document.getElementById('evento-drops-chance').value = g.evento?.drops_chance ?? 1.0;
-    document.getElementById('evento-drops-min').value = g.evento?.drops_min ?? 50;
-    document.getElementById('evento-drops-max').value = g.evento?.drops_max ?? 200;
+  document.getElementById('evento-enabled').checked = g.evento?.enabled !== false;
+  document.getElementById('evento-drops-chance').value = g.evento?.drops_chance ?? 1.0;
+  document.getElementById('evento-drops-min').value = g.evento?.drops_min ?? 50;
+  document.getElementById('evento-drops-max').value = g.evento?.drops_max ?? 200;
 
-    // Call Manager
-    document.getElementById('call-manager-enabled').checked = g.call_manager?.enabled !== false;
+  document.getElementById('call-manager-enabled').checked = g.call_manager?.enabled !== false;
+  document.getElementById('perfil-enabled').checked = g.perfil?.enabled !== false;
 
-    // Perfil
-    document.getElementById('perfil-enabled').checked = g.perfil?.enabled !== false;
+  document.getElementById('tickets-enabled').checked = g.ticket?.enabled !== false;
+  document.getElementById('tickets-panel-canal').value = g.ticket?.panel_channel || '';
+  document.getElementById('tickets-panel-text').value = g.ticket?.panel_text || 'Selecione o tipo de atendimento.';
+  document.getElementById('tickets-panel-image').value = g.ticket?.panel_image || '';
+  document.getElementById('tickets-botoes').value = JSON.stringify(g.ticket?.buttons || [], null, 2);
 
-    // Ticket
-    document.getElementById('tickets-enabled').checked = g.ticket?.enabled !== false;
-    document.getElementById('tickets-panel-canal').value = g.ticket?.panel_channel || '';
-    document.getElementById('tickets-panel-text').value = g.ticket?.panel_text || 'Selecione o tipo de atendimento.';
-    document.getElementById('tickets-panel-image').value = g.ticket?.panel_image || '';
-    document.getElementById('tickets-botoes').value = JSON.stringify(g.ticket?.buttons || [], null, 2);
+  document.getElementById('premium-ativo').checked = !!g.premium?.ativo;
+  document.getElementById('premium-expira').value = g.premium?.expira || '';
+};
 
-    // Premium
-    document.getElementById('premium-ativo').checked = !!g.premium?.ativo;
-    document.getElementById('premium-expira').value = g.premium?.expira || '';
-
-  } catch (e) {
-    console.error('Erro ao carregar configs:', e);
-  }
-}
-
-// ─── SALVAR CONFIGURAÇÕES ───────────────────────────────────
+// SALVAR
 document.getElementById('save-btn').addEventListener('click', async () => {
-  if (!currentGuildId) return alert('Selecione um servidor primeiro.');
+  if(!currentGuildId) return alert('Selecione um servidor primeiro');
 
   const btn = document.getElementById('save-btn');
-  const text = document.getElementById('save-text');
-  const spinner = document.getElementById('save-spinner');
-  const success = document.getElementById('save-success');
-  const error = document.getElementById('save-error');
-
   btn.disabled = true;
-  text.textContent = 'Salvando...';
-  spinner.classList.remove('hidden');
-  success.classList.add('hidden');
-  error.classList.add('hidden');
+  document.getElementById('save-text').innerHTML = 'Salvando... <span class="spinner inline-block ml-3"></span>';
 
-  const data = {
+  const payload = {
     guild_id: currentGuildId,
-    general: {
-      prefix: document.getElementById('general-prefix').value.trim() || '!',
-      bot_enabled: document.getElementById('general-bot-enabled').checked
-    },
-    economia: {
-      daily_min: Number(document.getElementById('economia-daily-min').value) || 100,
-      daily_max: Number(document.getElementById('economia-daily-max').value) || 500,
-      vip_bonus: Number(document.getElementById('economia-vip-bonus').value) || 1.5,
-      work_cooldown: Number(document.getElementById('economia-work-cooldown').value) || 3600
-    },
-    levels: {
-      enabled: document.getElementById('levels-enabled').checked,
-      announce_channel: document.getElementById('levels-announce-channel').value.trim(),
-      xp_min: Number(document.getElementById('levels-xp-min').value) || 15,
-      xp_max: Number(document.getElementById('levels-xp-max').value) || 25,
-      cooldown: Number(document.getElementById('levels-cooldown').value) || 60
-    },
-    missoes: {
-      enabled: document.getElementById('missoes-enabled').checked,
-      daily: safeJsonParse(document.getElementById('missoes-daily').value, []),
-      weekly: safeJsonParse(document.getElementById('missoes-weekly').value, [])
-    },
-    ranking: {
-      max_users: Number(document.getElementById('ranking-max-users').value) || 50
-    },
-    social: {
-      enabled: document.getElementById('social-enabled').checked,
-      cooldown_marriage: Number(document.getElementById('social-cooldown-marriage').value) || 86400
-    },
-    anonymous: {
-      enabled: document.getElementById('anonymous-enabled').checked,
-      logs_channel: document.getElementById('anonymous-logs').value.trim(),
-      cooldown: Number(document.getElementById('anonymous-cooldown').value) || 120
-    },
-    autorole: {
-      time_roles: safeJsonParse(document.getElementById('autorole-time-roles').value, []),
-      vip_role: document.getElementById('autorole-vip').value.trim()
-    },
-    announce: {
-      enabled: document.getElementById('announce-enabled').checked,
-      channel: document.getElementById('announce-channel').value.trim(),
-      message: document.getElementById('announce-message').value.trim()
-    },
-    loja: {
-      enabled: document.getElementById('loja-enabled').checked,
-      itens: safeJsonParse(document.getElementById('loja-itens').value, {})
-    },
-    loja_cores: {
-      enabled: document.getElementById('loja-cor-enabled').checked,
-      colors: safeJsonParse(document.getElementById('loja-cor-colors').value, {}),
-      vip_discount: Number(document.getElementById('loja-cor-vip-discount').value) || 0.20
-    },
-    gifts: {
-      enabled: document.getElementById('gifts-enabled').checked
-    },
-    evento: {
-      enabled: document.getElementById('evento-enabled').checked,
-      drops_chance: Number(document.getElementById('evento-drops-chance').value) || 1.0,
-      drops_min: Number(document.getElementById('evento-drops-min').value) || 50,
-      drops_max: Number(document.getElementById('evento-drops-max').value) || 200
-    },
-    call_manager: {
-      enabled: document.getElementById('call-manager-enabled').checked
-    },
-    perfil: {
-      enabled: document.getElementById('perfil-enabled').checked
-    },
-    ticket: {
-      enabled: document.getElementById('tickets-enabled').checked,
-      panel_channel: document.getElementById('tickets-panel-canal').value.trim(),
-      panel_text: document.getElementById('tickets-panel-text').value.trim(),
-      panel_image: document.getElementById('tickets-panel-image').value.trim(),
-      buttons: safeJsonParse(document.getElementById('tickets-botoes').value, [])
-    },
-    premium: {
-      ativo: document.getElementById('premium-ativo').checked,
-      expira: document.getElementById('premium-expira').value
-    }
+    general: { prefix: document.getElementById('general-prefix').value || '!', bot_enabled: document.getElementById('general-bot-enabled').checked },
+    economia: { daily_min: Number(document.getElementById('economia-daily-min').value)||100, daily_max: Number(document.getElementById('economia-daily-max').value)||500, vip_bonus: Number(document.getElementById('economia-vip-bonus').value)||1.5, work_cooldown: Number(document.getElementById('economia-work-cooldown').value)||3600 },
+    levels: { enabled: document.getElementById('levels-enabled').checked, announce_channel: document.getElementById('levels-announce-channel').value, xp_min: Number(document.getElementById('levels-xp-min').value)||15, xp_max: Number(document.getElementById('levels-xp-max').value)||25, cooldown: Number(document.getElementById('levels-cooldown').value)||60 },
+    missoes: { enabled: document.getElementById('missoes-enabled').checked, daily: safeParse(document.getElementById('missoes-daily').value), weekly: safeParse(document.getElementById('missoes-weekly').value) },
+    ranking: { max_users: Number(document.getElementById('ranking-max-users').value)||50 },
+    social: { enabled: document.getElementById('social-enabled').checked, cooldown_marriage: Number(document.getElementById('social-cooldown-marriage').value)||86400 },
+    anonymous: { enabled: document.getElementById('anonymous-enabled').checked, logs_channel: document.getElementById('anonymous-logs').value, cooldown: Number(document.getElementById('anonymous-cooldown').value)||120 },
+    autorole: { time_roles: safeParse(document.getElementById('autorole-time-roles').value), vip_role: document.getElementById('autorole-vip').value },
+    announce: { enabled: document.getElementById('announce-enabled').checked, channel: document.getElementById('announce-channel').value, message: document.getElementById('announce-message').value },
+    loja: { enabled: document.getElementById('loja-enabled').checked, itens: safeParse(document.getElementById('loja-itens').value) },
+    loja_cores: { enabled: document.getElementById('loja-cor-enabled').checked, colors: safeParse(document.getElementById('loja-cor-colors').value), vip_discount: Number(document.getElementById('loja-cor-vip-discount').value)||0.20 },
+    gifts: { enabled: document.getElementById('gifts-enabled').checked },
+    evento: { enabled: document.getElementById('evento-enabled').checked, drops_chance: Number(document.getElementById('evento-drops-chance').value)||1.0, drops_min: Number(document.getElementById('evento-drops-min').value)||50, drops_max: Number(document.getElementById('evento-drops-max').value)||200 },
+    call_manager: { enabled: document.getElementById('call-manager-enabled').checked },
+    perfil: { enabled: document.getElementById('perfil-enabled').checked },
+    ticket: { enabled: document.getElementById('tickets-enabled').checked, panel_channel: document.getElementById('tickets-panel-canal').value, panel_text: document.getElementById('tickets-panel-text').value, panel_image: document.getElementById('tickets-panel-image').value, buttons: safeParse(document.getElementById('tickets-botoes').value) },
+    premium: { ativo: document.getElementById('premium-ativo').checked, expira: document.getElementById('premium-expira').value }
   };
 
   try {
     const res = await fetch(`${backendUrl}/api/config`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify(payload)
     });
 
-    if (res.ok) {
-      success.classList.remove('hidden');
-      setTimeout(() => success.classList.add('hidden'), 5000);
+    if(res.ok) {
+      document.getElementById('save-success').classList.remove('hidden');
+      setTimeout(() => document.getElementById('save-success').classList.add('hidden'), 4000);
+      await loadServerConfig(currentGuildId); // recarrega para confirmar
     } else {
-      throw new Error('Erro no servidor');
+      throw new Error(await res.text());
     }
-  } catch (err) {
-    console.error(err);
-    error.textContent = 'Erro ao salvar. Verifique o console.';
-    error.classList.remove('hidden');
-    setTimeout(() => error.classList.add('hidden'), 6000);
+  } catch(e) {
+    console.error(e);
+    document.getElementById('save-error').textContent = 'Erro ao salvar: ' + e.message;
+    document.getElementById('save-error').classList.remove('hidden');
   } finally {
     btn.disabled = false;
-    text.textContent = 'SALVAR TODAS AS CONFIGURAÇÕES';
-    spinner.classList.add('hidden');
+    document.getElementById('save-text').textContent = 'SALVAR TODAS AS CONFIGURAÇÕES';
   }
 });
 
-function safeJsonParse(str, fallback = {}) {
-  try { return JSON.parse(str); } catch { return fallback; }
+function safeParse(str) {
+  try { return JSON.parse(str); } catch { return {}; }
 }
 
 window.onload = loadDashboard;
