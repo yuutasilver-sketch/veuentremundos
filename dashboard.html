@@ -301,23 +301,47 @@
           </div>
         </div>
 
-        <!-- 10. Loja -->
-        <div id="panel-10" class="config-panel glass p-8 blood-border hidden">
-          <input type="checkbox" id="sec10" class="hidden accordion">
-          <label for="sec10" class="flex justify-between items-center cursor-pointer text-2xl neon">
-            10. Loja <span>▼</span>
-          </label>
-          <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="flex items-center">
-              <input id="loja-enabled" type="checkbox" class="mr-2" checked />
-              <label class="text-lg">Loja Ativada</label>
-            </div>
-            <div>
-              <label class="block mb-2 text-lg">Itens da Loja (JSON)</label>
-              <textarea id="loja-itens" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">{"rosa":{"preco":100,"descricao":"Rosa Eterna"}}</textarea>
-            </div>
-          </div>
-        </div>
+       <!-- 10. Loja -->
+<div id="panel-10" class="config-panel glass p-8 blood-border hidden">
+  <input type="checkbox" id="sec10" class="hidden accordion">
+  <label for="sec10" class="flex justify-between items-center cursor-pointer text-2xl neon">
+    10. Loja <span>▼</span>
+  </label>
+  <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="flex items-center">
+      <input id="loja-enabled" type="checkbox" class="mr-2" checked />
+      <label class="text-lg">Loja Ativada</label>
+    </div>
+    <div>
+      <label class="block mb-2 text-lg">Itens da Loja (JSON)</label>
+      <textarea id="loja-itens" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">{"rosa":{"preco":100,"descricao":"Rosa Eterna"}}</textarea>
+    </div>
+
+    <!-- Novo: URL da Moldura Personalizada -->
+    <div class="col-span-1 md:col-span-2">
+      <label class="block mb-2 text-lg">URL da Moldura Personalizada (frame do perfil)</label>
+      <input 
+        id="custom-frame-url" 
+        type="url" 
+        class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" 
+        placeholder="https://exemplo.com/moldura.png" 
+      />
+      <p class="text-sm opacity-70 mt-1">Link direto da imagem (PNG/JPG/GIF). Aparece como borda no perfil dos membros.</p>
+    </div>
+
+    <!-- Novo: URL do Fundo Personalizado -->
+    <div class="col-span-1 md:col-span-2">
+      <label class="block mb-2 text-lg">URL do Fundo Personalizado (background)</label>
+      <input 
+        id="custom-background-url" 
+        type="url" 
+        class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" 
+        placeholder="https://exemplo.com/fundo.jpg" 
+      />
+      <p class="text-sm opacity-70 mt-1">Link direto da imagem. Usado como fundo da dashboard ou perfil do servidor.</p>
+    </div>
+  </div>
+</div>
 
         <!-- 11. Loja de Cores -->
         <div id="panel-11" class="config-panel glass p-8 blood-border premium-lock hidden">
@@ -439,31 +463,34 @@
           </div>
         </div>
 
-        <!-- 17. Premium / Loja -->
-        <div id="panel-17" class="config-panel glass p-8 blood-border hidden">
-          <input type="checkbox" id="sec17" class="hidden accordion">
-          <label for="sec17" class="flex justify-between items-center cursor-pointer text-2xl neon">
-            17. Premium / Loja <span>▼</span>
-          </label>
-          <div class="accordion-content mt-6">
-            <div class="space-y-8">
-              <div class="flex items-center">
-                <input id="premium-ativo" type="checkbox" class="w-6 h-6 mr-3" />
-                <label class="text-lg">Ativar Premium neste servidor</label>
-              </div>
-              <div>
-                <label class="block mb-2 text-lg">Expiração Premium (YYYY-MM-DD)</label>
-                <input id="premium-expira" type="date" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" />
-              </div>
-              <a href="loja.html" class="block text-center bg-red-900 hover:bg-red-800 p-5 rounded-xl neon text-xl mt-6">
-                Ir para a Loja e Comprar Premium
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
+      <!-- 17. Premium / Loja -->
+<div id="panel-17" class="config-panel glass p-8 blood-border hidden">
+  <input type="checkbox" id="sec17" class="hidden accordion">
+  <label for="sec17" class="flex justify-between items-center cursor-pointer text-2xl neon">
+    17. Premium / Loja <span>▼</span>
+  </label>
+  <div class="accordion-content mt-6">
+    <div class="space-y-8">
+      <div class="flex items-center">
+        <input id="premium-ativo" type="checkbox" class="w-6 h-6 mr-3" />
+        <label class="text-lg">Ativar Premium neste servidor</label>
+      </div>
+      <div class="relative">
+        <label class="block mb-2 text-lg">Expiração Premium (YYYY-MM-DD)</label>
+        <input 
+          id="premium-expira" 
+          type="date" 
+          class="w-full p-4 bg-black/60 border border-red-800 rounded-xl cursor-not-allowed opacity-80" 
+          readonly 
+        />
+        <p class="text-sm opacity-70 mt-1">Data definida automaticamente na compra Premium</p>
+      </div>
+      <a href="loja.html" class="block text-center bg-red-900 hover:bg-red-800 p-5 rounded-xl neon text-xl mt-6">
+        Ir para a Loja e Comprar Premium
+      </a>
+    </div>
   </div>
+</div>
 
   <script>
     const backendUrl = 'https://random-8jtr0timo8xt8.vertraweb.app';
@@ -623,3 +650,4 @@
   </script>
 </body>
 </html>
+
