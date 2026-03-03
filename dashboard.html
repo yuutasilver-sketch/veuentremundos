@@ -7,13 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="icon" href="https://cdn.discordapp.com/attachments/1428432707284762654/1477310985504034999/ideogram-v3.0_circular_gothic_arcane_logo_badge_for_discord_bot_Veu_elegant_dark_red_wine_cri-0-Photoroom.png?ex=69a6ef92&is=69a59e12&hm=ee64bba757dc3d419605efd5957e269436a1f09191510bb6f05e31bb9f8b5b1c&" />
   <style>
-    body { 
-      background: #000000; 
-      color: #f0d0d0; 
-      font-family: system-ui, sans-serif; 
-      margin: 0; 
-      min-height: 100vh;
-    }
+    body { background: #000000; color: #f0d0d0; font-family: system-ui, sans-serif; margin: 0; min-height: 100vh; }
     .neon { text-shadow: 0 0 10px #ff0000, 0 0 20px #8b0000; }
     .glass { background: rgba(20,0,5,0.85); backdrop-filter: blur(16px); border: 2px solid rgba(139,0,0,0.6); border-radius: 1.5rem; }
     .blood-border { border: 2px solid #8b0000; box-shadow: 0 0 15px #4a0000; }
@@ -21,7 +15,7 @@
     canvas { display: block; }
     .accordion-content { display: none; }
     .accordion:checked ~ .accordion-content { display: block; }
-    .server-card { transition: all 0.25s; cursor: pointer; }
+    .server-card { transition: all 0.25s; }
     .server-card:hover { transform: scale(1.02); box-shadow: 0 0 25px rgba(139,0,0,0.5); }
     .selected-server { border: 3px solid #ff0000 !important; box-shadow: 0 0 30px #ff0000 !important; background: rgba(139,0,0,0.15); }
     .premium-lock { position: relative; pointer-events: none; opacity: 0.7; }
@@ -31,6 +25,10 @@
     .category-item.active { background: rgba(139,0,0,0.5); border-left: 4px solid #ff0000; }
     #config-area { display: none; }
     #overview { display: block; }
+    #save-btn { transition: all 0.3s; }
+    #save-btn.loading { pointer-events: none; opacity: 0.7; }
+    .spinner { width: 24px; height: 24px; border: 3px solid #fff; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
@@ -38,7 +36,7 @@
   <canvas class="particles"></canvas>
 
   <div class="flex flex-col md:flex-row min-h-screen">
-    <!-- Sidebar esquerdo com menu de categorias -->
+    <!-- Sidebar esquerdo -->
     <aside class="w-full md:w-72 bg-black/90 border-b md:border-r border-red-900/50 p-6 md:sticky md:top-0 md:h-screen overflow-y-auto">
       <div class="flex items-center mb-10">
         <img src="https://cdn.discordapp.com/attachments/1428432707284762654/1477310985504034999/ideogram-v3.0_circular_gothic_arcane_logo_badge_for_discord_bot_Veu_elegant_dark_red_wine_cri-0-Photoroom.png" alt="Véu" class="w-12 h-12 rounded-full mr-3">
@@ -301,47 +299,23 @@
           </div>
         </div>
 
-       <!-- 10. Loja -->
-<div id="panel-10" class="config-panel glass p-8 blood-border hidden">
-  <input type="checkbox" id="sec10" class="hidden accordion">
-  <label for="sec10" class="flex justify-between items-center cursor-pointer text-2xl neon">
-    10. Loja <span>▼</span>
-  </label>
-  <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div class="flex items-center">
-      <input id="loja-enabled" type="checkbox" class="mr-2" checked />
-      <label class="text-lg">Loja Ativada</label>
-    </div>
-    <div>
-      <label class="block mb-2 text-lg">Itens da Loja (JSON)</label>
-      <textarea id="loja-itens" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">{"rosa":{"preco":100,"descricao":"Rosa Eterna"}}</textarea>
-    </div>
-
-    <!-- Novo: URL da Moldura Personalizada -->
-    <div class="col-span-1 md:col-span-2">
-      <label class="block mb-2 text-lg">URL da Moldura Personalizada (frame do perfil)</label>
-      <input 
-        id="custom-frame-url" 
-        type="url" 
-        class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" 
-        placeholder="https://exemplo.com/moldura.png" 
-      />
-      <p class="text-sm opacity-70 mt-1">Link direto da imagem (PNG/JPG/GIF). Aparece como borda no perfil dos membros.</p>
-    </div>
-
-    <!-- Novo: URL do Fundo Personalizado -->
-    <div class="col-span-1 md:col-span-2">
-      <label class="block mb-2 text-lg">URL do Fundo Personalizado (background)</label>
-      <input 
-        id="custom-background-url" 
-        type="url" 
-        class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" 
-        placeholder="https://exemplo.com/fundo.jpg" 
-      />
-      <p class="text-sm opacity-70 mt-1">Link direto da imagem. Usado como fundo da dashboard ou perfil do servidor.</p>
-    </div>
-  </div>
-</div>
+        <!-- 10. Loja -->
+        <div id="panel-10" class="config-panel glass p-8 blood-border hidden">
+          <input type="checkbox" id="sec10" class="hidden accordion">
+          <label for="sec10" class="flex justify-between items-center cursor-pointer text-2xl neon">
+            10. Loja <span>▼</span>
+          </label>
+          <div class="accordion-content mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="flex items-center">
+              <input id="loja-enabled" type="checkbox" class="mr-2" checked />
+              <label class="text-lg">Loja Ativada</label>
+            </div>
+            <div>
+              <label class="block mb-2 text-lg">Itens da Loja (JSON)</label>
+              <textarea id="loja-itens" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl h-32">{"rosa":{"preco":100,"descricao":"Rosa Eterna"}}</textarea>
+            </div>
+          </div>
+        </div>
 
         <!-- 11. Loja de Cores -->
         <div id="panel-11" class="config-panel glass p-8 blood-border premium-lock hidden">
@@ -463,34 +437,46 @@
           </div>
         </div>
 
-      <!-- 17. Premium / Loja -->
-<div id="panel-17" class="config-panel glass p-8 blood-border hidden">
-  <input type="checkbox" id="sec17" class="hidden accordion">
-  <label for="sec17" class="flex justify-between items-center cursor-pointer text-2xl neon">
-    17. Premium / Loja <span>▼</span>
-  </label>
-  <div class="accordion-content mt-6">
-    <div class="space-y-8">
-      <div class="flex items-center">
-        <input id="premium-ativo" type="checkbox" class="w-6 h-6 mr-3" />
-        <label class="text-lg">Ativar Premium neste servidor</label>
-      </div>
-      <div class="relative">
-        <label class="block mb-2 text-lg">Expiração Premium (YYYY-MM-DD)</label>
-        <input 
-          id="premium-expira" 
-          type="date" 
-          class="w-full p-4 bg-black/60 border border-red-800 rounded-xl cursor-not-allowed opacity-80" 
-          readonly 
-        />
-        <p class="text-sm opacity-70 mt-1">Data definida automaticamente na compra Premium</p>
-      </div>
-      <a href="loja.html" class="block text-center bg-red-900 hover:bg-red-800 p-5 rounded-xl neon text-xl mt-6">
-        Ir para a Loja e Comprar Premium
-      </a>
-    </div>
+        <!-- 17. Premium / Loja -->
+        <div id="panel-17" class="config-panel glass p-8 blood-border hidden">
+          <input type="checkbox" id="sec17" class="hidden accordion">
+          <label for="sec17" class="flex justify-between items-center cursor-pointer text-2xl neon">
+            17. Premium / Loja <span>▼</span>
+          </label>
+          <div class="accordion-content mt-6">
+            <div class="space-y-8">
+              <div class="flex items-center">
+                <input id="premium-ativo" type="checkbox" class="w-6 h-6 mr-3" />
+                <label class="text-lg">Ativar Premium neste servidor</label>
+              </div>
+              <div class="relative">
+                <label class="block mb-2 text-lg">Expiração Premium (YYYY-MM-DD)</label>
+                <input id="premium-expira" type="date" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl cursor-not-allowed opacity-80" readonly />
+                <p class="text-sm opacity-70 mt-1">Data definida automaticamente na compra Premium</p>
+              </div>
+              <a href="loja.html" class="block text-center bg-red-900 hover:bg-red-800 p-5 rounded-xl neon text-xl mt-6">
+                Ir para a Loja e Comprar Premium
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botão Salvar -->
+        <div class="mt-12 pt-8 border-t border-red-900/50">
+          <button id="save-btn" class="w-full bg-gradient-to-r from-red-700 to-red-600 hover:from-red-600 hover:to-red-500 py-6 rounded-2xl text-2xl neon font-bold flex items-center justify-center gap-4 transition-all duration-300">
+            <span id="save-text">Salvar Configurações</span>
+            <div id="save-spinner" class="hidden spinner"></div>
+          </button>
+          <div id="save-success" class="hidden mt-6 text-center text-green-400 text-2xl font-bold animate-pulse">
+            ✅ Configurações salvas com sucesso!
+          </div>
+          <div id="save-error" class="hidden mt-6 text-center text-red-400 text-xl">
+            Erro ao salvar. Tente novamente.
+          </div>
+        </div>
+      </section>
+    </main>
   </div>
-</div>
 
   <script>
     const backendUrl = 'https://random-8jtr0timo8xt8.vertraweb.app';
@@ -540,7 +526,6 @@
     initParticles();
     animateParticles();
 
-    // Atualizar stats
     function updateStats(online, total, plano) {
       document.getElementById('membros-online').textContent = online || 0;
       document.getElementById('total-membros').textContent = total || 0;
@@ -556,6 +541,64 @@
         document.querySelectorAll('.config-panel').forEach(p => p.classList.add('hidden'));
         document.getElementById(panelId).classList.remove('hidden');
       });
+    });
+
+    // Botão Salvar com envio pro backend
+    const saveBtn = document.getElementById('save-btn');
+    const saveText = document.getElementById('save-text');
+    const saveSpinner = document.getElementById('save-spinner');
+    const saveSuccess = document.getElementById('save-success');
+    const saveError = document.getElementById('save-error');
+
+    saveBtn.addEventListener('click', async () => {
+      saveBtn.classList.add('loading');
+      saveText.textContent = 'Salvando...';
+      saveSpinner.classList.remove('hidden');
+      saveSuccess.classList.add('hidden');
+      saveError.classList.add('hidden');
+
+      // Coleta alguns dados de exemplo (você pode expandir pra todos os campos)
+      const data = {
+        guildId: document.querySelector('.selected-server')?.dataset.guildId || '',
+        general: {
+          prefix: document.getElementById('general-prefix')?.value || '!',
+          botEnabled: document.getElementById('general-bot-enabled')?.checked || true
+        },
+        loja: {
+          enabled: document.getElementById('loja-enabled')?.checked || false,
+          itens: document.getElementById('loja-itens')?.value || '{}'
+        },
+        premium: {
+          ativo: document.getElementById('premium-ativo')?.checked || false,
+          expira: document.getElementById('premium-expira')?.value || ''
+        }
+      };
+
+      try {
+        const response = await fetch(`${backendUrl}/save-server-config`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          saveSuccess.classList.remove('hidden');
+          setTimeout(() => saveSuccess.classList.add('hidden'), 4000);
+        } else {
+          throw new Error('Falha no servidor');
+        }
+      } catch (err) {
+        console.error(err);
+        saveError.classList.remove('hidden');
+        setTimeout(() => saveError.classList.add('hidden'), 4000);
+      } finally {
+        saveBtn.classList.remove('loading');
+        saveSpinner.classList.add('hidden');
+        saveText.textContent = 'Salvar Configurações';
+      }
     });
 
     // Carregar dashboard
@@ -594,9 +637,10 @@
           adminCount++;
 
           const card = document.createElement('div');
-          card.className = 'server-card glass p-6 flex justify-between items-center blood-border';
+          card.className = 'server-card glass p-6 flex flex-col md:flex-row justify-between items-center blood-border mb-4';
+          card.dataset.guildId = guild.id;
           card.innerHTML = `
-            <div class="flex items-center">
+            <div class="flex items-center w-full md:w-auto">
               ${guild.icon 
                 ? `<img src="https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png?size=64" class="w-16 h-16 rounded-full mr-6">`
                 : '<div class="w-16 h-16 bg-gray-700 rounded-full mr-6 flex items-center justify-center text-2xl font-bold">V</div>'}
@@ -605,31 +649,27 @@
                 <p class="text-sm opacity-80">ID: ${guild.id}</p>
               </div>
             </div>
-            <div class="text-right opacity-80">
+            <div class="text-right opacity-80 mt-4 md:mt-0">
               <p>Membros: ${guild.approximate_member_count || '?'}</p>
               <p>Online: ${guild.approximate_presence_count || '?'}</p>
             </div>
+            <button class="mt-4 md:mt-0 bg-red-800 hover:bg-red-700 px-6 py-3 rounded-xl neon font-bold configure-btn">
+              Configurar este Servidor
+            </button>
           `;
 
-          card.onclick = () => {
+          // Botão "Configurar este Servidor"
+          card.querySelector('.configure-btn').onclick = () => {
             document.querySelectorAll('.server-card').forEach(c => c.classList.remove('selected-server'));
             card.classList.add('selected-server');
-            updateStats(
-              guild.approximate_presence_count || 0,
-              guild.approximate_member_count || 0,
-              currentPlan
-            );
+            updateStats(guild.approximate_presence_count || 0, guild.approximate_member_count || 0, currentPlan);
             document.getElementById('selected-server-name').textContent = `— ${guild.name}`;
 
-            // Mostra configurações e esconde visão geral
             document.getElementById('overview').style.display = 'none';
             document.getElementById('config-area').style.display = 'block';
             document.getElementById('category-menu').classList.remove('hidden');
-
-            // Abre Geral automaticamente
             document.querySelector('[data-panel="1"]').click();
 
-            // Libera premium
             if (user.id === "551080982493528106" || currentPlan !== "Free") {
               document.querySelectorAll('.premium-lock').forEach(el => el.classList.remove('premium-lock'));
             }
@@ -650,4 +690,3 @@
   </script>
 </body>
 </html>
-
