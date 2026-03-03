@@ -13,7 +13,7 @@
     .glass { background:rgba(20,0,5,0.88); backdrop-filter:blur(16px); border:2px solid rgba(139,0,0,0.7); border-radius:1.25rem; }
     .blood-border { border:2px solid #8b0000; box-shadow:0 0 20px rgba(139,0,0,0.5); }
     .particles { position:fixed; inset:0; pointer-events:none; z-index:-1; }
-    .topbar { background:rgba(10,0,3,0.96); border-bottom:2px solid #8b0000; }
+    .topbar { background:rgba(10,0,3,0.96); border-bottom:2px solid #8b0000; backdrop-filter:blur(12px); }
     .category-item { cursor:pointer; padding:0.75rem 1rem; border-radius:0.75rem; transition:all 0.2s; }
     .category-item:hover { background:rgba(139,0,0,0.25); }
     .category-item.active { background:rgba(139,0,0,0.45); border-left:4px solid #ff0000; }
@@ -26,7 +26,8 @@
 
 <canvas class="particles" id="particles"></canvas>
 
-<nav class="topbar fixed top-0 left-0 right-0 z-50 h-16 flex items-center px-6">
+<!-- TOP BAR (estilo ProBot: logo + selector central + user info direita) -->
+<nav class="topbar fixed top-0 left-0 right-0 z-50 h-16 flex items-center px-6 shadow-2xl">
   <div class="flex items-center gap-3">
     <img src="https://cdn.discordapp.com/attachments/1428432707284762654/1477310985504034999/ideogram-v3.0_circular_gothic_arcane_logo_badge_for_discord_bot_Veu_elegant_dark_red_wine_cri-0-Photoroom.png" class="w-9 h-9 rounded-full border border-red-800" alt="Véu">
     <span class="text-2xl font-bold neon">Véu</span>
@@ -46,9 +47,10 @@
 </nav>
 
 <div class="flex pt-16">
+  <!-- SIDEBAR (estilo ProBot: categorias verticais limpas) -->
   <aside class="w-72 bg-black/95 border-r border-red-900/50 h-[calc(100vh-4rem)] overflow-y-auto p-6 fixed md:sticky top-16">
     <div class="text-xl neon mb-6 flex items-center gap-2"><span class="text-2xl">🩸</span> Configurações</div>
-    <nav class="space-y-1 text-sm">
+    <nav class="space-y-1.5 text-sm">
       <div class="category-item active" data-panel="1">1. Geral</div>
       <div class="category-item" data-panel="2">2. Economia</div>
       <div class="category-item" data-panel="3">3. Níveis</div>
@@ -69,6 +71,7 @@
     </nav>
   </aside>
 
+  <!-- CONTEÚDO PRINCIPAL -->
   <main class="flex-1 p-6 md:p-10 overflow-y-auto min-h-screen">
     <div id="overview">
       <h1 class="text-5xl font-bold neon mb-10">Visão Geral</h1>
@@ -90,6 +93,7 @@
       </div>
 
       <div class="space-y-10">
+        <!-- 1. Geral -->
         <div id="panel-1" class="panel glass p-8 blood-border">
           <h3 class="text-2xl neon mb-6">1. Geral</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -98,6 +102,7 @@
           </div>
         </div>
 
+        <!-- 2. Economia -->
         <div id="panel-2" class="panel glass p-8 blood-border">
           <h3 class="text-2xl neon mb-6">2. Economia</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -108,6 +113,7 @@
           </div>
         </div>
 
+        <!-- 3. Níveis -->
         <div id="panel-3" class="panel glass p-8 blood-border">
           <h3 class="text-2xl neon mb-6">3. Níveis</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -119,6 +125,7 @@
           </div>
         </div>
 
+        <!-- 4. Missões (Premium) -->
         <div id="panel-4" class="panel glass p-8 blood-border premium-lock hidden">
           <h3 class="text-2xl neon mb-6">4. Missões</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -128,11 +135,13 @@
           </div>
         </div>
 
+        <!-- 5. Ranking -->
         <div id="panel-5" class="panel glass p-8 blood-border">
           <h3 class="text-2xl neon mb-6">5. Ranking</h3>
           <div><label>Máx usuários no ranking</label><input id="ranking-max-users" type="number" class="w-full p-4 bg-black/60 border border-red-800 rounded-xl" value="50" /></div>
         </div>
 
+        <!-- 6. Social -->
         <div id="panel-6" class="panel glass p-8 blood-border">
           <h3 class="text-2xl neon mb-6">6. Social</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -141,6 +150,7 @@
           </div>
         </div>
 
+        <!-- 7. Anônimo -->
         <div id="panel-7" class="panel glass p-8 blood-border">
           <h3 class="text-2xl neon mb-6">7. Anônimo</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -150,6 +160,7 @@
           </div>
         </div>
 
+        <!-- 8. Autorole (Premium) -->
         <div id="panel-8" class="panel glass p-8 blood-border premium-lock hidden">
           <h3 class="text-2xl neon mb-6">8. Autorole</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -158,6 +169,7 @@
           </div>
         </div>
 
+        <!-- 9. Anúncios (Premium) -->
         <div id="panel-9" class="panel glass p-8 blood-border premium-lock hidden">
           <h3 class="text-2xl neon mb-6">9. Anúncios</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -167,6 +179,7 @@
           </div>
         </div>
 
+        <!-- 10. Loja -->
         <div id="panel-10" class="panel glass p-8 blood-border">
           <h3 class="text-2xl neon mb-6">10. Loja</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -175,6 +188,7 @@
           </div>
         </div>
 
+        <!-- 11. Loja de Cores (Premium) -->
         <div id="panel-11" class="panel glass p-8 blood-border premium-lock hidden">
           <h3 class="text-2xl neon mb-6">11. Loja de Cores</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -184,11 +198,13 @@
           </div>
         </div>
 
+        <!-- 12. Gifts -->
         <div id="panel-12" class="panel glass p-8 blood-border">
           <h3 class="text-2xl neon mb-6">12. Gifts</h3>
           <div class="flex items-center"><input id="gifts-enabled" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" checked /><label>Gifts Ativados</label></div>
         </div>
 
+        <!-- 13. Evento (Premium) -->
         <div id="panel-13" class="panel glass p-8 blood-border premium-lock hidden">
           <h3 class="text-2xl neon mb-6">13. Evento</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -199,16 +215,19 @@
           </div>
         </div>
 
+        <!-- 14. Call Manager -->
         <div id="panel-14" class="panel glass p-8 blood-border">
           <h3 class="text-2xl neon mb-6">14. Call Manager</h3>
           <div class="flex items-center"><input id="call-manager-enabled" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" checked /><label>Call Manager Ativado</label></div>
         </div>
 
+        <!-- 15. Perfil -->
         <div id="panel-15" class="panel glass p-8 blood-border">
           <h3 class="text-2xl neon mb-6">15. Perfil</h3>
           <div class="flex items-center"><input id="perfil-enabled" type="checkbox" class="w-6 h-6 mr-3 accent-red-600" checked /><label>Perfil Ativado</label></div>
         </div>
 
+        <!-- 16. Ticket -->
         <div id="panel-16" class="panel glass p-8 blood-border">
           <h3 class="text-2xl neon mb-6">16. Ticket</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -220,6 +239,7 @@
           </div>
         </div>
 
+        <!-- 17. Premium -->
         <div id="panel-17" class="panel glass p-8 blood-border">
           <h3 class="text-2xl neon mb-6">17. Premium / Loja</h3>
           <div class="space-y-6">
@@ -229,12 +249,13 @@
         </div>
       </div>
 
+      <!-- Botão Salvar fixo -->
       <div class="mt-16 sticky bottom-8 z-40">
         <button id="save-btn" class="w-full bg-gradient-to-r from-red-700 to-red-600 hover:from-red-600 hover:to-red-500 py-6 rounded-3xl text-2xl font-bold neon flex items-center justify-center gap-4 shadow-2xl">
           <span id="save-text">SALVAR TODAS AS CONFIGURAÇÕES</span>
           <div id="save-spinner" class="hidden spinner"></div>
         </button>
-        <div id="save-success" class="hidden mt-4 text-center text-green-400 text-2xl font-bold animate-pulse">✅ Salvo com sucesso!</div>
+        <div id="save-success" class="hidden mt-4 text-center text-green-400 text-2xl font-bold animate-pulse">✅ Salvo com sucesso! Recarregando...</div>
         <div id="save-error" class="hidden mt-4 text-center text-red-400 text-xl"></div>
       </div>
     </div>
@@ -247,7 +268,7 @@ let token = localStorage.getItem('access_token') || localStorage.getItem('token'
 let currentGuildId = null;
 const OWNER_ID = "551080982493528106";
 
-// Partículas
+// Partículas vermelhas (mantém o tema vampírico)
 const canvas = document.getElementById('particles');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth; canvas.height = window.innerHeight;
@@ -256,7 +277,7 @@ let particles = []; for(let i=0;i<180;i++) particles.push(new Particle());
 function animate() { ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.update();p.draw();}); requestAnimationFrame(animate); }
 animate();
 
-// Navegação
+// Navegação entre painéis (estilo ProBot: clique na sidebar muda o conteúdo)
 document.querySelectorAll('.category-item').forEach(item => {
   item.addEventListener('click', () => {
     document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active'));
@@ -304,7 +325,7 @@ async function loadDashboard() {
     grid.appendChild(card);
   });
 
-  // Libera tudo para o dono
+  // Libera TUDO para o dono (seu ID)
   if (user.id === OWNER_ID) {
     document.querySelectorAll('.premium-lock').forEach(el => el.classList.remove('premium-lock'));
     document.getElementById('user-plan').textContent = 'Lendário (Dono)';
@@ -323,7 +344,7 @@ async function loadServerConfig(guildId) {
 
   document.getElementById('selected-server-name').textContent = `— ${document.querySelector(`#server-select option[value="${guildId}"]`).textContent}`;
 
-  // Preenche todos os campos
+  // Preenche todos os campos (chaves exatas do seu backend)
   document.getElementById('general-prefix').value = g.general?.prefix || '!';
   document.getElementById('general-bot-enabled').checked = g.general?.bot_enabled !== false;
 
@@ -385,7 +406,7 @@ async function loadServerConfig(guildId) {
   document.getElementById('premium-expira').value = g.premium?.expira || '';
 };
 
-// SALVAR
+// SALVAR CONFIGURAÇÕES (com recarregamento automático para confirmar persistência)
 document.getElementById('save-btn').addEventListener('click', async () => {
   if(!currentGuildId) return alert('Selecione um servidor primeiro');
 
@@ -423,8 +444,10 @@ document.getElementById('save-btn').addEventListener('click', async () => {
 
     if(res.ok) {
       document.getElementById('save-success').classList.remove('hidden');
-      setTimeout(() => document.getElementById('save-success').classList.add('hidden'), 4000);
-      await loadServerConfig(currentGuildId);
+      setTimeout(() => {
+        document.getElementById('save-success').classList.add('hidden');
+        loadServerConfig(currentGuildId); // recarrega configs para confirmar persistência
+      }, 4000);
     } else {
       throw new Error(await res.text());
     }
