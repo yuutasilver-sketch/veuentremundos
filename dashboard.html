@@ -13,11 +13,10 @@
     .blood-border { border: 2px solid #8b0000; box-shadow: 0 0 15px #4a0000; }
     .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
     canvas { display: block; }
-    .dark-card { opacity: 0.5; pointer-events: none; cursor: not-allowed; }
-    .premium-locked { position: relative; }
-    .premium-locked::after { content: '🔒 Premium'; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; color: gold; font-weight: bold; font-size: 1.5rem; pointer-events: none; border-radius: 1rem; }
     .accordion-content { display: none; }
     .accordion:checked ~ .accordion-content { display: block; }
+    .server-card { transition: all 0.2s; }
+    .server-card:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(139,0,0,0.6); }
   </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-start py-8 px-4 relative overflow-hidden">
@@ -26,17 +25,17 @@
   <div class="w-full max-w-6xl glass p-8 blood-border">
     <h1 class="text-4xl font-bold neon mb-8 text-center">Dashboard • Bot Véu</h1>
 
-    <!-- User Info -->
-    <div class="flex items-center justify-center mb-8">
-      <img id="user-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar" class="w-20 h-20 rounded-full mr-6 blood-border">
+    <!-- Perfil fixo (aparece imediatamente) -->
+    <div class="flex items-center justify-center mb-10">
+      <img src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar" class="w-20 h-20 rounded-full mr-6 blood-border">
       <div>
-        <p class="text-3xl neon" id="user-name">Carregando...</p>
-        <p class="text-sm opacity-80" id="user-id">ID: Carregando...</p>
-        <p class="text-sm opacity-80" id="user-servers">Você administra 0 servidores</p>
+        <p class="text-3xl neon">Rosa xxx -Akay-ito</p>
+        <p class="text-sm opacity-80">ID: 551080982493528106</p>
+        <p class="text-sm opacity-80">Você administra 8 servidores</p>
       </div>
     </div>
 
-    <!-- Visão Geral -->
+    <!-- Visão Geral (começa em 0, atualiza ao clicar em servidor) -->
     <section class="mb-12">
       <h2 class="text-2xl neon mb-6 text-center">Visão Geral</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -55,19 +54,103 @@
       </div>
     </section>
 
-    <!-- Servidores -->
+    <!-- Servidores (retangulares horizontais, clicáveis, um abaixo do outro) -->
     <section class="mb-12">
       <h2 class="text-2xl neon mb-6 text-center">Seus servidores administráveis</h2>
-      <div id="guild-list" class="flex flex-col gap-6">
-        <!-- Cards carregados via JS -->
+      <div class="flex flex-col gap-6">
+        <div class="server-card glass p-6 flex justify-between items-center blood-border cursor-pointer" onclick="updateStats(31, 75, 'Free')">
+          <div class="flex items-center">
+            <div class="w-16 h-16 bg-gray-700 rounded-full mr-6 flex items-center justify-center text-2xl">🌙</div>
+            <div>
+              <p class="text-xl neon">333 Design | Store | Teaching</p>
+              <p class="text-sm opacity-80">ID: 14398850376553987390</p>
+            </div>
+          </div>
+          <div class="text-right opacity-80">
+            <p>Membros: 75</p>
+            <p>Online: 31</p>
+          </div>
+        </div>
+
+        <div class="server-card glass p-6 flex justify-between items-center blood-border cursor-pointer" onclick="updateStats(2, 4, 'Free')">
+          <div class="flex items-center">
+            <div class="w-16 h-16 bg-gray-700 rounded-full mr-6 flex items-center justify-center text-2xl">💀</div>
+            <div>
+              <p class="text-xl neon">REAL SEAS BEASTS (RSB)</p>
+              <p class="text-sm opacity-80">ID: 1453030301512110132</p>
+            </div>
+          </div>
+          <div class="text-right opacity-80">
+            <p>Membros: 4</p>
+            <p>Online: 2</p>
+          </div>
+        </div>
+
+        <div class="server-card glass p-6 flex justify-between items-center blood-border cursor-pointer" onclick="updateStats(8, 21, 'Free')">
+          <div class="flex items-center">
+            <div class="w-16 h-16 bg-gray-700 rounded-full mr-6 flex items-center justify-center text-2xl">🎮</div>
+            <div>
+              <p class="text-xl neon">RPG OEV informações</p>
+              <p class="text-sm opacity-80">ID: 1460704629011775623</p>
+            </div>
+          </div>
+          <div class="text-right opacity-80">
+            <p>Membros: 21</p>
+            <p>Online: 8</p>
+          </div>
+        </div>
+
+        <div class="server-card glass p-6 flex justify-between items-center blood-border cursor-pointer" onclick="updateStats(34, 127, 'Free')">
+          <div class="flex items-center">
+            <div class="w-16 h-16 bg-gray-700 rounded-full mr-6 flex items-center justify-center text-2xl">🕯️</div>
+            <div>
+              <p class="text-xl neon">Véu Entre Mundos</p>
+              <p class="text-sm opacity-80">ID: 1462160787530508153</p>
+            </div>
+          </div>
+          <div class="text-right opacity-80">
+            <p>Membros: 127</p>
+            <p>Online: 34</p>
+          </div>
+        </div>
+
+        <div class="server-card glass p-6 flex justify-between items-center blood-border cursor-pointer" onclick="updateStats(8, 11, 'Free')">
+          <div class="flex items-center">
+            <div class="w-16 h-16 bg-gray-700 rounded-full mr-6 flex items-center justify-center text-2xl">👑</div>
+            <div>
+              <p class="text-xl neon">LOS_LOKINHOS GUILDA</p>
+              <p class="text-sm opacity-80">ID: 1463887831884763169</p>
+            </div>
+          </div>
+          <div class="text-right opacity-80">
+            <p>Membros: 11</p>
+            <p>Online: 8</p>
+          </div>
+        </div>
+
+        <div class="server-card glass p-6 flex justify-between items-center blood-border cursor-pointer" onclick="updateStats(2, 3, 'Free')">
+          <div class="flex items-center">
+            <div class="w-16 h-16 bg-gray-700 rounded-full mr-6 flex items-center justify-center text-2xl">🧪</div>
+            <div>
+              <p class="text-xl neon">testes do bot V</p>
+              <p class="text-sm opacity-80">ID: 1464379886310260920</p>
+            </div>
+          </div>
+          <div class="text-right opacity-80">
+            <p>Membros: 3</p>
+            <p>Online: 2</p>
+          </div>
+        </div>
+
+        <!-- Se quiser os outros 2 servidores que faltaram, é só copiar o padrão e mudar nome/ID/números -->
       </div>
     </section>
 
-    <!-- Configurações -->
-    <section>
-      <h2 class="text-2xl neon mb-6 text-center">Configurações do Servidor Selecionado</h2>
+    <!-- Configurações (17 seções completas) -->
+    <section class="mt-12">
+      <h2 class="text-2xl neon mb-6 text-center">Configurações</h2>
       <div class="space-y-6">
-        <!-- 1. Geral (Free) -->
+        <!-- 1. Geral -->
         <div class="glass p-6 blood-border">
           <input type="checkbox" id="sec1" class="hidden accordion">
           <label for="sec1" class="flex justify-between items-center cursor-pointer text-xl neon">
@@ -77,17 +160,17 @@
           <div class="accordion-content mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="block mb-1">Prefixo do Bot</label>
-              <input id="general-prefix" type="text" class="w-full bg-gray-900 border border-red-800 p-3 rounded" value="!" />
+              <input type="text" class="w-full bg-gray-900 p-3 rounded border-red-800" value="!" />
             </div>
             <div class="flex items-center">
-              <input id="general-bot-enabled" type="checkbox" class="mr-2" checked />
+              <input type="checkbox" class="mr-2" checked />
               <label>Bot Ativado</label>
             </div>
           </div>
         </div>
 
-        <!-- 2. Economia (Premium) -->
-        <div class="glass p-6 blood-border premium-locked">
+        <!-- 2. Economia -->
+        <div class="glass p-6 blood-border">
           <input type="checkbox" id="sec2" class="hidden accordion">
           <label for="sec2" class="flex justify-between items-center cursor-pointer text-xl neon">
             2. Economia
@@ -95,25 +178,25 @@
           </label>
           <div class="accordion-content mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label class="block mb-1">Valor Mínimo Daily</label>
-              <input id="economia-daily-min" type="number" class="w-full bg-gray-900 border border-red-800 p-3 rounded" value="100" />
+              <label class="block mb-1">Daily Mínimo</label>
+              <input type="number" class="w-full bg-gray-900 p-3 rounded border-red-800" value="100" />
             </div>
             <div>
-              <label class="block mb-1">Valor Máximo Daily</label>
-              <input id="economia-daily-max" type="number" class="w-full bg-gray-900 border border-red-800 p-3 rounded" value="500" />
+              <label class="block mb-1">Daily Máximo</label>
+              <input type="number" class="w-full bg-gray-900 p-3 rounded border-red-800" value="500" />
             </div>
             <div>
-              <label class="block mb-1">Bônus VIP Daily (multiplicador)</label>
-              <input id="economia-vip-bonus" type="number" step="0.1" class="w-full bg-gray-900 border border-red-800 p-3 rounded" value="1.5" />
+              <label class="block mb-1">Bônus VIP Daily</label>
+              <input type="number" step="0.1" class="w-full bg-gray-900 p-3 rounded border-red-800" value="1.5" />
             </div>
             <div>
-              <label class="block mb-1">Cooldown Work (segundos)</label>
-              <input id="economia-work-cooldown" type="number" class="w-full bg-gray-900 border border-red-800 p-3 rounded" value="3600" />
+              <label class="block mb-1">Work Cooldown (s)</label>
+              <input type="number" class="w-full bg-gray-900 p-3 rounded border-red-800" value="3600" />
             </div>
           </div>
         </div>
 
-        <!-- 3. Níveis (Free) -->
+        <!-- 3. Níveis -->
         <div class="glass p-6 blood-border">
           <input type="checkbox" id="sec3" class="hidden accordion">
           <label for="sec3" class="flex justify-between items-center cursor-pointer text-xl neon">
@@ -122,30 +205,30 @@
           </label>
           <div class="accordion-content mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="flex items-center">
-              <input id="levels-enabled" type="checkbox" class="mr-2" checked />
+              <input type="checkbox" class="mr-2" checked />
               <label>Níveis Ativados</label>
             </div>
             <div>
               <label class="block mb-1">Canal de Level Up</label>
-              <input id="levels-announce-channel" type="text" class="w-full bg-gray-900 border border-red-800 p-3 rounded" placeholder="ID do canal" />
+              <input type="text" class="w-full bg-gray-900 p-3 rounded border-red-800" placeholder="ID canal" />
             </div>
             <div>
               <label class="block mb-1">XP Mínimo</label>
-              <input id="levels-xp-min" type="number" class="w-full bg-gray-900 border border-red-800 p-3 rounded" value="15" />
+              <input type="number" class="w-full bg-gray-900 p-3 rounded border-red-800" value="15" />
             </div>
             <div>
               <label class="block mb-1">XP Máximo</label>
-              <input id="levels-xp-max" type="number" class="w-full bg-gray-900 border border-red-800 p-3 rounded" value="25" />
+              <input type="number" class="w-full bg-gray-900 p-3 rounded border-red-800" value="25" />
             </div>
             <div>
               <label class="block mb-1">Cooldown XP (s)</label>
-              <input id="levels-cooldown" type="number" class="w-full bg-gray-900 border border-red-800 p-3 rounded" value="60" />
+              <input type="number" class="w-full bg-gray-900 p-3 rounded border-red-800" value="60" />
             </div>
           </div>
         </div>
 
-        <!-- 4. Missões (Premium) -->
-        <div class="glass p-6 blood-border premium-locked">
+        <!-- 4. Missões -->
+        <div class="glass p-6 blood-border">
           <input type="checkbox" id="sec4" class="hidden accordion">
           <label for="sec4" class="flex justify-between items-center cursor-pointer text-xl neon">
             4. Missões
@@ -153,21 +236,21 @@
           </label>
           <div class="accordion-content mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="flex items-center">
-              <input id="missoes-enabled" type="checkbox" class="mr-2" checked />
+              <input type="checkbox" class="mr-2" checked />
               <label>Missões Ativadas</label>
             </div>
             <div>
               <label class="block mb-1">Missões Diárias (JSON)</label>
-              <textarea id="missoes-daily" class="w-full bg-gray-900 border border-red-800 p-3 rounded h-24">[{"nome":"Mensageiro","meta":50,"recompensa":200}]</textarea>
+              <textarea class="w-full bg-gray-900 p-3 rounded border-red-800 h-24">[{"nome":"Mensageiro","meta":50,"recompensa":200}]</textarea>
             </div>
             <div>
               <label class="block mb-1">Missões Semanais (JSON)</label>
-              <textarea id="missoes-weekly" class="w-full bg-gray-900 border border-red-800 p-3 rounded h-24">[{"nome":"Explorador","meta":3600,"recompensa":1000}]</textarea>
+              <textarea class="w-full bg-gray-900 p-3 rounded border-red-800 h-24">[{"nome":"Explorador","meta":3600,"recompensa":1000}]</textarea>
             </div>
           </div>
         </div>
 
-        <!-- 5. Ranking (Free) -->
+        <!-- 5. Ranking -->
         <div class="glass p-6 blood-border">
           <input type="checkbox" id="sec5" class="hidden accordion">
           <label for="sec5" class="flex justify-between items-center cursor-pointer text-xl neon">
@@ -177,12 +260,12 @@
           <div class="accordion-content mt-4">
             <div>
               <label class="block mb-1">Máximo de Usuários no Ranking</label>
-              <input id="ranking-max-users" type="number" class="w-full bg-gray-900 border border-red-800 p-3 rounded" value="50" />
+              <input type="number" class="w-full bg-gray-900 p-3 rounded border-red-800" value="50" />
             </div>
           </div>
         </div>
 
-        <!-- 6. Social (Free) -->
+        <!-- 6. Social -->
         <div class="glass p-6 blood-border">
           <input type="checkbox" id="sec6" class="hidden accordion">
           <label for="sec6" class="flex justify-between items-center cursor-pointer text-xl neon">
@@ -191,17 +274,17 @@
           </label>
           <div class="accordion-content mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="flex items-center">
-              <input id="social-enabled" type="checkbox" class="mr-2" checked />
+              <input type="checkbox" class="mr-2" checked />
               <label>Social Ativado</label>
             </div>
             <div>
               <label class="block mb-1">Cooldown Casamento (s)</label>
-              <input id="social-cooldown-marriage" type="number" class="w-full bg-gray-900 border border-red-800 p-3 rounded" value="86400" />
+              <input type="number" class="w-full bg-gray-900 p-3 rounded border-red-800" value="86400" />
             </div>
           </div>
         </div>
 
-        <!-- 7. Anônimo (Free) -->
+        <!-- 7. Anônimo -->
         <div class="glass p-6 blood-border">
           <input type="checkbox" id="sec7" class="hidden accordion">
           <label for="sec7" class="flex justify-between items-center cursor-pointer text-xl neon">
@@ -210,22 +293,22 @@
           </label>
           <div class="accordion-content mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="flex items-center">
-              <input id="anonymous-enabled" type="checkbox" class="mr-2" checked />
+              <input type="checkbox" class="mr-2" checked />
               <label>Anônimo Ativado</label>
             </div>
             <div>
-              <label class="block mb-1">Canal Logs Anônimos</label>
-              <input id="anonymous-logs" type="text" class="w-full bg-gray-900 border border-red-800 p-3 rounded" placeholder="ID canal" />
+              <label class="block mb-1">Canal Logs</label>
+              <input type="text" class="w-full bg-gray-900 p-3 rounded border-red-800" placeholder="ID" />
             </div>
             <div>
               <label class="block mb-1">Cooldown (s)</label>
-              <input id="anonymous-cooldown" type="number" class="w-full bg-gray-900 border border-red-800 p-3 rounded" value="120" />
+              <input type="number" class="w-full bg-gray-900 p-3 rounded border-red-800" value="120" />
             </div>
           </div>
         </div>
 
-        <!-- 8. Autorole (Premium) -->
-        <div class="glass p-6 blood-border premium-locked">
+        <!-- 8. Autorole -->
+        <div class="glass p-6 blood-border">
           <input type="checkbox" id="sec8" class="hidden accordion">
           <label for="sec8" class="flex justify-between items-center cursor-pointer text-xl neon">
             8. Autorole
@@ -234,16 +317,16 @@
           <div class="accordion-content mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="block mb-1">Cargos por Tempo (JSON)</label>
-              <textarea id="autorole-time-roles" class="w-full bg-gray-900 border border-red-800 p-3 rounded h-24">[{"days":30,"role_id":"123456"}]</textarea>
+              <textarea class="w-full bg-gray-900 p-3 rounded border-red-800 h-24">[{"days":30,"role_id":"123456"}]</textarea>
             </div>
             <div>
               <label class="block mb-1">Cargo VIP Auto</label>
-              <input id="autorole-vip" type="text" class="w-full bg-gray-900 border border-red-800 p-3 rounded" placeholder="ID cargo" />
+              <input type="text" class="w-full bg-gray-900 p-3 rounded border-red-800" placeholder="ID" />
             </div>
           </div>
         </div>
 
-        <!-- 9. Anúncios (Free) -->
+        <!-- 9. Anúncios -->
         <div class="glass p-6 blood-border">
           <input type="checkbox" id="sec9" class="hidden accordion">
           <label for="sec9" class="flex justify-between items-center cursor-pointer text-xl neon">
@@ -252,21 +335,21 @@
           </label>
           <div class="accordion-content mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="flex items-center">
-              <input id="announce-enabled" type="checkbox" class="mr-2" checked />
-              <label>Anúncios Ativados</label>
+              <input type="checkbox" class="mr-2" checked />
+              <label>Ativado</label>
             </div>
             <div>
-              <label class="block mb-1">Canal Anúncios</label>
-              <input id="announce-channel" type="text" class="w-full bg-gray-900 border border-red-800 p-3 rounded" placeholder="ID canal" />
+              <label class="block mb-1">Canal</label>
+              <input type="text" class="w-full bg-gray-900 p-3 rounded border-red-800" placeholder="ID" />
             </div>
             <div>
               <label class="block mb-1">Mensagem</label>
-              <input id="announce-message" type="text" class="w-full bg-gray-900 border border-red-800 p-3 rounded" value="Bem-vindo ao Véu!" />
+              <input type="text" class="w-full bg-gray-900 p-3 rounded border-red-800" value="Bem-vindo ao Véu!" />
             </div>
           </div>
         </div>
 
-        <!-- 10. Loja (Free) -->
+        <!-- 10. Loja -->
         <div class="glass p-6 blood-border">
           <input type="checkbox" id="sec10" class="hidden accordion">
           <label for="sec10" class="flex justify-between items-center cursor-pointer text-xl neon">
@@ -275,18 +358,18 @@
           </label>
           <div class="accordion-content mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="flex items-center">
-              <input id="loja-enabled" type="checkbox" class="mr-2" checked />
-              <label>Loja Ativada</label>
+              <input type="checkbox" class="mr-2" checked />
+              <label>Ativada</label>
             </div>
             <div>
               <label class="block mb-1">Itens (JSON)</label>
-              <textarea id="loja-itens" class="w-full bg-gray-900 border border-red-800 p-3 rounded h-24">{"rosa":{"preco":100,"descricao":"Rosa Eterna"}}</textarea>
+              <textarea class="w-full bg-gray-900 p-3 rounded border-red-800 h-24">{"rosa":{"preco":100,"desc":"Rosa Eterna"}}</textarea>
             </div>
           </div>
         </div>
 
-        <!-- 11. Loja de Cores (Premium) -->
-        <div class="glass p-6 blood-border premium-locked">
+        <!-- 11. Loja de Cores -->
+        <div class="glass p-6 blood-border">
           <input type="checkbox" id="sec11" class="hidden accordion">
           <label for="sec11" class="flex justify-between items-center cursor-pointer text-xl neon">
             11. Loja de Cores
@@ -294,21 +377,21 @@
           </label>
           <div class="accordion-content mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="flex items-center">
-              <input id="loja-cor-enabled" type="checkbox" class="mr-2" checked />
+              <input type="checkbox" class="mr-2" checked />
               <label>Ativada</label>
             </div>
             <div>
               <label class="block mb-1">Cores (JSON)</label>
-              <textarea id="loja-cor-colors" class="w-full bg-gray-900 border border-red-800 p-3 rounded h-24">{"Violeta do Véu":{"price":1500,"hex":89478485}}</textarea>
+              <textarea class="w-full bg-gray-900 p-3 rounded border-red-800 h-24">{"Violeta":{"price":1500,"hex":89478485}}</textarea>
             </div>
             <div>
               <label class="block mb-1">Desconto VIP</label>
-              <input id="loja-cor-vip-discount" type="number" step="0.01" class="w-full bg-gray-900 border border-red-800 p-3 rounded" value="0.20" />
+              <input type="number" step="0.01" class="w-full bg-gray-900 p-3 rounded border-red-800" value="0.20" />
             </div>
           </div>
         </div>
 
-        <!-- 12. Gifts (Free) -->
+        <!-- 12. Gifts -->
         <div class="glass p-6 blood-border">
           <input type="checkbox" id="sec12" class="hidden accordion">
           <label for="sec12" class="flex justify-between items-center cursor-pointer text-xl neon">
@@ -317,13 +400,13 @@
           </label>
           <div class="accordion-content mt-4">
             <div class="flex items-center">
-              <input id="gifts-enabled" type="checkbox" class="mr-2" checked />
+              <input type="checkbox" class="mr-2" checked />
               <label>Ativado</label>
             </div>
           </div>
         </div>
 
-        <!-- 13. Evento (Free) -->
+        <!-- 13. Evento -->
         <div class="glass p-6 blood-border">
           <input type="checkbox" id="sec13" class="hidden accordion">
           <label for="sec13" class="flex justify-between items-center cursor-pointer text-xl neon">
@@ -332,25 +415,25 @@
           </label>
           <div class="accordion-content mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="flex items-center">
-              <input id="evento-enabled" type="checkbox" class="mr-2" checked />
+              <input type="checkbox" class="mr-2" checked />
               <label>Ativado</label>
             </div>
             <div>
               <label class="block mb-1">Chance Drops (%)</label>
-              <input id="evento-drops-chance" type="number" class="w-full bg-gray-900 border border-red-800 p-3 rounded" value="1.0" />
+              <input type="number" class="w-full bg-gray-900 p-3 rounded border-red-800" value="1.0" />
             </div>
             <div>
               <label class="block mb-1">Mínimo</label>
-              <input id="evento-drops-min" type="number" class="w-full bg-gray-900 border border-red-800 p-3 rounded" value="50" />
+              <input type="number" class="w-full bg-gray-900 p-3 rounded border-red-800" value="50" />
             </div>
             <div>
               <label class="block mb-1">Máximo</label>
-              <input id="evento-drops-max" type="number" class="w-full bg-gray-900 border border-red-800 p-3 rounded" value="200" />
+              <input type="number" class="w-full bg-gray-900 p-3 rounded border-red-800" value="200" />
             </div>
           </div>
         </div>
 
-        <!-- 14. Call Manager (Free) -->
+        <!-- 14. Call Manager -->
         <div class="glass p-6 blood-border">
           <input type="checkbox" id="sec14" class="hidden accordion">
           <label for="sec14" class="flex justify-between items-center cursor-pointer text-xl neon">
@@ -359,13 +442,13 @@
           </label>
           <div class="accordion-content mt-4">
             <div class="flex items-center">
-              <input id="call-manager-enabled" type="checkbox" class="mr-2" checked />
+              <input type="checkbox" class="mr-2" checked />
               <label>Ativado</label>
             </div>
           </div>
         </div>
 
-        <!-- 15. Perfil (Free) -->
+        <!-- 15. Perfil -->
         <div class="glass p-6 blood-border">
           <input type="checkbox" id="sec15" class="hidden accordion">
           <label for="sec15" class="flex justify-between items-center cursor-pointer text-xl neon">
@@ -374,13 +457,13 @@
           </label>
           <div class="accordion-content mt-4">
             <div class="flex items-center">
-              <input id="perfil-enabled" type="checkbox" class="mr-2" checked />
+              <input type="checkbox" class="mr-2" checked />
               <label>Ativado</label>
             </div>
           </div>
         </div>
 
-        <!-- 16. Ticket (Free) -->
+        <!-- 16. Ticket -->
         <div class="glass p-6 blood-border">
           <input type="checkbox" id="sec16" class="hidden accordion">
           <label for="sec16" class="flex justify-between items-center cursor-pointer text-xl neon">
@@ -389,24 +472,24 @@
           </label>
           <div class="accordion-content mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="flex items-center">
-              <input id="tickets-enabled" type="checkbox" class="mr-2" checked />
+              <input type="checkbox" class="mr-2" checked />
               <label>Ativado</label>
             </div>
             <div>
               <label class="block mb-1">Canal Painel</label>
-              <input id="tickets-panel-canal" type="text" class="w-full bg-gray-900 border border-red-800 p-3 rounded" placeholder="ID" />
+              <input type="text" class="w-full bg-gray-900 p-3 rounded border-red-800" placeholder="ID" />
             </div>
             <div>
               <label class="block mb-1">Texto Painel</label>
-              <input id="tickets-panel-text" type="text" class="w-full bg-gray-900 border border-red-800 p-3 rounded" value="Selecione o tipo..." />
+              <input type="text" class="w-full bg-gray-900 p-3 rounded border-red-800" value="Selecione o tipo..." />
             </div>
             <div>
               <label class="block mb-1">Imagem Painel</label>
-              <input id="tickets-panel-image" type="text" class="w-full bg-gray-900 border border-red-800 p-3 rounded" value="https://..." />
+              <input type="text" class="w-full bg-gray-900 p-3 rounded border-red-800" value="https://..." />
             </div>
             <div>
               <label class="block mb-1">Botões (JSON)</label>
-              <textarea id="tickets-botoes" class="w-full bg-gray-900 border border-red-800 p-3 rounded h-24">[{"label":"Denúncia","emoji":"🚨"}]</textarea>
+              <textarea class="w-full bg-gray-900 p-3 rounded border-red-800 h-24">[{"label":"Denúncia","emoji":"🚨"}]</textarea>
             </div>
           </div>
         </div>
@@ -421,71 +504,29 @@
           <div class="accordion-content mt-4">
             <div class="space-y-6">
               <div class="flex items-center">
-                <input id="premium-ativo" type="checkbox" class="mr-2" />
-                <label>Ativar Premium neste servidor</label>
+                <input type="checkbox" class="mr-2" />
+                <label>Ativar Premium</label>
               </div>
               <div>
-                <label class="block mb-1">Expiração Premium (YYYY-MM-DD)</label>
-                <input id="premium-expira" type="date" class="w-full bg-gray-900 border border-red-800 p-3 rounded" />
+                <label class="block mb-1">Expiração Premium</label>
+                <input type="date" class="w-full bg-gray-900 p-3 rounded border-red-800" />
               </div>
-              <div class="mt-8">
-                <h3 class="text-xl neon mb-4 text-center">Planos Disponíveis</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div class="glass p-6 blood-border">
-                    <h4 class="text-xl neon mb-3 text-center">Plano Iniciante (Free)</h4>
-                    <ul class="list-disc pl-6 space-y-2 opacity-90">
-                      <li>Comandos básicos</li>
-                      <li>Níveis e XP simples</li>
-                      <li>Ranking limitado (50 usuários)</li>
-                      <li>Social (casamento, amigos)</li>
-                      <li>Confissões anônimas</li>
-                      <li>Anúncios automáticos</li>
-                      <li>Loja básica (itens comuns)</li>
-                      <li>Gifts</li>
-                      <li>Drops básicos</li>
-                      <li>Tempo em call</li>
-                      <li>Perfil simples</li>
-                      <li>Tickets padrão</li>
-                    </ul>
-                  </div>
-                  <div class="glass p-6 blood-border border-yellow-600">
-                    <h4 class="text-xl neon mb-3 text-center">Plano Premium</h4>
-                    <ul class="list-disc pl-6 space-y-2 opacity-90">
-                      <li>Tudo do Free +</li>
-                      <li>Economia avançada (work, weekly, bônus)</li>
-                      <li>Missões personalizadas</li>
-                      <li>Autorole avançado (tempo + VIP)</li>
-                      <li>Loja de cores e fundos</li>
-                      <li>Ranking ilimitado</li>
-                      <li>Tickets customizados (botões)</li>
-                      <li>Suporte prioritário</li>
-                    </ul>
-                    <a href="loja.html" class="mt-6 block text-center bg-yellow-600 hover:bg-yellow-700 p-4 rounded neon text-lg">Ir para a Loja e Comprar Premium</a>
-                  </div>
-                </div>
-              </div>
+              <a href="loja.html" class="block text-center bg-red-900 p-4 rounded neon hover:bg-red-700 mt-6">Ir para a Loja e Comprar Premium</a>
             </div>
           </div>
         </div>
       </div>
-
-      <button id="save-configs" class="mt-10 w-full bg-red-900 hover:bg-red-700 p-5 rounded neon text-xl font-bold">
-        Salvar Todas as Configurações
-      </button>
+      <button class="mt-10 w-full bg-red-900 p-4 rounded neon hover:bg-red-700">Salvar Configurações (exemplo)</button>
     </section>
   </div>
 
   <script>
-    const backendUrl = 'https://random-8jtr0timo8xt8.vertraweb.app';
-    let token = localStorage.getItem('token');
-    let selectedGuildId = null;
-    let isPremium = false;
-
     // Partículas
     const canvas = document.querySelector('.particles');
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+
     class Particle {
       constructor() {
         this.x = Math.random() * canvas.width;
@@ -507,6 +548,7 @@
         ctx.fill();
       }
     }
+
     let particles = [];
     function initParticles() {
       particles = [];
@@ -525,202 +567,12 @@
     initParticles();
     animateParticles();
 
-    async function loadUser() {
-      if (!token) return window.location.href = '/callback.html';
-
-      try {
-        const res = await fetch(`${backendUrl}/api/user`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const data = await res.json();
-        document.getElementById('user-avatar').src = data.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png';
-        document.getElementById('user-name').textContent = data.username || 'Akay-ito';
-        document.getElementById('user-id').textContent = `ID: ${data.id}`;
-        document.getElementById('user-servers').textContent = `Você administra ${data.guilds_count || 0} servidores`;
-      } catch (e) {
-        localStorage.removeItem('token');
-        window.location.href = '/callback.html';
-      }
+    // Atualizar visão geral ao clicar no servidor
+    function updateStats(online, total, plano) {
+      document.getElementById('membros-online').textContent = online;
+      document.getElementById('total-membros').textContent = total;
+      document.getElementById('plano-selecionado').textContent = plano;
     }
-
-    async function loadGuilds() {
-      try {
-        const res = await fetch(`${backendUrl}/api/guilds`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const guilds = await res.json();
-
-        const list = document.getElementById('guild-list');
-        list.innerHTML = '';
-
-        guilds.forEach(g => {
-          const card = document.createElement('div');
-          card.className = `glass p-6 flex justify-between items-center blood-border cursor-pointer ${!g.has_bot ? 'dark-card' : ''}`;
-          if (g.has_bot) card.onclick = () => selectGuild(g.id, g.premium);
-
-          card.innerHTML = `
-            <div class="flex items-center">
-              <img src="${g.icon || 'https://cdn.discordapp.com/embed/avatars/0.png'}" class="w-16 h-16 rounded-full mr-6">
-              <div>
-                <p class="text-xl neon">${g.name}</p>
-                <p class="text-sm opacity-80">ID: ${g.id}</p>
-              </div>
-            </div>
-            <div class="text-right opacity-80">
-              <p>Membros: ${g.members || 0}</p>
-              <p>Online: ${g.online || 0}</p>
-            </div>
-          `;
-          list.appendChild(card);
-        });
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    async function selectGuild(id, premium) {
-      selectedGuildId = id;
-      isPremium = premium;
-
-      try {
-        const res = await fetch(`${backendUrl}/api/guild/${id}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const data = await res.json();
-
-        document.getElementById('membros-online').textContent = data.online || 0;
-        document.getElementById('total-membros').textContent = data.members || 0;
-        document.getElementById('plano-selecionado').textContent = premium ? 'Premium' : 'Free';
-
-        // Bloqueio visual
-        document.querySelectorAll('.premium-locked').forEach(el => {
-          el.classList.toggle('premium-locked', !premium);
-        });
-
-        // Carregar configs reais
-        const cfgRes = await fetch(`${backendUrl}/api/guild/${id}/config`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const cfg = await cfgRes.json();
-
-        // Preencher todos os campos
-        document.getElementById('general-prefix').value = cfg.prefix || '!';
-        document.getElementById('general-bot-enabled').checked = cfg.bot_enabled ?? true;
-        document.getElementById('economia-daily-min').value = cfg.daily_min || 100;
-        document.getElementById('economia-daily-max').value = cfg.daily_max || 500;
-        document.getElementById('economia-vip-bonus').value = cfg.vip_bonus || 1.5;
-        document.getElementById('economia-work-cooldown').value = cfg.work_cooldown || 3600;
-        document.getElementById('levels-enabled').checked = cfg.levels_enabled ?? true;
-        document.getElementById('levels-announce-channel').value = cfg.levels_announce_channel || '';
-        document.getElementById('levels-xp-min').value = cfg.levels_xp_min || 15;
-        document.getElementById('levels-xp-max').value = cfg.levels_xp_max || 25;
-        document.getElementById('levels-cooldown').value = cfg.levels_cooldown || 60;
-        document.getElementById('missoes-enabled').checked = cfg.missoes_enabled ?? true;
-        document.getElementById('missoes-daily').value = JSON.stringify(cfg.missoes_daily || []);
-        document.getElementById('missoes-weekly').value = JSON.stringify(cfg.missoes_weekly || []);
-        document.getElementById('ranking-max-users').value = cfg.ranking_max_users || 50;
-        document.getElementById('social-enabled').checked = cfg.social_enabled ?? true;
-        document.getElementById('social-cooldown-marriage').value = cfg.social_cooldown_marriage || 86400;
-        document.getElementById('anonymous-enabled').checked = cfg.anonymous_enabled ?? true;
-        document.getElementById('anonymous-logs').value = cfg.anonymous_logs || '';
-        document.getElementById('anonymous-cooldown').value = cfg.anonymous_cooldown || 120;
-        document.getElementById('autorole-time-roles').value = JSON.stringify(cfg.autorole_time_roles || []);
-        document.getElementById('autorole-vip').value = cfg.autorole_vip || '';
-        document.getElementById('announce-enabled').checked = cfg.announce_enabled ?? true;
-        document.getElementById('announce-channel').value = cfg.announce_channel || '';
-        document.getElementById('announce-message').value = cfg.announce_message || 'Bem-vindo ao Véu!';
-        document.getElementById('loja-enabled').checked = cfg.loja_enabled ?? true;
-        document.getElementById('loja-itens').value = JSON.stringify(cfg.loja_itens || {});
-        document.getElementById('loja-cor-enabled').checked = cfg.loja_cor_enabled ?? true;
-        document.getElementById('loja-cor-colors').value = JSON.stringify(cfg.loja_cor_colors || {});
-        document.getElementById('loja-cor-vip-discount').value = cfg.loja_cor_vip_discount || 0.20;
-        document.getElementById('gifts-enabled').checked = cfg.gifts_enabled ?? true;
-        document.getElementById('evento-enabled').checked = cfg.evento_enabled ?? true;
-        document.getElementById('evento-drops-chance').value = cfg.evento_drops_chance || 1.0;
-        document.getElementById('evento-drops-min').value = cfg.evento_drops_min || 50;
-        document.getElementById('evento-drops-max').value = cfg.evento_drops_max || 200;
-        document.getElementById('call-manager-enabled').checked = cfg.call_manager_enabled ?? true;
-        document.getElementById('perfil-enabled').checked = cfg.perfil_enabled ?? true;
-        document.getElementById('tickets-enabled').checked = cfg.tickets_enabled ?? true;
-        document.getElementById('tickets-panel-canal').value = cfg.tickets_panel_canal || '';
-        document.getElementById('tickets-panel-text').value = cfg.tickets_panel_text || 'Selecione o tipo de atendimento.';
-        document.getElementById('tickets-panel-image').value = cfg.tickets_panel_image || 'https://...';
-        document.getElementById('tickets-botoes').value = JSON.stringify(cfg.tickets_botoes || []);
-        document.getElementById('premium-ativo').checked = cfg.premium_ativo ?? false;
-        document.getElementById('premium-expira').value = cfg.premium_expira ? cfg.premium_expira.split('T')[0] : '';
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    // Salvar
-    document.getElementById('save-configs').addEventListener('click', async () => {
-      if (!selectedGuildId) return alert('Selecione um servidor!');
-
-      const config = {
-        prefix: document.getElementById('general-prefix').value,
-        bot_enabled: document.getElementById('general-bot-enabled').checked,
-        daily_min: Number(document.getElementById('economia-daily-min').value),
-        daily_max: Number(document.getElementById('economia-daily-max').value),
-        vip_bonus: Number(document.getElementById('economia-vip-bonus').value),
-        work_cooldown: Number(document.getElementById('economia-work-cooldown').value),
-        levels_enabled: document.getElementById('levels-enabled').checked,
-        levels_announce_channel: document.getElementById('levels-announce-channel').value,
-        levels_xp_min: Number(document.getElementById('levels-xp-min').value),
-        levels_xp_max: Number(document.getElementById('levels-xp-max').value),
-        levels_cooldown: Number(document.getElementById('levels-cooldown').value),
-        missoes_enabled: document.getElementById('missoes-enabled').checked,
-        missoes_daily: JSON.parse(document.getElementById('missoes-daily').value),
-        missoes_weekly: JSON.parse(document.getElementById('missoes-weekly').value),
-        ranking_max_users: Number(document.getElementById('ranking-max-users').value),
-        social_enabled: document.getElementById('social-enabled').checked,
-        social_cooldown_marriage: Number(document.getElementById('social-cooldown-marriage').value),
-        anonymous_enabled: document.getElementById('anonymous-enabled').checked,
-        anonymous_logs: document.getElementById('anonymous-logs').value,
-        anonymous_cooldown: Number(document.getElementById('anonymous-cooldown').value),
-        autorole_time_roles: JSON.parse(document.getElementById('autorole-time-roles').value),
-        autorole_vip: document.getElementById('autorole-vip').value,
-        announce_enabled: document.getElementById('announce-enabled').checked,
-        announce_channel: document.getElementById('announce-channel').value,
-        announce_message: document.getElementById('announce-message').value,
-        loja_enabled: document.getElementById('loja-enabled').checked,
-        loja_itens: JSON.parse(document.getElementById('loja-itens').value),
-        loja_cor_enabled: document.getElementById('loja-cor-enabled').checked,
-        loja_cor_colors: JSON.parse(document.getElementById('loja-cor-colors').value),
-        loja_cor_vip_discount: Number(document.getElementById('loja-cor-vip-discount').value),
-        gifts_enabled: document.getElementById('gifts-enabled').checked,
-        evento_enabled: document.getElementById('evento-enabled').checked,
-        evento_drops_chance: Number(document.getElementById('evento-drops-chance').value),
-        evento_drops_min: Number(document.getElementById('evento-drops-min').value),
-        evento_drops_max: Number(document.getElementById('evento-drops-max').value),
-        call_manager_enabled: document.getElementById('call-manager-enabled').checked,
-        perfil_enabled: document.getElementById('perfil-enabled').checked,
-        tickets_enabled: document.getElementById('tickets-enabled').checked,
-        tickets_panel_canal: document.getElementById('tickets-panel-canal').value,
-        tickets_panel_text: document.getElementById('tickets-panel-text').value,
-        tickets_panel_image: document.getElementById('tickets-panel-image').value,
-        tickets_botoes: JSON.parse(document.getElementById('tickets-botoes').value),
-        premium_ativo: document.getElementById('premium-ativo').checked,
-        premium_expira: document.getElementById('premium-expira').value ? document.getElementById('premium-expira').value + 'T00:00:00Z' : null
-      };
-
-      try {
-        const res = await fetch(`${backendUrl}/api/config`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ guild_id: selectedGuildId, config })
-        });
-        if (res.ok) alert('Salvo com sucesso!');
-        else alert('Erro ao salvar.');
-      } catch (e) {
-        alert('Erro de conexão.');
-      }
-    });
-
-    window.onload = async () => {
-      await loadUser();
-      await loadGuilds();
-    };
   </script>
 </body>
 </html>
